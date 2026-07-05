@@ -1,58 +1,53 @@
-<style>
-  .aw-search { padding: 60px 40px; background: var(--aw-cream); min-height:50vh; }
-  .aw-search__inner { max-width:800px;margin:0 auto;text-align:center; }
-  .aw-search__title { font-family:'Cormorant Garamond',serif;color:var(--aw-dark);margin-bottom:24px; }
-
-  .aw-search-form { display:flex;gap:0;max-width:560px;margin:0 auto var(--space-xl);border:1.5px solid var(--color-border);border-radius:50px;overflow:hidden;background:white;transition:border-color 0.2s;}
-  .aw-search-form:focus-within{border-color:#8b7355;}
-  .aw-search-input{flex:1;padding:14px 24px;border:none;font-size:1rem;color:var(--aw-charcoal);background:transparent;outline:none;}
-  .aw-search-btn{padding:14px 28px;background:#8b7355;color:white;border:none;font-size:0.88rem;letter-spacing:0.5px;font-weight:600;cursor:pointer;transition:background 0.2s;border-radius:0;}
-  .aw-search-btn:hover{background:var(--aw-dark);}
-
-  .aw-results-count{font-size:0.9rem;color:var(--aw-stone);margin-bottom:20px;}
-
-  @media(max-width:600px){.aw-search{padding:40px 20px;}.aw-search-form{flex-direction:column;border-radius:12px;}.aw-search-btn{border-radius:0;}}
-</style>
-
-<section class="aw-search">
-  <div class="aw-search__inner">
-    <h1 class="aw-search__title">{{ 'general.search.title' | t | default: 'Search' }}</h1>
-
-    <form action="{{ routes.search_url }}" method="get" class="aw-search-form" role="search" autocomplete="off">
+<section class="aw-search-page">
+  <div class="aw-search-page__inner">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="aw-search-form">
       <input type="search"
-        name="q"
-        value="{{ search.terms | escape }}"
-        placeholder="{{ 'general.search.placeholder' | t | default: 'Search our collection...' }}"
-        class="aw-search-input"
-        aria-label="{{ 'general.search.placeholder' | t | default: 'Search' }}">
-      <button type="submit" class="aw-search-btn">Search</button>
+             name="q"
+             value="{{ search.terms | escape }}"
+             placeholder="Search our collection..."
+             class="aw-search-input"
+             aria-label="Search">
+      <button type="submit" class="aw-search-btn" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
     </form>
 
-    {% if search.performed %}
-      <p class="aw-results-count">
-        {% if search.results_count > 0 %}
-          {{ search.results_count }} results for "{{ search.terms | escape }}"
-        {% else %}
-          No results found for "{{ search.terms | escape }}"
-        {% endif %}
+    {%- if search.performed -%}
+      <p class="aw-collection-page__count" style="text-align:center;margin-bottom:32px;">
+        {%- if search.results_count > 0 -%}
+          Found {{ search.results_count }} result{{ search.results_count | pluralize: '', 's' }} for "{{ search.terms }}"
+        {%- else -%}
+          No results found for "{{ search.terms }}"
+        {%- endif -%}
       </p>
 
-      {% if search.results.size > 0 %}
-        <div class="collection-grid collection-grid--4">
-          {% for item in search.results %}
-            {% case item.object_type %}
-              when 'product'
-                {% render 'product-card', product: item %}
-            {% endcase %}
-          {% endfor %}
+      {%- if search.results_count > 0 -%}
+        <div class="aw-search-results">
+          {%- for item in search.results limit: 20 -%}
+            <div class="aw-product-card">
+              <a href="{{ item.url }}" class="aw-product-card__link">
+                <div class="aw-product-card__img">
+                  {%- if item.object_type == 'product' and item.featured_image -%}
+                    {{ item.featured_image | image_url: width: 400 | image_tag: loading:'lazy', alt:item.title }}
+                  {%- else -%}
+                    <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#ede8e1;color:#c4a882;font-family:'Cormorant Garamond',serif;">No Image</div>
+                  {%- endif -%}
+                </div>
+                <div class="aw-product-card__body">
+                  <p class="aw-product-card__type">{{ item.object_type | capitalize }}</p>
+                  <h3 class="aw-product-card__title">{{ item.title }}</h3>
+                  {%- if item.price != blank -%}<p class="aw-product-card__price">{{ item.price | money }}</p>{%- endif -%}
+                </div>
+              </a>
+            </div>
+          {%- endfor -%}
         </div>
-      {% else %}
-        <div style="padding:48px 20px;color:var(--aw-stone);">
-          <p>Try searching with different keywords, or browse our collections.</p>
-          <a href="/collections/all" style="color:#8b7355;text-decoration:underline;margin-top:16px;display:inline-block;">Browse All Products &rarr;</a>
-        </div>
-      {% endif %}
-    {% endif %}
+      {%- endif -%}
+    {%- else -%}
+      <p style="text-align:center;color:#6b5e53;padding:40px 20px;font-size:1.05rem;">
+        Type above to search our wabi-sabi collection.
+      </p>
+    {%- endif -%}
   </div>
 </section>
 

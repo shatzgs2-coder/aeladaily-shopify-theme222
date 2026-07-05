@@ -1,1 +1,1 @@
-{"sections": {"page-hero": {"type": "page-hero", "disabled": false, "settings": {"title": "Journal", "subtext": "Thoughts on wabi-sabi living"}}, "main-blog": {"type": "main-blog", "disabled": false, "settings": {"posts_per_page": 9}}}, "order": ["page-hero", "main-blog"]}
+{"sections": {"page-hero": {"type": "page-hero", "settings": {"label": "Journal"}}, "main-blog": {"type": "main-blog", "settings": {}}}, "order": ["page-hero", "main-blog"]}

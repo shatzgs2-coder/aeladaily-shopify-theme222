@@ -1,42 +1,48 @@
-<style>
-  .aw-related { padding: var(--space-3xl) 0; background: white; }
-  .aw-related__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; max-width: 1280px; margin: 0 auto; padding: 0 40px; }
-  @media (max-width:900px){.aw-related__grid{grid-template-columns:repeat(2,1fr);gap:20px;padding:0 20px;}}
-  @media (max-width:550px){.aw-related__grid{grid-template-columns:1fr 1fr;}}
-</style>
+<section class="aw-featured-coll" style="background:#faf7f2;padding:80px 40px;">
+  <div class="aw-featured-coll__inner">
+    <p class="aw-label">{{ section.settings.label | default: "You May Also Love" }}</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:#2c2420;margin-bottom:48px;">{{ section.settings.title | default: "Related Products" }}</h2>
 
-<section class="aw-related">
-  <div class="page-width">
-    <span class="section-label">You May Also Like</span>
-    <h2 class="section-title">Related Products</h2>
+    <div class="aw-featured-coll__grid">
+      {%- assign collection = collections[section.settings.collection] -%}
+      {%- if collection != blank -%}
+        {%- for product in collection.products limit: 4 -%}
+          {%- unless product.id == section.settings.exclude_product_id -%}
+            <div class="aw-product-card">
+              <a href="{{ product.url }}" class="aw-product-card__link">
+                <div class="aw-product-card__img">
+                  {%- if product.featured_image -%}
+                    {{ product.featured_image | image_url: width: 450 | image_tag: loading: 'lazy', alt: product.title }}
+                  {%- else -%}
+                    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#c4a882;">Atelier Wabi</div>
+                  {%- endif -%}
+                </div>
+                <div class="aw-product-card__body">
+                  <p class="aw-product-card__type">{{ product.type }}</p>
+                  <h3 class="aw-product-card__title">{{ product.title }}</h3>
+                  <p class="aw-product-card__price">{{ product.price | money }}</p>
+                </div>
+              </a>
+            </div>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%} Fallback: show nothing or placeholder {%- endcomment -%}
+        <p style="grid-column:1/-1;color:#6b5e53;text-align:center;padding:40px;">Select a collection to show related products.</p>
+      {%- endif -%}
+    </div>
   </div>
-
-  {%- assign current_product = product -%}
-  {% if current_product.collections.size > 0 %}
-    {% assign collection = current_product.collections.first %}
-    <div class="aw-related__grid">
-      {% for related_product in collection.products limit: 4 %}
-        {% unless related_product.handle == current_product.handle %}
-          {% render 'product-card', product: related_product %}
-        {% endunless %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="aw-related__grid" style="padding:0 40px;margin-top:var(--space-lg);">
-      {% for i in (1..4) %}
-        <div class="product-card">
-          <div class="product-card__image-wrapper" style="background:var(--aw-linen);"></div>
-          <div class="product-card__info"><span class="product-card__type">Product</span><h3>Product {{ i }}</h3><p class="product-card__price">&euro;32.00</p></div>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
 </section>
 
 {% schema %}
 {
   "name": "Related Products",
-  "class": "related-section",
-  "settings": []
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "You May Also Love" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Related Products" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "product", "id": "exclude_product_id", "label": "Exclude Product", "info": "Optional: hide the currently viewed product" }
+  ],
+  "presets": [{ "name": "Related Products", "category": "Product" }]
 }
 {% endschema %}

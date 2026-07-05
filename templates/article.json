@@ -1,1 +1,1 @@
-{"sections": {"page-hero": {"type": "page-hero", "disabled": false, "settings": {"title": "", "subtext": ""}}, "main-article": {"type": "main-article", "disabled": false, "settings": {}}}, "order": ["main-article"]}
+{"sections": {"page-hero": {"type": "page-hero", "settings": {"label": "Article"}}, "main-article": {"type": "main-article", "settings": {}}}, "order": ["page-hero", "main-article"]}

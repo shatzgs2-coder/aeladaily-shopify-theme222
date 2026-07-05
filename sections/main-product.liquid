@@ -1,132 +1,39 @@
 <style>
-  .aw-product-page {
-    padding: 60px 40px;
-    background: var(--aw-cream);
-    min-height: 70vh;
-  }
-  .aw-product-page__inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 64px;
-    align-items: start;
-  }
-  /* Gallery */
-  .aw-product-page__gallery { position: sticky; top: 100px; }
-  .aw-product-page__main-img {
-    aspect-ratio: 1;
-    background: var(--aw-linen);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-  .aw-product-page__main-img img { width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg); }
-  .aw-product-page__thumbnails { display:flex; gap:10px; flex-wrap:wrap; }
-  .aw-product-page__thumb {
-    width:72px;height:72px;border-radius:8px;overflow:hidden;cursor:pointer;
-    border:2px solid transparent; transition:border-color 0.2s;
-  }
-  .aw-product-page__thumb:hover,
-  .aw-product-page__thumb.active { border-color:#8b7355; }
-  .aw-product-page__thumb img { width:100%;height:100%;object-fit:cover; }
+  .aw-product-page { padding:80px 40px;background:#faf7f2;min-height:70vh; }
+  .aw-product-page__inner { max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start; }
+  .aw-product-page__gallery { position:sticky;top:100px; }
+  .aw-product-page__main-img { aspect-ratio:1;background:#ede8e1;border-radius:16px;overflow:hidden;margin-bottom:16px; }
+  .aw-product-page__main-img img { width:100%;height:100%;object-fit:cover; }
+  .aw-product-page__thumbnails { display:flex;gap:10px;flex-wrap:wrap; }
+  .aw-product-page__thumb { width:72px;height:72px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s; }
+  .aw-product-page__thumb:hover,.aw-product-page__thumb.active{border-color:#8b7355}
+  .aw-product-page__thumb img{width:100%;height:100%;object-fit:cover}
 
-  /* Info */
-  .aw-product-page__info { padding-top: 8px; }
+  .aw-product-page__info{padding-top:8px}
+  .aw-product-page__type{font-size:.72rem;color:#c17f59;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+  .aw-product-page__title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:#2c2420;line-height:1.2;margin-bottom:20px}
+  .aw-product-page__price{font-family:'Cormorant Garamond',serif;font-size:2rem;color:#8b7355;font-weight:600;margin-bottom:28px}
+  .aw-product-page__desc{font-size:1rem;color:#6b5e53;line-height:1.85;font-weight:300;margin-bottom:32px}
 
-  /* Type label */
-  .aw-product-page__type {
-    font-size:0.72rem;color:var(--aw-accent);text-transform:uppercase;letter-spacing:2px;
-    margin-bottom:12px;font-weight:600;display:inline-block;
-  }
+  .aw-product-page__variants{margin-bottom:28px}
+  .aw-product-page__variants label{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;color:#2c2420;margin-bottom:10px;font-weight:500}
+  .swatch-group{display:flex;gap:8px;flex-wrap:wrap}
+  .aw-swatch{padding:8px 18px;border:1.5px solid #d4cec4;background:transparent;border-radius:4px;font-size:.9rem;color:#2c2420;cursor:pointer;transition:all .2s}
+  .aw-swatch:hover,.aw-swatch.selected{border-color:#8b7355;background:#8b7355;color:#fff}
 
-  /* Title */
-  .aw-product-page__title {
-    font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);
-    color:var(--aw-dark);line-height:1.2;margin-bottom:16px;font-weight:500;
-  }
+  /* Size guide */
+  .aw-size-guide{margin:28px 0;border:1px solid #e8e3d8;border-radius:8px;overflow:hidden}
+  .aw-size-guide summary{padding:14px 20px;background:#f5f0e8;cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  .aw-size-guide summary::-webkit-details-marker{display:none}
+  .aw-size-guide table{width:100%;border-collapse:collapse}
+  .aw-size-guide th,.aw-size-guide td{padding:12px 20px;text-align:left;border-top:1px solid #e8e3d8;font-size:.9rem}
+  .aw-size-guide th{background:#faf7f2;font-weight:600}
 
-  /* Price */
-  .aw-product-page__price {
-    font-family:'Cormorant Garamond',serif;font-size:2rem;color:#8b7355;
-    font-weight:600;margin-bottom:24px;
-  }
-  .aw-product-page__price-compare {
-    text-decoration:line-through;color:var(--color-text-muted);margin-left:12px;font-size:1.15rem;
-  }
+  .aw-product-page__features{list-style:none;padding:0;margin:28px 0 0}
+  .aw-product-page__features li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:#6b5e53;padding:6px 0}
+  .aw-product-page__features li::before{content:'\2726';color:#c17f59;font-size:.6rem}
 
-  /* Divider */
-  .aw-product-page__divider { height:1px;background:var(--color-border);margin:24px 0; }
-
-  /* Description */
-  .aw-product-page__desc { font-size:1rem;color:var(--aw-stone);line-height:1.85;margin-bottom:28px; }
-
-  /* Variants (Atelier pill style) */
-  .aw-product-page__variants { margin-bottom:28px; }
-  .aw-product-page__variants label {
-    display:block;font-size:0.78rem;text-transform:uppercase;letter-spacing:1.5px;
-    color:var(--aw-charcoal);margin-bottom:10px;font-weight:600;
-  }
-  .aw-variant-btns-row { display:flex;gap:8px;flex-wrap:wrap; }
-  .aw-variant-btn {
-    padding:8px 20px;border:1.5px solid var(--color-border);background:transparent;
-    border-radius:4px;font-size:0.88rem;color:var(--aw-charcoal);cursor:pointer;
-    transition:all 0.2s;
-  }
-  .aw-variant-btn:hover,
-  .aw-variant-btn.selected { border-color:#8b7355;background:#8b7355;color:white; }
-
-  /* Color swatches */
-  .aw-color-swatches { display:flex;gap:10px;flex-wrap:wrap;margin-top:6px; }
-  .aw-color-swatch {
-    width:32px;height:32px;border-radius:50%;border:2px solid transparent;
-    cursor:pointer;transition:all 0.2s;outline-offset:2px;
-  }
-  .aw-color-swatch:hover,
-  .aw-color-swatch.selected { border-color:var(--aw-charcoal);transform:scale(1.12); }
-
-  /* Quantity */
-  .aw-product-page__qty {
-    display:flex;align-items:center;gap:0;width:fit-content;
-    border:1.5px solid var(--color-border);border-radius:4px;overflow:hidden;margin-bottom:24px;
-  }
-  .aw-product-page__qty-btn {
-    width:40px;height:44px;background:transparent;border:none;
-    font-size:1.2rem;color:var(--aw-charcoal);cursor:pointer;transition:background 0.2s;
-  }
-  .aw-product-page__qty-btn:hover { background:var(--aw-linen); }
-  .aw-product-page__qty-input {
-    width:50px;height:44px;border:none;border-left:1.5px solid var(--color-border);
-    border-right:1.5px solid var(--color-border);text-align:center;font-size:1rem;
-    color:var(--aw-charcoal);background:transparent;-moz-appearance:textfield;
-  }
-
-  /* Add to Cart Button (Atelier pill) */
-  .aw-add-btn {
-    width:100%;padding:16px;background:#8b7355;color:white;border:none;border-radius:50px;
-    font-size:0.9rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
-    transition:all 0.3s;margin-bottom:14px;
-  }
-  .aw-add-btn:hover { background:var(--aw-dark);transform:translateY(-2px);box-shadow:var(--shadow-md); }
-  .aw-buy-btn {
-    width:100%;padding:16px;background:transparent;color:#8b7355;
-    border:1.5px solid #8b7355;border-radius:50px;font-size:0.9rem;
-    letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-bottom:28px;
-  }
-  .aw-buy-btn:hover { background:#8b7355;color:white; }
-
-  /* Feature list */
-  .aw-feature-list { list-style:none;padding:0;margin:0; }
-  .aw-feature-list li {
-    display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--aw-stone);padding:6px 0;
-  }
-  .aw-feature-list li::before { content:'\2726';color:var(--aw-accent);font-size:0.65rem; }
-
-  @media (max-width:768px) {
-    .aw-product-page{padding:32px 20px;}
-    .aw-product-page__inner{grid-template-columns:1fr;gap:32px;}
-    .aw-product-page__gallery{position:static;}
-  }
+  @media(max-width:768px){.aw-product-page{padding:40px 20px}.aw-product-page__inner{grid-template-columns:1fr;gap:32px}.aw-product-page__gallery{position:static}}
 </style>
 
 {%- assign current_variant = product.selected_or_first_available_variant -%}
@@ -137,148 +44,96 @@
     <!-- Gallery -->
     <div class="aw-product-page__gallery">
       <div class="aw-product-page__main-img" id="aw-main-img">
-        {% if product.featured_image %}
-          {{ product.featured_image | image_url: width: 800 | image_tag:
-            id: 'aw-main-img-tag',
-            loading: 'eager',
-            alt: product.title
-          }}
-        {% else %}
-          <div style="display:flex;align-items:center;justify-content:center;height:100%;
-            color:var(--aw-clay);font-family:'Cormorant Garamond',serif;font-size:2rem;letter-spacing:4px;">
-            AELA Daily
-          </div>
-        {% endif %}
+        {%- if product.featured_image -%}
+          {{ product.featured_image | image_url: width: 800 | image_tag: id:'aw-main-img-tag', loading:'eager', alt:product.title }}
+        {%- else -%}
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#c4a882;font-family:'Cormorant Garamond',serif;font-size:2rem">Atelier Wabi</div>
+        {%- endif -%}
       </div>
-
-      {% if product.images.size > 1 %}
+      {%- if product.images.size > 1 -%}
         <div class="aw-product-page__thumbnails">
-          {% for image in product.images limit: 6 %}
-            <div class="aw-product-page__thumb {% if forloop.first %}active{% endif %}"
-              onclick="document.getElementById('aw-main-img-tag').src='{{ image | image_url: width: 800 }}';
-                document.querySelectorAll('.aw-product-page__thumb').forEach(t=>t.classList.remove('active'));
-                this.classList.add('active')">
-              {{ image | image_url: width: 150 | image_tag: alt: product.title }}
+          {%- for image in product.images limit: 6 -%}
+            <div class="aw-product-page__thumb{% if forloop.first %} active{% endif %}"
+              onclick="document.getElementById('aw-main-img-tag').src='{{ image | image_url: width: 800 }}';this.parentElement.querySelectorAll('.aw-product-page__thumb').forEach(function(t){t.classList.remove('active')});this.classList.add('active')">
+              {{ image | image_url: width: 150 | image_tag: alt:product.title }}
             </div>
-          {% endfor %}
+          {%- endfor -%}
         </div>
-      {% endif %}
+      {%- endif -%}
     </div>
 
     <!-- Product Info -->
     <div class="aw-product-page__info">
-      <span class="aw-product-page__type">{{ product.type | default: 'Home Decor' }}</span>
+      <p class="aw-product-page__type">{{ product.type | default: 'Home Decor' }}</p>
       <h1 class="aw-product-page__title">{{ product.title }}</h1>
-      <p class="aw-product-page__price">
-        {{ current_variant.price | money }}
-        {% if current_variant.compare_at_price > current_variant.price %}
-          <span class="aw-product-page__price-compare">{{ current_variant.compare_at_price | money }}</span>
-        {% endif %}
-      </p>
+      <p class="aw-product-page__price">{{ current_variant.price | money }}</p>
 
-      <div class="aw-product-page__divider"></div>
+      <div class="aw-divider"></div>
 
       <div class="aw-product-page__desc">{{ product.description }}</div>
 
-      <!-- Product Form -->
-      {% form 'product', product, id: 'aw-product-form' %}
+      {% form 'product', product, id:'aw-product-form' %}
         <input type="hidden" name="id" value="{{ current_variant.id }}">
 
-        <!-- Variant Buttons -->
-        {% if product.has_only_default_variant == false %}
-          {% for option in product.options_with_values %}
+        {%- if product.has_only_default_variant == false -%}
+          {%- for option in product.options_with_values -%}
             <div class="aw-product-page__variants">
               <label>{{ option.name }}</label>
-              <div class="aw-variant-btns-row">
-                {% for value in option.values %}
-                  <button type="button" class="aw-variant-btn{% if option.selected_value == value %} selected{% endif %}">
-                    {{ value }}
-                  </button>
-                {% endfor %}
+              <div class="swatch-group">
+                {%- for value in option.values -%}
+                  <button type="button" class="aw-swatch{% if option.selected_value == value %} selected{% endif %}">{{ value }}</button>
+                {%- endfor -%}
               </div>
             </div>
-          {% endfor %}
-        {% endif %}
+          {%- endfor -%}
+        {%- endif -%}
 
-        <!-- Quantity -->
-        <div class="aw-product-page__qty">
-          <button type="button" class="aw-product-page__qty-btn"
-            onclick="let i=this.nextElementSibling;if(i.value>1)i.value--">&minus;</button>
-          <input type="number" name="quantity" value="1" min="1" class="aw-product-page__qty-input">
-          <button type="button" class="aw-product-page__qty-btn"
-            onclick="this.previousElementSibling.value++">+</button>
+        <!-- Size Guide -->
+        {%- for option in product.options_with_values -%}
+          {%- if option.name == "Size" -%}
+            <details class="aw-size-guide">
+              <summary>Size Guide <span style="font-size:.7rem">&#9660;</span></summary>
+              <table>
+                <thead><tr><th>Size</th><th>Width (cm)</th><th>Height (cm)</th><th>Fits</th></tr></thead>
+                <tbody>
+                  <tr><td>S</td><td>30–40</td><td>25–35</td><td>Small spaces / side tables</td></tr>
+                  <tr><td>M</td><td>45–60</td><td>38–50</td><td>Dining tables / consoles</td></tr>
+                  <tr><td>L</td><td>65+</td><td>55+</td><td>Floor pieces / statement items</td></tr>
+                </tbody>
+              </table>
+            </details>
+          {%- endif -%}
+        {%- endfor -%}
+
+        <div class="aw-qty">
+          <button type="button" class="aw-qty__btn" onclick="var i=this.nextElementSibling;if(i.value>1)i.value--">&minus;</button>
+          <input type="number" name="quantity" value="1" min="1" class="aw-qty__input">
+          <button type="button" class="aw-qty__btn" onclick="this.previousElementSibling.value++">+</button>
         </div>
 
-        <!-- Add to Cart -->
-        <button type="submit" name="add" class="aw-add-btn">
+        <button type="submit" name="add" class="aw-btn aw-btn--primary" style="width:100%;margin-top:16px">
           Add to Cart
         </button>
       {% endform %}
 
-      <div class="aw-product-page__divider"></div>
+      <div class="aw-divider"></div>
 
-      <!-- Features List -->
-      <ul class="aw-feature-list">
+      <ul class="aw-product-page__features">
         <li>Handcrafted with natural materials</li>
         <li>Wabi-sabi inspired design</li>
-        <li>Free shipping in Germany over &euro;49</li>
+        <li>Free shipping in Germany over €49</li>
         <li>30-day return guarantee</li>
         <li>Carbon-neutral packaging</li>
       </ul>
     </div>
+
   </div>
 </section>
 
-<!-- Size Guide & Details Accordions -->
-<div style="max-width:1100px;margin:0 auto;padding:0 40px 64px;">
-  <details class="details-modal" open style="margin-bottom:12px;">
-    <summary class="details-summary">Size Guide</summary>
-    <div class="details-content">
-      <table class="size-table">
-        <thead>
-          <tr><th>Size</th><th>Dimensions</th><th>Filling</th><th>Weight</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>S</td><td>40 x 40 cm</td><td>Buckwheat hull</td><td>~1.2 kg</td></tr>
-          <tr><td>M</td><td>50 x 50 cm</td><td>Buckwheat hull</td><td>~1.8 kg</td></tr>
-          <tr><td>L</td><td>60 x 60 cm</td><td>Buckwheat hull</td><td>~2.5 kg</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </details>
-
-  <details class="details-modal" style="margin-bottom:12px;">
-    <summary class="details-summary">Materials & Care</summary>
-    <div class="details-content">
-      <p>Cover: 100% washed linen, pre-washed for softness. Inner: organic buckwheat hull filling.</p>
-      <p><strong>Care:</strong> Machine wash cover on gentle cycle at 30&deg;C. Tumble dry low. Do not bleach. Iron medium heat if needed.</p>
-    </div>
-  </details>
-
-  <details class="details-modal" style="margin-bottom:12px;">
-    <summary class="details-summary">Shipping & Returns</summary>
-    <div class="details-content">
-      <p>Free shipping within Germany on orders over &euro;49. EU shipping from &euro;6.90. Worldwide from &euro;14.90.</p>
-      <p>30-day hassle-free returns. Items must be unused and in original packaging.</p>
-    </div>
-  </details>
-
-  <details class="details-modal">
-    <summary class="details-summary">Origin Story</summary>
-    <div class="details-content">
-      <p>Each piece is hand-finished in our small studio in Germany. We source natural materials directly from artisans who share our values of sustainability and mindful craftsmanship.</p>
-    </div>
-  </details>
-</div>
-
 {% schema %}
 {
-  "name": "Main Product",
-  "class": "product-section",
+  "name": "Product Page",
   "tag": "section",
-  "settings": [
-    {"type":"checkbox","id":"show_vendor","default":true,"label":"Show vendor"},
-    {"type":"checkbox","id":"show_sku","default":false,"label":"Show SKU"}
-  ]
+  "settings": []
 }
 {% endschema %}

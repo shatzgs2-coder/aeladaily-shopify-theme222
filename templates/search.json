@@ -1,1 +1,1 @@
-{"sections": {"page-hero": {"type": "page-hero", "disabled": false, "settings": {"title": "Search Results", "subtext": ""}}, "main-search": {"type": "main-search", "disabled": false, "settings": {"columns": 4, "products_per_page": 12}}}, "order": ["page-hero", "main-search"]}
+{"sections": {"page-hero": {"type": "page-hero", "settings": {"label": "Search Results"}}, "main-search": {"type": "main-search", "settings": {}}}, "order": ["page-hero", "main-search"]}

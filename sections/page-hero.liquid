@@ -1,35 +1,22 @@
-<style>
-  .aw-page-hero {
-    background: var(--hero-bg,var(--aw-linen));
-    padding: var(--space-2xl) 0 var(--space-xl);
-    margin-bottom: var(--space-2xl);
-    text-align:center;
-  }
-  .aw-page-hero__title { font-family:'Cormorant Garamond',serif;margin:0;color:var(--aw-dark); }
-  .aw-page-hero__subtext { color:var(--aw-stone);margin-top:8px;margin-bottom:0;font-size:0.95rem; }
-</style>
-
-<div class="aw-page-hero">
-  <div class="page-width">
-    {% if section.settings.label %}
-      <span class="section-label" style="margin-bottom:8px;">{{ section.settings.label }}</span>
-    {% endif %}
-    <h1 class="aw-page-hero__title">{{ section.settings.title | default: page.title }}</h1>
-    {% if section.settings.subtext %}
-      <p class="aw-page-hero__subtext">{{ section.settings.subtext }}</p>
-    {% endif %}
+<section class="aw-page-hero">
+  <div class="aw-page-hero__inner aw-container" style="max-width:800px;">
+    {%- if section.settings.label != blank -%}
+      <p class="aw-page-hero__label">{{ section.settings.label }}</p>
+    {%- endif -%}
+    <h1 class="aw-page-hero__title">{{ page.title | default: collection.title | default: blog.title | default: 'Page' }}</h1>
   </div>
-</div>
+</section>
 
 {% schema %}
 {
   "name": "Page Hero",
-  "tag": "section",
   "settings": [
-    {"type":"text","id":"label","default":"","label":"Label above title"},
-    {"type":"text","id":"title","","label":"Heading"},
-    {"type":"textarea","id":"subtext","","label":"Subtext"},
-    {"type":"color","id":"bg_color","default":"#f5f0e8","label":"Background color"}
-  ]
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label (optional)"
+    }
+  ],
+  "presets": [{ "name": "Page Hero", "category": "Text" }]
 }
 {% endschema %}

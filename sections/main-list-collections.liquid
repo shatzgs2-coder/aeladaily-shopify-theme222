@@ -1,64 +1,39 @@
-<style>
-  .aw-list-collections { padding: var(--space-2xl) 0 var(--space-3xl); background: var(--aw-cream); }
-  .aw-collections-grid { display: grid; grid-template-columns: repeat(3,1fr); gap:28px; max-width:1100px;margin:0 auto;padding:0 40px; }
-  .aw-collection-card { display:block; border-radius:var(--radius-lg); overflow:hidden; border:1px solid rgba(139,115,85,0.08); background:white; transition:transform var(--transition-base),box-shadow var(--transition-base); }
-  .aw-collection-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
-  .aw-collection-card__image{aspect-ratio:4/3;overflow:hidden;}
-  .aw-collection-card__image img{width:100%;height:100%;object-fit:cover;transition:transform var(--transition-slow);}
-  .aw-collection-card:hover .aw-collection-card__image img{transform:scale(1.04);}
-  .aw-collection-card__info{padding:var(--space-md) var(--space-lg);display:flex;justify-content:space-between;align-items:center;}
-  .aw-collection-card__info h3{font-family:var(--font-body);font-size:var(--font-size-base);font-weight:600;color:var(--aw-dark);}
-
-  @media(max-width:768px){.aw-collections-grid{grid-template-columns:repeat(2,1fr);gap:20px;padding:0 20px;}}
-</style>
-
 <section class="aw-list-collections">
-  <div class="page-width" style="text-align:center;">
-    <span class="section-label">Collections</span>
-    <h2 class="section-title">Our Collections</h2>
-  </div>
+  <div class="aw-list-collections__inner">
+    <p class="aw-label">{{ section.settings.label | default: "Our Collections" }}</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);color:#2c2420;margin-bottom:48px;text-align:center;">{{ section.settings.title | default: "Browse Collections" }}</h2>
 
-  {% paginate collections by 12 %}
-    <div class="aw-collections-grid">
-      {% for collection in collections %}
-        <a href="{{ collection.url }}" class="aw-collection-card">
-          <div class="aw-collection-card__image">
-            {% if collection.image %}
-              {{ collection.image | image_url: width: 600 | image_tag:
-                loading: 'lazy',
-                alt: collection.title
-              }}
-            {% else %}
-              <div style="width:100%;height:100%;background:linear-gradient(135deg,#d4c5b2,#f5f0e8);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:white;font-size:1.5rem;">{{ collection.title }}</div>
-            {% endif %}
-          </div>
-          <div class="aw-collection-card__info">
-            <h3>{{ collection.title }}</h3>
-            <span style="color:var(--color-text-muted);font-size:0.85rem;">{{ collection.products_count }} items</span>
-          </div>
-        </a>
-      {% endfor %}
+    <div class="aw-list-collections__grid">
+      {%- for collection in collections -%}
+        {%- unless collection.handle == 'frontpage' -%}
+          <a href="{{ collection.url }}" class="aw-list-collections__card">
+            <div class="aw-list-collections__card-img">
+              {%- if collection.featured_image -%}
+                {{ collection.featured_image | image_url: width: 500 | image_tag: loading:'lazy', alt:collection.title }}
+              {%- else -%}
+                <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#ede8e1;color:#c4a882;font-family:'Cormorant Garamond',serif;">{{ collection.title }}</div>
+              {%- endif -%}
+            </div>
+            <div class="aw-list-collections__card-body">
+              <h3 class="aw-list-collections__card-title">{{ collection.title }}</h3>
+              {%- if collection.description != blank -%}
+                <p class="aw-list-collections__card-desc">{{ collection.description | strip_html | truncatewords: 15 }}</p>
+              {%- endif -%}
+            </div>
+          </a>
+        {%- endunless -%}
+      {%- endfor -%}
     </div>
-
-    {% if paginate.pages > 1 %}
-      <nav class="pagination" aria-label="Pagination" style="margin-top:var(--space-2xl);">
-        <ol class="pagination-list">
-          {% if paginate.previous %}<li><a href="{{ paginate.previous.url }}">&larr;</a></li>{% endif %}
-          {% for part in paginate.parts %}
-            {% if part.is_link %}<li><a href="{{ part.url }}">{{ part.title }}</a></li>
-            {% else %}<li><span class="{% if part.current %}active{% endif %}">{{ part.title }}</span></li>{% endif %}
-          {% endfor %}
-          {% if paginate.next %}<li><a href="{{ paginate.next.url }}">&rarr;</a></li>{% endif %}
-        </ol>
-      </nav>
-    {% endif %}
-  {% endpaginate %}
+  </div>
 </section>
 
 {% schema %}
 {
-  "name": "Main List Collections",
+  "name": "List Collections",
   "tag": "section",
-  "settings": []
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "Our Collections" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Browse Collections" }
+  ]
 }
 {% endschema %}

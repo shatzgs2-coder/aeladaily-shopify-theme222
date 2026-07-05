@@ -1,95 +1,87 @@
 <style>
-  .aw-categories { padding: var(--space-3xl) 0; background: white; }
-  .aw-categories__grid {
-    display: grid;
-    grid-template-columns: repeat(var(--columns, 3), 1fr);
-    gap: var(--space-xl);
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .aw-category-card {
-    display: block;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    border: 1px solid rgba(139,115,85,0.08);
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
-    background: white;
-  }
-  .aw-category-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-  .aw-category-card__image { aspect-ratio: 4/3; overflow: hidden; }
-  .aw-category-card__image img {
-    width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-slow);
-  }
-  .aw-category-card:hover .aw-category-card__image img { transform: scale(1.04); }
-  .aw-category-card__info {
-    padding: var(--space-md) var(--space-lg);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .aw-category-card__info h3 {
-    font-family: var(--font-body); font-size: var(--font-size-base); font-weight: 600; color: var(--aw-dark);
-  }
-  .aw-category-arrow { color: var(--aw-accent); font-weight: 700; font-size: 1.2rem; }
-
-  @media (max-width: 768px) {
-    .aw-categories__grid { --columns: 2 !important; gap: var(--space-lg); }
-  }
+  .aw-categories { padding: 100px 40px; background: #fff; }
+  .aw-categories__inner { max-width: 1280px; margin: 0 auto; }
+  .aw-categories__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .aw-categories__card { position:relative;border-radius:12px;overflow:hidden;aspect-ratio:3/4;cursor:pointer; }
+  .aw-categories__card-img { width:100%;height:100%;object-fit:cover;transition:transform .6s ease; }
+  .aw-categories__card:hover .aw-categories__card-img { transform:scale(1.06); }
+  .aw-categories__card-overlay { position:absolute;inset:0;background:linear-gradient(to top,rgba(44,36,32,.7) 0%,transparent 60%);display:flex;align-items:flex-end;padding:28px;transition:background .3s; }
+  .aw-categories__card:hover .aw-categories__card-overlay { background:linear-gradient(to top,rgba(44,36,32,.82) 0%,transparent 65%); }
+  .aw-categories__card-title { font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff;font-weight:600; }
+  @media(max-width:768px){ .aw-categories{padding:60px 20px} .aw-categories__grid{grid-template-columns:repeat(2,1fr);gap:16px} }
 </style>
 
 <section class="aw-categories">
-  <div class="page-width">
-    <span class="section-label">{{ section.settings.label | default: 'Explore' }}</span>
-    <h2 class="section-title">{{ section.settings.title | default: 'Shop by Category' }}</h2>
-
-    <div class="aw-categories__grid" style="--columns: {{ section.settings.columns | default: 3 }}">
-      {% for block in section.blocks %}
-        <a href="{{ block.settings.link }}" class="aw-category-card">
-          <div class="aw-category-card__image">
-            {% if block.settings.image != blank %}
-              {{ block.settings.image | image_url: width: 600 | image_tag:
-                loading: 'lazy',
-                widths: '400,600',
-                alt: block.settings.title
-              }}
-            {% else %}
-              <div style="width:100%;height:100%;background:var(--aw-linen);display:flex;align-items:center;justify-content:center;color:var(--aw-wheat);font-family:'Cormorant Garamond',serif;font-size:1.5rem;">{{ block.settings.title }}</div>
-            {% endif %}
-          </div>
-          <div class="aw-category-card__info">
-            <h3>{{ block.settings.title }}</h3>
-            <span class="aw-category-arrow">&rarr;</span>
-          </div>
+  <div class="aw-categories__inner">
+    <p class="aw-label">{{ section.settings.label | default: "Shop by Category" }}</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.2rem);color:#2c2420;margin-bottom:48px;">{{ section.settings.title | default: "Curated Categories" }}</h2>
+    <div class="aw-categories__grid">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.collection.url }}" class="aw-categories__card">
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 500 | image_tag: loading: 'lazy', alt: block.settings.title, class: 'aw-categories__card-img' }}
+          {%- elsif block.settings.collection.featured_image != blank -%}
+            {{ block.settings.collection.featured_image | image_url: width: 500 | image_tag: loading: 'lazy', alt: block.settings.title, class: 'aw-categories__card-img' }}
+          {%- else -%}
+            <div class="aw-categories__card-img" style="display:flex;align-items:center;justify-content:center;background:#ede8e1;">
+              <span style="font-family:'Cormorant Garamond',serif;color:#c4a882;font-size:1.5rem;">{{ block.settings.title }}</span>
+            </div>
+          {%- endif -%}
+          <div class="aw-categories__card-overlay"><h3 class="aw-categories__card-title">{{ block.settings.title }}</h3></div>
         </a>
-      {% endfor %}
+      {%- endfor -%}
     </div>
-
-    {% if section.settings.show_view_all %}
-      <div style="text-align:center;margin-top:var(--space-2xl);">
-        <a href="{{ section.settings.view_all_link | default: '/collections/all' }}" class="view-all-link">View All &rarr;</a>
-      </div>
-    {% endif %}
   </div>
 </section>
 
 {% schema %}
 {
   "name": "Featured Categories",
-  "class": "categories-section",
-  "tag": "section",
   "settings": [
-    {"type":"text","id":"label","default":"Explore","label":"Label"},
-    {"type":"text","id":"title","default":"Shop by Category","label":"Heading"},
-    {"type":"range","id":"columns","min":2,"max":4,"step":1,"default":3,"label":"Columns"},
-    {"type":"checkbox","id":"show_view_all","default":true,"label":"Show View All link"},
-    {"type":"url","id":"view_all_link","label":"View All link"}
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Section Label",
+      "default": "Shop by Category"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading"
+    }
   ],
   "blocks": [
     {
       "type": "category",
-      "name": "Category",
+      "name": "Category Card",
       "settings": [
-        {"type":"image_picker","id":"image","label":"Image"},
-        {"type":"text","id":"title","label":"Title","default":"Home Decor"},
-        {"type":"url","id":"link","label":"Link"}
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Category Name"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Link to Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Categories",
+      "category": "Collection",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Vases & Ceramics" } },
+        { "type": "category", "settings": { "title": "Textiles & Linen" } },
+        { "type": "category", "settings": { "title": "Candles & Scents" } }
       ]
     }
   ]

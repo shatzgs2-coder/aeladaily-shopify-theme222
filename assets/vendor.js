@@ -1,58 +1,70 @@
-/* ============================================
-   AELA Daily — Vendor / Web Components
-   Reusable UI components
-   ============================================ */
+/**
+ * Atelier Wabi — Web Components (Vendor)
+ * Minimal polyfills for quantity input & details animation
+ */
 
+/* ====== Quantity Input Component ====== */
+class QuantityInput extends HTMLElement {
+  connectedCallback() {
+    this.input = this.querySelector('input[type="number"]') || this.querySelector('input:not([type])');
+    this.decBtn = this.querySelector('button:first-of-type');
+    this.incBtn = this.querySelector('button:last-of-type');
+    if (!this.input) return;
+
+    if (this.decBtn) this.decBtn.addEventListener('click', () => this.change(-1));
+    if (this.incBtn) this.incBtn.addEventListener('click', () => this.change(1));
+
+    // Validate input range
+    this.input.addEventListener('change', () => {
+      var min = parseInt(this.input.min) || 1;
+      var val = parseInt(this.input.value) || min;
+      if (val < min) this.input.value = min;
+    });
+  }
+  change(delta) {
+    var min = parseInt(this.input.min) || 1;
+    var max = parseInt(this.input.max) || 9999;
+    var val = parseInt(this.input.value) || min;
+    val += delta;
+    if (val < min) val = min;
+    if (val > max) val = max;
+    this.input.value = val;
+  }
+}
+if (!customElements.get('quantity-input')) customElements.define('quantity-input', QuantityInput);
+
+/* ====== Details Modal (Accordion Animation) ====== */
 class DetailsModal extends HTMLElement {
-  constructor() { super(); this.details = null; }
-  connectedCallback() {
-    this.details = this.querySelector('details');
-    if (!this.details) return;
-    const summary = this.querySelector('summary');
-    summary?.addEventListener('click', (e) => e.preventDefault());
-    summary?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        this.open = !this.open;
-      }
-    });
+  constructor() {
+    super();
+    if (this.hasAttribute('open')) this.open = true;
   }
-  get open() { return this.details.hasAttribute('open'); }
+  get open() { return this.hasAttribute('open'); }
   set open(val) {
-    if (val) this.details.setAttribute('open', '');
-    else this.details.removeAttribute('open');
+    if (val) this.setAttribute('open', ''); else this.removeAttribute('open');
   }
 }
-customElements.define('details-modal', DetailsModal);
+if (!customElements.get('details-modal')) customElements.define('details-modal', DetailsModal);
 
+/* ====== Sticky Header Component ====== */
 class StickyHeader extends HTMLElement {
-  constructor() { super(); }
   connectedCallback() {
-    this.header = document.getElementById('site-header') || this.closest('.header-wrapper');
+    this.header = document.getElementById('aw-header');
     if (!this.header) return;
+    this.headerBounds = this.header.getBoundingClientRect();
 
-    this.headerBounds = {};
-    this.currentScrollY = 0;
-
-    window.addEventListener('scroll', this.onScroll.bind(this), { passive: true });
-    this.createObserver();
+    this.onScrollHandler = this.onScroll.bind(this);
+    window.addEventListener('scroll', this.onScrollHandler, { passive: true });
   }
-
-  createObserver() {
-    let observer = new IntersectionObserver((entries) => {
-      this.headerBounds = entries[0].boundingClientRect;
-      observer.disconnect();
-    });
-    observer.observe(this.header);
-  }
-
   onScroll() {
-    const scrollY = window.scrollY;
-    if (Math.abs(scrollY - this.currentScrollY) < 10) return;
-    this.header.classList.toggle('is-sticky', scrollY > (this.headerBounds?.bottom || 70));
-    this.currentScrollY = scrollY;
+    if (window.scrollY > this.headerBounds.bottom) {
+      this.header.classList.add('is-sticky');
+    } else {
+      this.header.classList.remove('is-sticky');
+    }
+  }
+  disconnectedCallback() {
+    window.removeEventListener('scroll', this.onScrollHandler);
   }
 }
-if (!customElements.get('sticky-header')) {
-  customElements.define('sticky-header', StickyHeader);
-}
+if (!customElements.get('sticky-header')) customElements.define('sticky-header', StickyHeader);

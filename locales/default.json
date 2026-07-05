@@ -1,1 +1,41 @@
-{"accessibility": {"skip_to_text": "Skip to content", "refresh_page": "Page refreshed", "link_messages": {"new_window": "Opens in a new window"}}, "general": {"404": {"title": "Page Not Found", "subtitle": "This page seems to have wandered off the path.", "button": "Back to Homepage"}, "newsletter": {"title": "Stay Connected", "email_placeholder": "Your email address"}, "search": {"title": "Search", "placeholder": "Search our collection..."}}, "cart": {"title": "Shopping Cart", "empty": "Your cart is empty", "empty_message": "Discover our collection of wabi-sabi essentials.", "browse": "Browse Products", "checkout": "Checkout", "subtotal": "Subtotal", "shipping": "Shipping calculated at checkout", "total": "Total", "continue_shopping": "Continue Shopping", "remove": "&times;"}, "product": {"add_to_cart": "Add to Cart", "buy_now": "Buy Now", "sold_out": "Sold Out", "sale": "Sale", "quantity": "Quantity", "size_guide": "Size Guide", "materials_care": "Materials & Care", "shipping_returns": "Shipping & Returns", "origin_story": "Origin Story"}, "collection": {"sort_by": "Sort by:", "filter_by": "Filter by:", "clear_all": "Clear All Filters", "products_count": "{count} products"}, "footer": {"copyright": "All rights reserved.", "shop": "Shop", "info": "Info"}}
+{
+  "general": {
+    "accessibility": {
+      "skip_to_text": "Skip to content",
+      "close": "Close"
+    }
+  },
+  "404": "Page Not Found",
+  "newsletter": {
+    "title": "Stay Connected",
+    "placeholder": "Your email address",
+    "button_label": "Join"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is currently empty.",
+    "checkout": "Proceed to Checkout",
+    "remove": "Remove",
+    "shipping_notice": "Shipping and taxes calculated at checkout."
+  },
+  "products": {
+    "add_to_cart": "Add to Cart",
+    "sold_out": "Sold Out",
+    "quantity": "Quantity"
+  },
+  "collections": {
+    "title": "Collections",
+    "empty": "No products found in this collection.",
+    "products_count": "{count} pieces"
+  },
+  "navigation": {
+    "menu": "Menu",
+    "search": "Search",
+    "cart": "Cart"
+  },
+  "footer": {
+    "brand_description": "Handcrafted home decor inspired by wabi-sabi philosophy.",
+    "shop_title": "Shop",
+    "company_title": "Company"
+  }
+}

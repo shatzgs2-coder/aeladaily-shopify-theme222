@@ -1,194 +1,43 @@
-<style>
-  .aw-collection { padding: var(--space-2xl) 0 var(--space-3xl); background: var(--aw-cream); }
-  .aw-collection__layout {
-    max-width: 1280px; margin: 0 auto; padding: 0 40px;
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: var(--space-2xl);
-    align-items: start;
-  }
+<section class="aw-collection-page">
+  <div class="aw-collection-page__inner">
+    <div class="aw-collection-page__header">
+      <h1 class="aw-collection-page__title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <p class="aw-collection-page__desc">{{ collection.description }}</p>
+      {%- endif -%}
+    </div>
 
-  /* Sidebar */
-  .aw-sidebar { position: sticky; top: calc(var(--header-height) + 16px); }
-  .aw-sidebar__group { margin-bottom: var(--space-2xl); }
-  .aw-sidebar__heading {
-    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 1.5px; color: var(--aw-charcoal);
-    margin-bottom: var(--space-md);
-  }
-  .aw-filter-list li a {
-    display:block; padding:6px 0;font-size:0.88rem;color:var(--aw-stone);
-    text-decoration:none;transition:color var(--transition-fast);
-  }
-  .aw-filter-list li a:hover,
-  .aw-filter-list li a.active { color:#8b7355; }
+    <div class="aw-collection-page__toolbar">
+      <p class="aw-collection-page__count">{{ collection.products_count }} pieces</p>
+    </div>
 
-  /* Price slider */
-  .aw-price-slider { width:100%; accent-color: #8b7355; margin-top:8px; }
-  .aw-price-labels { display:flex; justify-content:space-between; font-size:0.78rem;color:var(--color-text-muted); margin-top:6px; }
-
-  /* Color swatches */
-  .aw-color-swatches { display:flex; flex-wrap:wrap; gap:10px; }
-  .aw-color-swatch-item {
-    width:28px;height:28px;border-radius:50%;border:2px solid transparent;
-    cursor:pointer;transition:all 0.15s;background:var(--c,#ccc);
-  }
-  .aw-color-swatch-item:hover,
-  .aw-color-swatch-item.selected { border-color:var(--aw-charcoal);transform:scale(1.12); }
-
-  /* Toolbar */
-  .aw-toolbar {
-    display:flex;justify-content:space-between;align-items:center;
-    padding-bottom:var(--space-md);margin-bottom:var(--space-lg);
-    border-bottom:1px solid var(--color-border);
-  }
-  .aw-result-count { font-size:0.88rem;color:var(--color-text-muted); }
-  .aw-sort select {
-    padding:8px 28px 8px 12px; border:1px solid var(--color-border);
-    border-radius:4px;background:var(--aw-cream);font-size:0.85rem;color:var(--aw-charcoal); appearance:auto;
-  }
-
-  /* Clear filters */
-  .aw-clear-filters {
-    display:inline-block;margin-top:12px;padding:6px 14px;
-    font-size:0.78rem;color:var(--aw-accent);border:1px solid var(--aw-accent);
-    border-radius:4px;text-decoration:none;transition:all 0.2s;
-  }
-  .aw-clear-filters:hover { background:var(--aw-accent); color:white; }
-
-  @media (max-width:900px) {
-    .aw-collection__layout{grid-template-columns:1fr;gap:var(--space-xl);padding:0 20px;}
-    .aw-sidebar{position:static;}
-  }
-</style>
-
-<section class="aw-collection">
-  <div class="aw-collection__layout">
-    <!-- Sidebar -->
-    <aside class="aw-sidebar">
-      {% for block in section.blocks %}
-        {% case block.type %}
-          {% when 'categories' %}
-            <div class="aw-sidebar__group">
-              <h3 class="aw-sidebar__heading">{{ block.settings.title | default: 'Categories' }}</h3>
-              <ul class="aw-filter-list">
-                {% for i in (1..block.settings.count) %}
-                  <li><a href="#">{{ 'Category ' | append: i }}</a></li>
-                {% endfor %}
-              </ul>
-            </div>
-
-          {% when 'price_range' %}
-            <div class="aw-sidebar__group">
-              <h3 class="aw-sidebar__heading">{{ block.settings.title | default: 'Price Range' }}</h3>
-              <input type="range" class="aw-price-slider" min="0" max="200" value="100" step="5">
-              <div class="aw-price-labels"><span>&euro;0</span><span>&euro;200+</span></div>
-            </div>
-
-          {% when 'colors' %}
-            <div class="aw-sidebar__group">
-              <h3 class="aw-sidebar__heading">{{ block.settings.title | default: 'Color' }}</h3>
-              <div class="aw-color-swatches">
-                <button class="aw-color-swatch-item selected" style="--c:#d4cec4;" title="Sage"></button>
-                <button class="aw-color-swatch-item" style="--c:#f5ebe0;" title="Cream"></button>
-                <button class="aw-color-swatch-item" style="--c:#8b7355;" title="Earth"></button>
-                <button class="aw-color-swatch_item" style="--c:#c17f59;" title="Terracotta"></button>
-                <button class="aw-color-swatch-item" style="--c:#3a3a3a;" title="Charcoal"></button>
-                <button class="aw-color-swatch-item" style="--c:#faf7f2;" title="White"></button>
+    <div class="aw-collection-page__grid">
+      {%- paginate collection.products by section.settings.products_per_page -%}
+        {%- for product in collection.products -%}
+          <div class="aw-product-card">
+            <a href="{{ product.url }}" class="aw-product-card__link">
+              <div class="aw-product-card__img">
+                {%- if product.featured_image -%}
+                  {{ product.featured_image | image_url: width: 500 | image_tag: loading:'lazy', alt:product.title }}
+                {%- else -%}
+                  <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#c4a882;font-family:'Cormorant Garamond',serif;">Atelier Wabi</div>
+                {%- endif -%}
               </div>
-            </div>
-
-          {% when 'clear' %}
-            <a href="#" class="aw-clear-filters">{{ block.settings.label | default: 'Clear All Filters' }}</a>
-        {% endcase %}
-      {% endfor %}
-
-      <!-- Default sidebar if no blocks configured -->
-      {% if section.blocks.size == 0 %}
-        <div class="aw-sidebar__group">
-          <h3 class="aw-sidebar__heading">Categories</h3>
-          <ul class="aw-filter-list">
-            <li><a href="#">Home Decor</a></li>
-            <li><a href="#">Tableware</a></li>
-            <li><a href="#">Textiles</a></li>
-            <li><a href="#">Lighting</a></li>
-            <li><a href="#">Accessories</a></li>
-            <li><a href="#">Gift Sets</a></li>
-          </ul>
-        </div>
-        <div class="aw-sidebar__group">
-          <h3 class="aw-sidebar__heading">Price Range</h3>
-          <input type="range" class="aw-price-slider" min="0" max="300" value="150">
-          <div class="aw-price-labels"><span>&euro;0</span><span>&euro;300+</span></div>
-        </div>
-        <div class="aw-sidebar__group">
-          <h3 class="aw-sidebar__heading">Color</h3>
-          <div class="aw-color-swatches">
-            <button class="aw-color-swatch-item" style="--c:#d4cec4;"></button>
-            <button class="aw-color-swatch-item" style="--c:#f5ebe0;"></button>
-            <button class="aw-color-swatch-item" style="--c:#8b7355;"></button>
-            <button class="aw-color-swatch-item" style="--c:#c17f59;"></button>
+              <div class="aw-product-card__body">
+                <p class="aw-product-card__type">{{ product.type }}</p>
+                <h3 class="aw-product-card__title">{{ product.title }}</h3>
+                <p class="aw-product-card__price">{{ product.price | money }}</p>
+              </div>
+            </a>
           </div>
-        </div>
-        <a href="#" class="aw-clear-filters">Clear All Filters</a>
-      {% endif %}
-    </aside>
+        {%- endfor -%}
 
-    <!-- Product Grid -->
-    <div>
-      <div class="aw-toolbar">
-        <p class="aw-result-count">{{ collection.products_count }} products</p>
-        <div class="aw-sort">
-          <label for="sort-by" style="font-size:0.85rem;margin-right:8px;color:var(--aw-stone);">Sort:</label>
-          <select id="sort-by">
-            <option>Featured</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-            <option>Newest</option>
-            <option>Best Selling</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="collection-grid collection-grid--{{ section.settings.columns | default: 4 }}">
-        {% paginate collection.products by section.settings.products_per_page | default: 12 %}
-          {% for product in collection.products %}
-            {% render 'product-card', product: product %}
-          {% else %}
-            {% for i in (1..8) %}
-              <div class="product-card">
-                <div class="product-card__image-wrapper" style="background:var(--aw-linen);"></div>
-                <div class="product-card__info">
-                  <span class="product-card__type">Coming Soon</span>
-                  <h3>Product {{ i }}</h3>
-                  <p class="product-card__price">&euro;--</p>
-                </div>
-              </div>
-            {% endfor %}
-          {% endfor %}
-        {% endpaginate %}
-      </div>
-
-      <!-- Pagination -->
-      {% if paginate.pages > 1 %}
-        <nav class="pagination" aria-label="Pagination">
-          <ol class="pagination-list">
-            {% if paginate.previous %}
-              <li><a href="{{ paginate.previous.url }}">&larr;</a></li>
-            {% endif %}
-            {% for part in paginate.parts %}
-              {% if part.is_link %}
-                <li><a href="{{ part.url }}">{{ part.title }}</a></li>
-              {% else %}
-                <li><span class="{% if part.current %}active{% endif %}">{{ part.title }}</span></li>
-              {% endif %}
-            {% endfor %}
-            {% if paginate.next %}
-              <li><a href="{{ paginate.next.url }}">&rarr;</a></li>
-            {% endif %}
-          </ol>
-        </nav>
-      {% endif %}
+        {%- if paginate.pages > 1 -%}
+          <div class="aw-pagination" style="grid-column:1/-1;">
+            {{ paginate | default_pagination }}
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
     </div>
   </div>
 </section>
@@ -196,26 +45,8 @@
 {% schema %}
 {
   "name": "Main Collection",
-  "class": "collection-section",
-  "tag": "section",
   "settings": [
-    {"type":"range","id":"products_per_page","min":6,"max":24,"step":3,"default":12,"label":"Products per page"},
-    {"type":"range","id":"columns","min":2,"max":4,"step":1,"default":4,"label":"Grid columns"}
-  ],
-  "blocks": [
-    {"type":"categories","name":"Categories","settings":[
-      {"type":"text","id":"title","default":"Categories","label":"Heading"},
-      {"type":"number","id":"count","default":6,"label":"Number of categories"}
-    ]},
-    {"type":"price_range","name":"Price Range","settings":[
-      {"type":"text","id":"title","default":"Price Range","label":"Heading"}
-    ]},
-    {"type":"colors","name":"Color Swatches","settings":[
-      {"type":"text","id":"title","default":"Color","label":"Heading"}
-    ]},
-    {"type":"clear","name":"Clear Filters Button","settings":[
-      {"type":"text","id":"label","default":"Clear All Filters","label":"Button text"}
-    ]}
+    { "type": "range", "id": "products_per_page", "min": 8, "max": 48, "step": 4, "default": 16, "label": "Products per page" }
   ]
 }
 {% endschema %}

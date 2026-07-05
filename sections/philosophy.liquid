@@ -1,66 +1,19 @@
-<style>
-  .aw-philosophy {
-    padding: var(--space-3xl) 0;
-    background: var(--aw-linen);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .aw-philosophy__decor {
-    width: 48px; height: 2px;
-    background: var(--aw-clay);
-    margin: 0 auto var(--space-xl);
-    border-radius: 1px;
-  }
-  .aw-philosophy__quote {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: clamp(1.75rem, 4vw, 3rem);
-    color: var(--aw-charcoal);
-    font-style: italic;
-    line-height: 1.45;
-    max-width: 720px;
-    margin: 0 auto var(--space-lg);
-    font-weight: 400;
-    position: relative;
-  }
-  .aw-philosophy__quote::before,
-  .aw-philosophy__quote::after {
-    content: '\201C';
-    font-size: 2em; color: var(--aw-wheat); position: absolute;
-  }
-  .aw-philosophy__quote::before { top: -20px; left: -10%; }
-  .aw-philosophy__quote::after { content: '\201D'; bottom: -40px; right: -5%; }
-  .aw-philosophy__author {
-    font-size: var(--font-size-sm);
-    color: var(--aw-stone);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-
-  @media (max-width: 768px) {
-    .aw-philosophy__quote { font-size: clamp(1.35rem, 5vw, 2rem); padding: 0 16px; }
-    .aw-philosophy__quote::before { left: -4%; }
-  }
-</style>
-
 <section class="aw-philosophy">
-  <div class="page-width">
-    <span class="section-label">{{ section.settings.label | default: 'Philosophy' }}</span>
-    <div class="aw-philosophy__decor"></div>
-    <p class="aw-philosophy__quote">{{ section.settings.quote | default: 'In imperfection, we find beauty. In simplicity, we discover meaning.' }}</p>
-    <p class="aw-philosophy__author">{{ section.settings.author | default: '— AELA Daily' }}</p>
+  <div class="aw-philosophy__inner">
+    <p class="aw-label">{{ section.settings.label | default: "Our Philosophy" }}</p>
+    <blockquote class="aw-philosophy__quote">{{ section.settings.quote | default: "Wabi-sabi is not a style. It is a way of seeing — a quiet appreciation for the worn, the weathered, the simply beautiful." }}</blockquote>
+    <p class="aw-philosophy__text">{{ section.settings.text | default: "From hand-knotted table runners to cotton rope baskets, our collection invites you to slow down. To fill your home with textures that feel good. To celebrate the imperfect, the handmade, and the real." }}</p>
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Philosophy",
-  "class": "philosophy-section",
+  "name": "Philosophy Quote",
   "settings": [
-    {"type":"text","id":"label","default":"Our Philosophy","label":"Label"},
-    {"type":"textarea","id":"quote","default":"In imperfection, we find beauty. In simplicity, we discover meaning.","label":"Quote"},
-    {"type":"text","id":"author","default":"— AELA Daily","label":"Attribution"}
-  ]
+    { "type": "text", "id": "label", "label": "Label", "default": "Our Philosophy" },
+    { "type": "textarea", "id": "quote", "label": "Quote" },
+    { "type": "textarea", "id": "text", "label": "Supporting Text" }
+  ],
+  "presets": [{ "name": "Philosophy Quote", "category": "Text" }]
 }
 {% endschema %}

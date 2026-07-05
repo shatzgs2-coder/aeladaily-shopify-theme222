@@ -1,229 +1,191 @@
 <style>
-  .aw-footer { background: var(--aw-linen); padding-top: 64px; }
+  .aw-footer {
+    background: #2c2420;
+    color: rgba(255,255,255,0.6);
+    padding: 60px 40px 30px;
+  }
   .aw-footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 40px;
-    display: grid;
-    grid-template-columns: 1.5fr repeat(3, 1fr);
-    gap: 40px;
-    padding-bottom: 48px;
   }
-  .aw-footer__brand-logo {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #8b7355;
-    letter-spacing: 1px;
+  .aw-footer__brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: #fff;
     margin-bottom: 12px;
   }
-  .aw-footer__brand-desc {
-    color: var(--aw-stone);
-    line-height: 1.75;
-    margin-top: 16px;
-    font-size: 0.9rem;
+  .aw-footer p,
+  .aw-footer a {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s;
   }
-  .aw-footer__heading {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    font-weight: 700;
+  .aw-footer a:hover { color: #d4c4b0; }
+  .aw-footer h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: var(--aw-charcoal);
-    margin-bottom: 24px;
+    color: #fff;
+    margin-bottom: 16px;
+    font-weight: 500;
   }
-  .aw-footer__links li { margin-bottom: 10px; }
-  .aw-footer__links a {
-    font-size: 0.88rem;
-    color: var(--aw-stone);
-    text-decoration: none;
-    transition: color var(--transition-fast);
-  }
-  .aw-footer__links a:hover { color: #8b7355; }
-
-  /* Newsletter */
-  .aw-footer__newsletter-form {
-    display: flex;
-    gap: 0;
+  .aw-footer__newsletter {
     margin-top: 16px;
-    max-width: 320px;
   }
-  .aw-footer__newsletter-input {
-    flex: 1;
-    padding: 12px 16px;
-    border: 1px solid var(--color-border);
-    border-left: 4px solid #8b7355;
-    border-radius: 4px 0 0 4px;
-    font-size: 0.88rem;
-    background: white;
-    outline: none;
-  }
-  .aw-footer__newsletter-input:focus {
-    border-color: #8b7355;
-  }
-  .aw-footer__newsletter-submit {
-    padding: 12px 20px;
-    background: #8b7355;
-    color: white;
-    border: none;
-    border-radius: 0 4px 4px 0;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background var(--transition-fast);
-  }
-  .aw-footer__newsletter-submit:hover { background: var(--aw-dark); }
-
-  /* Bottom Bar */
-  .aw-footer__bottom {
-    border-top: 1px solid rgba(139,115,85,0.12);
-    padding: 20px 40px;
+  .aw-footer__newsletter form {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
   }
-  .aw-footer__copyright {
+  .aw-footer__newsletter input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-size: 0.85rem;
+  }
+  .aw-footer__newsletter input::placeholder { color: rgba(255,255,255,0.35); }
+  .aw-footer__newsletter button {
+    padding: 10px 20px;
+    background: #8b7355;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
     font-size: 0.82rem;
-    color: var(--color-text-muted);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.3s;
   }
-  .aw-footer__social { display: flex; gap: 18px; }
-  .aw-footer__social a {
-    color: var(--aw-stone);
-    font-size: 1.05rem;
-    text-decoration: none;
-    transition: color var(--transition-fast);
-  }
-  .aw-footer__social a:hover { color: #8b7355; }
+  .aw-footer__newsletter button:hover { background: #a08668; }
 
-  @media (max-width: 900px) {
-    .aw-footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; padding-left: 20px; padding-right: 20px; }
-    .aw-footer__bottom { padding-left: 20px; padding-right: 20px; flex-direction: column; gap: 14px; text-align: center; }
+  .aw-footer__social {
+    display: flex;
+    gap: 14px;
+    margin-top: 18px;
   }
-  @media (max-width: 550px) {
-    .aw-footer__grid { grid-template-columns: 1fr; gap: 28px; }
-    .aw-footer__newsletter-form { max-width: 100%; }
+  .aw-footer__social a {
+    width: 36px; height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+  }
+  .aw-footer__social a:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .aw-footer__bottom {
+    max-width: 1280px;
+    margin: 40px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.78rem;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .aw-footer { padding: 40px 20px 20px; }
+    .aw-footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; }
   }
 </style>
 
-<footer class="aw-footer" id="site-footer">
+<footer class="aw-footer" id="footer">
   <div class="aw-footer__grid">
-    <!-- Brand Column -->
-    <div class="aw-footer__brand">
-      <p class="aw-footer__brand-logo">{{ shop.name }}</p>
-      <p class="aw-footer__brand-desc">{{ section.settings.brand_description | default: 'Crafted with intention. Each piece tells a story of natural beauty and mindful living.' }}</p>
+
+    <!-- Brand -->
+    <div>
+      <div class="aw-footer__brand">{{ shop.name }}</div>
+      <p>{{ section.settings.brand_text | default: "Handcrafted home decor inspired by wabi-sabi philosophy. The beauty of imperfection, delivered to your doorstep." }}</p>
+      <div class="aw-footer__social">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Pinterest">PT</a>
+        <a href="#" aria-label="Facebook">FB</a>
+      </div>
     </div>
 
-    <!-- Quick Links -->
+    <!-- Shop Links -->
     <div>
-      <h3 class="aw-footer__heading">Shop</h3>
-      <ul class="aw-footer__links">
-        {%- for link in section.settings.menu_shop.links -%}
-          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-        {%- else -%}
-          <li><a href="/collections/all">All Products</a></li>
-          <li><a href="/collections/new-arrivals">New Arrivals</a></li>
-          <li><a href="/collections/bestsellers">Bestsellers</a></li>
-        {%- endfor -%}
-      </ul>
+      <h4>{{ section.settings.shop_title | default: "Shop" }}</h4>
+      <p><a href="/collections/all">All Products</a></p>
+      <p><a href="/collections">Collections</a></p>
+      <p><a href="/search">Search</a></p>
     </div>
 
-    <!-- Info Links -->
+    <!-- Company Links -->
     <div>
-      <h3 class="aw-footer__heading">Info</h3>
-      <ul class="aw-footer__links">
-        {%- for link in section.settings.menu_info.links -%}
-          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-        {%- else -%}
-          <li><a href="/pages/about">Our Story</a></li>
-          <li><a href="/pages/contact">Contact</a></li>
-          <li><a href="/pages/shipping">Shipping</a></li>
-          <li><a href="/pages/returns">Returns</a></li>
-        {%- endfor -%}
-      </ul>
+      <h4>{{ section.settings.company_title | default: "Company" }}</h4>
+      <p><a href="/pages/about">Our Story</a></p>
+      <p><a href="/pages/about">About Us</a></p>
+      <p><a href="/pages/contact">Contact</a></p>
     </div>
 
-    <!-- Newsletter -->
+    <!-- Newsletter / Contact -->
     <div>
-      <h3 class="aw-footer__heading">Stay Connected</h3>
-      {%- form 'customer', id: 'footer-newsletter' -%}
+      <h4>{{ section.settings.newsletter_title | default: "Stay Connected" }}</h4>
+      <p style="font-size: 0.82rem;">{{ section.settings.newsletter_text | default: "Subscribe for new arrivals and wabi-sabi inspiration." }}</p>
+      {% form 'customer', id: 'aw-newsletter-form' %}
         <input type="hidden" name="contact[tags]" value="newsletter">
-        <div class="aw-footer__newsletter-form">
-          <input
-            type="email"
-            name="contact[email]"
-            placeholder="{{ 'general.newsletter.email_placeholder' | t | default: 'Your email address' }}"
-            required
-            aria-label="Email"
-            class="aw-footer__newsletter-input"
-          >
-          <button type="submit" class="aw-footer__newsletter-submit">Join</button>
+        <div class="aw-footer__newsletter">
+          <input type="email" name="contact[email]" placeholder="Your email" required aria-label="Email">
+          <button type="submit">Join</button>
         </div>
-      {%- endform -%}
-
-      {% if section.settings.show_social %}
-        <div class="aw-footer__social" style="margin-top:20px;">
-          {%- if section.settings.social_instagram != blank -%}
-            <a href="{{ section.settings.social_instagram }}" aria-label="Instagram" target="_blank" rel="noopener">
-              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/><path d="M12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            </a>
-          {%- endif -%}
-          {%- if section.settings.social_pinterest != blank -%}
-            <a href="{{ section.settings.social_pinterest }}" aria-label="Pinterest" target="_blank" rel="noopener">
-              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.72-.359-1.781c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.569-.994 3.995-.283 1.195.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg>
-            </a>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
+      {% endform %}
+      <p style="margin-top: 14px;">{{ shop.address.city }}, Germany</p>
+      <p>Ships across Europe</p>
     </div>
+
   </div>
 
-  <!-- Bottom Bar -->
   <div class="aw-footer__bottom">
-    <p class="aw-footer__copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
-    <div class="aw-footer__payment">
-      {%- for type in shop.enabled_payment_types -%}
-        {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
-      {%- endfor -%}
-    </div>
+    &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved. — Inspired by wabi-sabi.
   </div>
 </footer>
 
 {% schema %}
 {
   "name": "Footer",
-  "class": "footer-section",
   "settings": [
     {
-      "type": "textarea",
-      "id": "brand_description",
-      "label": "Brand description",
-      "default": "Crafted with intention. Each piece tells a story of natural beauty and mindful living."
+      "type": "text",
+      "id": "brand_text",
+      "label": "Brand Description"
     },
     {
-      "type": "link_list",
-      "id": "menu_shop",
-      "label": "Shop menu"
+      "type": "text",
+      "id": "shop_title",
+      "label": "Shop Heading",
+      "default": "Shop"
     },
     {
-      "type": "link_list",
-      "id": "menu_info",
-      "label": "Info menu"
+      "type": "text",
+      "id": "company_title",
+      "label": "Company Heading",
+      "default": "Company"
     },
     {
-      "type": "checkbox",
-      "id": "show_social",
-      "default": true,
-      "label": "Show social media links"
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Newsletter Heading",
+      "default": "Stay Connected"
     },
     {
-      "type": "url",
-      "id": "social_instagram",
-      "label": "Instagram URL"
-    },
-    {
-      "type": "url",
-      "id": "social_pinterest",
-      "label": "Pinterest URL"
+      "type": "text",
+      "id": "newsletter_text",
+      "label": "Newsletter Description"
     }
   ]
 }

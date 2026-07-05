@@ -1,55 +1,28 @@
-<style>
-  .aw-article { padding: var(--space-2xl) 0 var(--space-3xl); background: white; }
-  .aw-article__inner { max-width: 780px; margin:0 auto; padding:0 40px; }
-
-  .aw-article__meta {
-    display:flex;gap:16px;align-items:center;margin-bottom:20px;
-    font-size:0.82rem;color:var(--color-text-muted);flex-wrap:wrap;
-  }
-  .aw-article__author{font-weight:500;color:var(--aw-stone);}
-  .aw-article__featured-image{
-    border-radius:var(--radius-lg);width:100%;aspect-ratio:16/9;object-fit:cover;
-    margin-bottom:36px;background:var(--aw-linen);
-  }
-  .aw-article__body{font-size:1.05rem;line-height:1.85;color:var(--aw-stone);}
-  .aw-article__body h2,.aw-article__body h3{font-family:'Cormorant Garamond',serif;color:var(--aw-dark);margin-top:32px;margin-bottom:12px;}
-  .aw-article__body img{border-radius:8px;margin:24px 0;}
-  .aw-article__share{margin-top:48px;padding-top:24px;border-top:1px solid var(--color-border);display:flex;gap:12px;justify-content:center;}
-
-  @media(max-width:768px){.aw-article__inner{padding:0 20px;}.aw-article__meta{font-size:0.78rem;}}
-</style>
-
-<article class="aw-article">
-  <div class="aw-article__inner">
-    {% if article.image != blank %}
-      {{ article.image | image_url: width: 1200 | image_tag:
-        loading: 'eager',
-        class: 'aw-article__featured-image',
-        alt: article.title
-      }}
-    {% endif %}
-
-    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:var(--aw-dark);line-height:1.15;">{{ article.title }}</h1>
-
-    <div class="aw-article__meta">
-      {% if article.author %}<span class="aw-article__author">{{ article.author }}</span>{% endif %}
-      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+<article class="aw-article-body" style="padding:80px 40px;max-width:740px;margin:0 auto;">
+  {%- if article.image != blank -%}
+    <div style="margin-bottom:48px;border-radius:16px;overflow:hidden;">
+      {{ article.image | image_url: width: 900 | image_tag: loading:'eager', alt:article.title }}
     </div>
+  {%- endif -%}
 
-    <div class="aw-article__body rte">{{ article.content }}</div>
+  <header class="aw-article-meta">
+    <p class="aw-label" style="text-align:left;">{{ article.published_at | date: '%B %d, %Y' }}</p>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3vw,2.5rem);color:#2c2420;">{{ article.title }}</h1>
+    {%- if article.excerpt != blank -%}
+      <p style="font-size:1.1rem;color:#6b5e53;line-height:1.8;margin-top:12px;">{{ article.excerpt }}</p>
+    {%- endif -%}
+    {%- if article.author != blank -%}
+      <p style="margin-top:8px;color:#8b7355;font-size:.88rem;">By {{ article.author }}</p>
+    {%- endif -%}
+  </header>
 
-    <!-- Share buttons -->
-    <div class="aw-article__share">
-      <span style="font-size:0.85rem;color:var(--aw-stone);margin-right:8px;">Share:</span>
-      <a href="#" style="font-size:1.05rem;" title="Share on Facebook">&#128279;</a>
-      <a href="#" style="font-size:1.05rem;" title="Share on Twitter">&#128172;</a>
-      <a href="#" style="font-size:1.05rem;" title="Copy link" onclick="navigator.clipboard.writeText(window.location.href);return false;">&#128203;</a>
-    </div>
+  <div class="aw-article-body">
+    {{ article.content }}
+  </div>
 
-    <!-- Back link -->
-    <div style="text-align:center;margin-top:48px;">
-      <a href="{{ blog.url }}" class="btn btn--outline">&larr; Back to Journal</a>
-    </div>
+  <div style="margin-top:56px;padding-top:32px;border-top:1px solid #e8e3d8;">
+    {% comment %} Share buttons placeholder {% endcomment %}
+    <a href="/blogs/{{ blog.handle }}" class="aw-btn aw-btn--outline">&larr; Back to {{ blog.title | default: 'Blog' }}</a>
   </div>
 </article>
 

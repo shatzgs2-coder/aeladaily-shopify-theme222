@@ -1,1 +1,1 @@
-{"sections": {"page-hero": {"type": "page-hero", "disabled": false, "settings": {"title": "Our Story", "subtext": "The philosophy behind AELA Daily"}}, "about-content": {"type": "about-content", "disabled": false, "settings": {}}}, "order": ["page-hero", "about-content"]}
+{"sections": {"page-hero": {"type": "page-hero", "settings": {"label": "About Us"}}, "about-content": {"type": "about-content", "settings": {}}}, "order": ["page-hero", "about-content"]}

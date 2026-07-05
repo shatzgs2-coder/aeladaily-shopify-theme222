@@ -1,23 +1,7 @@
-<style>
-  .aw-page { padding: var(--space-2xl) 0 var(--space-3xl); background: white; }
-  .aw-page__inner { max-width: 780px; margin:0 auto; padding:0 40px; }
-  .aw-page__inner h1{font-family:'Cormorant Garamond',serif;color:var(--aw-dark);font-size:clamp(2rem,4vw,3rem);line-height:1.15;margin-bottom:28px;}
-  .aw-page__inner h2,.aw-page__inner h3{font-family:'Cormorant Garamond',serif;color:var(--aw-dark);}
-  .aw-page__body{font-size:1rem;line-height:1.85;color:var(--aw-stone);}
-  .aw-page__body img{border-radius:8px;margin:24px 0;}
-
-  @media(max-width:768px){.aw-page__inner{padding:0 20px;}}
-</style>
-
-<section class="aw-page">
-  <div class="aw-page__inner">
-    {% if page.content != blank %}
-      <h1>{{ page.title }}</h1>
-      <div class="aw-page__body rte">{{ page.content }}</div>
-    {% else %}
-      <h1>{{ page.title }}</h1>
-      <p style="color:var(--aw-stone);">Page content coming soon.</p>
-    {% endif %}
+<section class="aw-about" style="background:#faf7f2;min-height:50vh;padding:80px 40px;">
+  <div class="aw-about__inner" style="max-width:800px;">
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:#2c2420;margin-bottom:32px;text-align:center;">{{ page.title }}</h1>
+    <div style="font-size:1.05rem;color:#6b5e53;line-height:1.9;">{{ page.content }}</div>
   </div>
 </section>
 

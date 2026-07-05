@@ -1,127 +1,92 @@
-<style>
-  .aw-cart { padding: var(--space-2xl) 0 var(--space-3xl); background: var(--aw-cream); }
-  .aw-cart__inner { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+<section class="aw-cart-page">
+  <div class="aw-cart-page__inner">
+    <h1 class="aw-cart-page__title">Shopping Cart</h1>
 
-  .aw-cart__title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    color: var(--aw-dark); margin-bottom: var(--space-xl);
-  }
-
-  /* Items table */
-  .aw-cart__items { width: 100%; border-collapse: collapse; }
-  .aw-cart__items th {
-    text-align:left;font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;
-    color:var(--aw-stone);padding:var(--space-md) var(--space-sm);border-bottom:1px solid var(--color-border);
-    font-weight:600;
-  }
-  .aw-cart__items td { padding: var(--space-lg) var(--space-sm); border-bottom:1px solid var(--color-border);vertical-align:middle; }
-  .aw-cart-item { display:flex;align-items:center;gap:16px; }
-  .aw-cart-item__img { width:80px;height:80px;border-radius:8px;object-fit:cover;background:var(--aw-linen); }
-  .aw-cart-item__title { font-weight:500;color:var(--aw-charcoal);font-size:0.95rem;display:block;margin-bottom:4px;}
-  .aw-cart-item__variant { font-size:0.82rem;color:var(--color-text-muted); }
-  .aw-cart-item__price { font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#8b7355;font-weight:600; }
-
-  .aw-remove-btn { color:var(--color-text-muted);cursor:pointer;font-size:0.85rem;transition:color var(--transition-fast);border:none;background:none;padding:6px 10px; }
-  .aw-remove-btn:hover { color:#b33a3a; }
-
-  /* Summary */
-  .aw-cart__summary {
-    margin-top: var(--space-xl);
-    padding: var(--space-xl);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: white;
-    max-width: 400px;
-    margin-left: auto;
-  }
-  .aw-summary-row { display:flex;justify-content:space-between;padding:8px 0;font-size:0.92rem; }
-  .aw-summary-row--total {
-    border-top:2px solid var(--aw-charcoal);margin-top:12px;padding-top:16px;
-    font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--aw-dark);font-weight:600;
-  }
-  .aw-checkout-btn {
-    width:100%;padding:16px;background:#8b7355;color:white;border:none;
-    border-radius:50px;font-size:0.9rem;letter-spacing:1.5px;text-transform:uppercase;
-    cursor:pointer;margin-top:20px;transition:all 0.3s;
-  }
-  .aw-checkout-btn:hover { background:var(--aw-dark);transform:translateY(-2px);box-shadow:var(--shadow-md); }
-  .aw-continue-link { display:block;text-align:center;margin-top:16px;font-size:0.88rem;color:var(--aw-accent);text-decoration:underline; }
-
-  .aw-empty-cart { text-align:center;padding:60px 20px; }
-  .aw-empty-cart h2 { font-family:'Cormorant Garamond',serif;margin-bottom:12px;color:var(--aw-dark); }
-  .aw-empty-cart p { color:var(--aw-stone);margin-bottom:24px; }
-
-  @media (max-width:768px){
-    .aw-cart__inner{padding:0 20px;}
-    .aw-cart__items{display:block;}
-    .aw-cart__items thead{display:none;}
-    .aw-cart__items tr{display:block;margin-bottom:24px;border:1px solid var(--color-border);border-radius:8px;padding:16px;}
-    .aw-cart__items td{display:block;padding:8px 0;border:none;}
-    .aw-cart__summary{max-width:100%;}
-  }
-</style>
-
-<section class="aw-cart">
-  <div class="aw-cart__inner">
-    <h1 class="aw-cart__title">Shopping Cart</h1>
-
-    {% if cart.item_count > 0 %}
-      <form action="{{ routes.cart_url }}" method="post" novalidate>
-        <table class="aw-cart__items">
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post">
+        <table class="aw-cart-table">
           <thead>
-            <tr><th>Product</th><th>Quantity</th><th>Total</th><th></th></tr>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
           </thead>
           <tbody>
-            {% for item in cart.items %}
+            {%- for item in cart.items -%}
               <tr>
                 <td>
-                  <div class="aw-cart-item">
-                    {{ item.image | image_url: width: 160 | image_tag:
-                      loading: 'lazy',
-                      alt: item.title,
-                      class: 'aw-cart-item__img'
-                    }}
+                  <div class="aw-cart-table__product">
+                    <div class="aw-cart-table__img">
+                      {%- if item.image -%}
+                        {{ item.image | image_url: width: 120 | image_tag: alt: item.title }}
+                      {%- else -%}
+                        <div style="width:100%;height:100%;background:#ede8e1;"></div>
+                      {%- endif -%}
+                    </div>
                     <div>
-                      <a href="{{ item.url }}" class="aw-cart-item__title">{{ item.product.title }}</a>
-                      {% unless item.product.has_only_default_variant %}<p class="aw-cart-item__variant">{{ item.variant.title }}</p>{% endunless %}
+                      <div class="aw-cart-table__product-title"><a href="{{ item.url }}">{{ item.product.title }}</a></div>
+                      {%- unless item.variant.title contains 'Default' -%}
+                        <div class="aw-cart-table__variant">{{ item.variant.title }}</div>
+                      {%- endunless -%}
                     </div>
                   </div>
                 </td>
-                <td>{{ item.quantity }}</td>
-                <td class="aw-cart-item__price">{{ item.final_line_price | money }}</td>
+                <td class="aw-cart-table__price">{{ item.final_price | money }}</td>
                 <td>
-                  <a href="{{ item.url_to_remove }}" class="aw-remove-btn" aria-label="Remove">&times;</a>
+                  <div class="aw-qty">
+                    <button type="button" class="aw-qty__btn" onclick="var inp=this.nextElementSibling;if(inp.value>1)inp.value--">&minus;</button>
+                    <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="aw-qty__input">
+                    <button type="button" class="aw-qty__btn" onclick="this.previousElementSibling.value++">+</button>
+                  </div>
+                </td>
+                <td class="aw-cart-table__price">{{ item.final_line_price | money }}</td>
+                <td>
+                  <a href="{{ item.url_to_remove }}" class="aw-cart-remove">Remove</a>
                 </td>
               </tr>
-            {% endfor %}
+            {%- endfor -%}
           </tbody>
         </table>
 
-        <!-- Summary -->
-        <div class="aw-cart__summary">
-          <div class="aw-summary-row"><span>Subtotal</span><span>{{ cart.items_subtotal_price | money }}</span></div>
-          <div class="aw-summary-row"><span>Shipping</span><span>Calculated at checkout</span></div>
-          <div class="aw-summary-row aw-summary-row--total"><span>Total</span><span>{{ cart.total_price | money }}</span></div>
-          <button type="submit" name="checkout" class="aw-checkout-btn">Checkout</button>
-          <a href="{{ routes.all_products_collection_url }}" class="aw-continue-link">Continue Shopping</a>
+        <div class="aw-cart-summary">
+          <div class="aw-cart-summary__row">
+            <span>Subtotal ({{ cart.item_count }} items)</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          {%- if cart.cart_level_discount_applications.size > 0 -%}
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <div class="aw-cart-summary__row" style="color:#c17f59;">
+                <span>{{ discount.title }}</span>
+                <span>-{{ discount.total_allocated_amount | money }}</span>
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+          <div class="aw-cart-summary__row aw-cart-summary__row--total">
+            <span>Total</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          <p style="font-size:.82rem;color:#6b5e53;margin:10px 0;">Shipping & taxes calculated at checkout.</p>
+          <button type="submit" name="checkout" class="aw-btn aw-btn--primary aw-cart-summary__checkout">Proceed to Checkout</button>
+          <a href="/collections/all" class="aw-btn aw-btn--outline" style="margin-top:12px;width:100%;display:inline-flex;text-align:center;">Continue Shopping</a>
         </div>
       </form>
-    {% else %}
-      <div class="aw-empty-cart">
+    {%- else -%}
+      <div class="aw-cart-empty">
         <h2>Your cart is empty</h2>
-        <p>Discover our collection of wabi-sabi essentials.</p>
-        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Browse Products</a>
+        <p>Browse our collection and find something you love.</p>
+        <br>
+        <a href="/collections/all" class="aw-btn aw-btn--primary">Explore Collection</a>
       </div>
-    {% endif %}
+    {%- endif -%}
   </div>
 </section>
 
 {% schema %}
 {
   "name": "Main Cart",
-  "class": "cart-section",
-  "tag": "section",
   "settings": []
 }
 {% endschema %}
