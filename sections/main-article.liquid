@@ -1,0 +1,162 @@
+<div class="article-page">
+  <div class="page-width">
+    <article class="article-wrapper" itemscope itemtype="https://schema.org/Article">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'featured_image' -%}
+            {%- if article.image -%}
+              <div class="article__image" {{ block.shopify_attributes }}>
+                <img
+                  src="{{ article.image | image_url: width: 1200 }}"
+                  alt="{{ article.image.alt | default: article.title | escape }}"
+                  loading="lazy"
+                  width="{{ article.image.width }}"
+                  height="{{ article.image.height }}"
+                >
+              </div>
+            {%- endif -%}
+
+          {%- when 'title' -%}
+            <header class="article__header" {{ block.shopify_attributes }}>
+              <h1 class="article__title" itemprop="headline">{{ article.title }}</h1>
+              <div class="article__meta">
+                {%- if section.settings.show_date -%}
+                  <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" itemprop="datePublished">
+                    {{ article.published_at | date: format: 'date' }}
+                  </time>
+                {%- endif -%}
+                {%- if section.settings.show_author -%}
+                  <span class="article__author">{{ article.author }}</span>
+                {%- endif -%}
+              </div>
+            </header>
+
+          {%- when 'content' -%}
+            <div class="article__content rte" itemprop="articleBody" {{ block.shopify_attributes }}>
+              {{ article.content }}
+            </div>
+
+          {%- when 'sharing' -%}
+            <div class="article__sharing" {{ block.shopify_attributes }}>
+              {% if section.settings.show_share_buttons %}
+                <p>{{ 'blogs.article.share_post' | t | default: 'Share:' }}</p>
+                <div class="share-buttons">
+                  <a href="https://www.facebook.com/sharer.php?u={{ shop.url }}{{ article.url }}" target="_blank" rel="noopener" aria-label="Share on Facebook">Facebook</a>
+                  <a href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ article.url }}&text={{ article.title | url_encode }}" target="_blank" rel="noopener" aria-label="Share on Twitter">Twitter</a>
+                  <a href="https://pinterest.com/pin/create/button/?url={{ shop.url }}{{ article.url }}{% if article.image %}&media={{ article.image | image_url }}{% endif %}&description={{ article.title | url_encode }}" target="_blank" rel="noopener" aria-label="Pin on Pinterest">Pinterest</a>
+                </div>
+              {% endif %}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </article>
+  </div>
+</div>
+
+<style>
+.article-page { padding: var(--space-2xl) 0; }
+.article-wrapper { max-width: 780px; margin: 0 auto; }
+.article__image {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-xl);
+}
+.article__image img { width: 100%; height: auto; object-fit: cover; aspect-ratio: 16/9; }
+.article__header { text-align: center; margin-bottom: var(--space-2xl); }
+.article__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-family: var(--font-heading);
+  margin-bottom: var(--space-md);
+}
+.article__meta {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+.article__content { line-height: 1.8; font-size: var(--font-size-base); }
+.article__content > * + * { margin-top: var(--space-md); }
+.article__content h2, .article__content h3 { margin-top: var(--space-xl); }
+.article__sharing {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-border);
+}
+.share-buttons { display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-top: var(--space-sm); }
+.share-buttons a {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+.share-buttons a:hover { background: var(--color-text); color: white; border-color: var(--color-text); }
+@media (max-width: 768px) {
+  .article-page { padding: var(--space-xl) 0; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Main Article",
+  "tag": "section",
+  "class": "main-article-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "Show publish date"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": true,
+      "label": "Show author"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share_buttons",
+      "default": true,
+      "label": "Show share buttons"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "featured_image",
+      "name": "Featured Image",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "Title & Meta",
+      "limit": 1
+    },
+    {
+      "type": "content",
+      "name": "Content Body",
+      "limit": 1
+    },
+    {
+      "type": "sharing",
+      "name": "Share Buttons",
+      "limit": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Article",
+      "blocks": [
+        {"type": "featured_image"},
+        {"type": "title"},
+        {"type": "content"},
+        {"type": "sharing"}
+      ]
+    }
+  ]
+}
+{% endschema %}

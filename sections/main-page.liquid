@@ -1,0 +1,52 @@
+<div class="main-page">
+  <div class="page-width">
+    <div class="rte page-content">
+      {{ page.content }}
+    </div>
+  </div>
+</div>
+
+<style>
+.main-page { padding: var(--space-2xl) 0; }
+.page-content { max-width: 800px; margin: 0 auto; }
+.page-content h1 { font-size: var(--font-size-3xl); margin-bottom: var(--space-lg); }
+.page-content h2 { font-size: var(--font-size-2xl); margin-top: var(--space-2xl); }
+.page-content h3 { font-size: var(--font-size-xl); margin-top: var(--space-xl); }
+.page-content p { line-height: 1.8; color: var(--color-text-light); }
+.page-content ul, .page-content ol {
+  list-style: disc inside;
+  padding-left: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+.page-content img {
+  border-radius: var(--radius-md);
+  max-width: 100%;
+  height: auto;
+  margin: var(--space-xl) auto;
+  display: block;
+}
+.page-content blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: var(--space-lg);
+  margin: var(--space-lg) 0;
+  color: var(--color-text-light);
+  font-style: italic;
+}
+@media (max-width: 768px) {
+  .main-page { padding: var(--space-xl) 0; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Main Page",
+  "tag": "section",
+  "class": "main-page-section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Main Page"
+    }
+  ]
+}
+{% endschema %}
