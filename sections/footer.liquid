@@ -11,9 +11,9 @@
           <input
             type="email"
             name="contact[email]"
-            placeholder="{{ 'general.newsletter.email_placeholder' | t }}"
+            placeholder="{{ 'general.newsletter.email_placeholder' | t | default: 'Enter your email address' }}"
             required
-            aria-label="{{ 'general.newsletter.email_placeholder' | t }}"
+            aria-label="{{ 'general.newsletter.email_placeholder' | t | default: 'Email address' }}"
           >
           <button type="submit">{{ section.settings.btn_text | default: 'Subscribe' }}</button>
         </div>

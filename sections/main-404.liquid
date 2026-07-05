@@ -1,9 +1,9 @@
 <div class="page-404">
   <div class="page-width page-404__inner">
     <h1>404</h1>
-    <p>{{ 'general.404.title' | t }}</p>
-    <p>{{ 'general.404.subtext' | default: "The page you're looking for doesn't exist or has been moved." }}</p>
-    <a href="{{ routes.root_url }}" class="btn btn--primary">{{ 'general.404.link' | default: "Back to Homepage" }}</a>
+    <p>{{ 'general.404.title' | t | default: 'Page Not Found' }}</p>
+    <p>{{ 'general.404.subtext' | t | default: "The page you're looking for doesn't exist or has been moved." }}</p>
+    <a href="{{ routes.root_url }}" class="btn btn--primary">{{ 'general.404.link' | t | default: 'Back to Homepage' }}</a>
   </div>
 </div>
 
