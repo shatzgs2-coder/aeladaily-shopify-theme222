@@ -1,0 +1,54 @@
+<div class="announcement-bar" role="region" aria-label="{{ 'sections.announcement_bar.announcement' | t }}">
+  {%- if section.settings.text != blank -%}
+    {%- if section.settings.link != blank -%}
+      <a href="{{ section.settings.link }}" class="announcement-bar__link">
+    {%- endif -%}
+      <p class="announcement-bar__message center">
+        {{ section.settings.text }}
+        {% if section.settings.show_code %}
+          <span class="announcement-bar__code">{{ section.settings.code_text }}</span>
+        {% endif %}
+      </p>
+    {%- if section.settings.link != blank -%}
+      </a>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "tag": "aside",
+  "class": "announcement-bar-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "default": "Free shipping on orders over €50 | Wabi-sabi living essentials",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_code",
+      "default": false,
+      "label": "Show promo code hint"
+    },
+    {
+      "type": "text",
+      "id": "code_text",
+      "default": "Use code: AELA10",
+      "label": "Promo code text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar"
+    }
+  ]
+}
+{% endschema %}

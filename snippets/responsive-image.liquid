@@ -1,0 +1,17 @@
+{%- assign img_small = image | image_url: width: 300 -%}
+{%- assign img_medium = image | image_url: width: 600 -%}
+{%- assign img_large = image | image_url: width: 900 -%}
+
+<img
+  src="{{ img_small }}"
+  srcset="
+    {{ img_small }} 300w,
+    {{ img_medium }} 600w,
+    {{ img_large }} 900w
+  "
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+  alt="{{ alt | escape }}"
+  loading="lazy"
+  width="{{ image.width }}"
+  height="{{ image.height }}"
+>

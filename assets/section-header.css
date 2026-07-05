@@ -1,0 +1,2 @@
+/* Header Section — minimal overrides loaded per-section */
+.header-section { position: sticky; top: 0; z-index: 1000; }

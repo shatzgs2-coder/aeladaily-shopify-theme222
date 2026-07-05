@@ -1,0 +1,63 @@
+{%- assign product = section.settings.product | default: product -%}
+
+{%- if product -%}
+  {%- assign collection = product.collections.first | default: collections.all -%}
+  {%- if collection.products.size > 1 -%}
+  <section class="related-products">
+    <div class="page-width">
+      <h2 class="section-title">{{ section.settings.heading | default: 'You May Also Like' }}</h2>
+      <div class="collection-grid collection-grid--{{ section.settings.columns }}">
+        {%- for related in collection.products limit: section.settings.products_to_show -%}
+          {%- unless related.id == product.id -%}
+            {% render 'product-card', product: related %}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Related Products",
+  "tag": "section",
+  "class": "related-section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "You May Also Like",
+      "label": "Heading"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "label": "Products to show"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Columns"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Related Products"
+    }
+  ]
+}
+{% endschema %}

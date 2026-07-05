@@ -1,0 +1,1 @@
+{"sections": {"page-hero": {"type": "page-hero", "settings": {}}, "main-collection": {"type": "main-collection", "settings": {"columns": 3, "products_per_page": 12, "enable_filtering": true}}}, "order": ["page-hero", "main-collection"]}

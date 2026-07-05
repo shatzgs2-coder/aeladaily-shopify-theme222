@@ -1,0 +1,1 @@
+{"sections": {"page-hero": {"type": "page-hero", "settings": {}}, "about-content": {"type": "about-content", "blocks": {"heading-0": {"type": "heading", "settings": {"title": "", "lead": ""}}, "text-0": {"type": "text_block"}, "image-0": {"type": "image"}}, "block_order": ["heading-0", "text-0", "image-0"]}}, "order": ["page-hero", "about-content"]}

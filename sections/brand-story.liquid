@@ -1,0 +1,84 @@
+<div class="brand-story brand-story--{{ section.settings.layout }}">
+  <div class="page-width">
+    <div class="brand-story__inner">
+      {%- if section.settings.image -%}
+        <div class="brand-story__media">
+          <img
+            src="{{ section.settings.image | image_url: width: 800 }}"
+            alt="{{ section.settings.heading | escape }}"
+            loading="lazy"
+            width="800"
+            height="{{ 800 | divided_by: section.settings.image.aspect_ratio | round }}"
+          >
+        </div>
+      {%- endif -%}
+      <div class="brand-story__content">
+        <span class="brand-story__label">{{ section.settings.label | default: 'Our Story' }}</span>
+        <h2>{{ section.settings.heading | default: 'The Beauty of Imperfection' }}</h2>
+        <div class="rte">{{ section.settings.text }}</div>
+        {% if section.settings.btn_label and section.settings.btn_link %}
+          <a href="{{ section.settings.btn_link }}" class="btn btn--primary">{{ section.settings.btn_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "tag": "section",
+  "class": "brand-story-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {"value": "image_left", "label": "Image left, text right"},
+        {"value": "image_right", "label": "Text left, image right"}
+      ],
+      "default": "image_left",
+      "label": "Layout"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "default": "Our Philosophy",
+      "label": "Label / tagline"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "The Beauty of Imperfection",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>AELA Daily is born from the Japanese concept of wabi-sabi — finding beauty in imperfection, authenticity in simplicity. Every piece we curate tells a story of craftsmanship, natural materials, and mindful living.</p>",
+      "label": "Text content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "default": "Learn More",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Story"
+    }
+  ]
+}
+{% endschema %}

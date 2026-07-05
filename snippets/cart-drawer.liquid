@@ -1,0 +1,33 @@
+<div class="cart-drawer" id="cart-drawer" hidden>
+  <div class="cart-drawer__overlay" data-cart-close></div>
+  <div class="cart-drawer__inner">
+    <header class="cart-drawer__header">
+      <h2>Your Cart ({{ cart.item_count }})</h2>
+      <button class="cart-drawer__close" aria-label="Close cart" data-cart-close>&times;</button>
+    </header>
+
+    <div class="cart-drawer__body">
+      {%- if cart.item_count == 0 -%}
+        <p class="cart-empty-text">Your cart is empty</p>
+      {%- else -%}
+        {%- for item in cart.items -%}
+          <div class="drawer-item">
+            <img src="{{ item.image | image_url: width: 80 }}" alt="" loading="lazy" width="80">
+            <div class="drawer-item__info">
+              <p>{{ item.product.title }}</p>
+              <span>{{ item.final_line_price | money }}</span>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <footer class="cart-drawer__footer">
+        <p><strong>Subtotal: {{ cart.total_price | money }}</strong></p>
+        <a href="{{ routes.cart_url }}" class="btn btn--primary btn--block">View Cart</a>
+        <button type="button" name="checkout" class="btn btn--secondary btn--block">Checkout</button>
+      </footer>
+    {%- endif -%}
+  </div>
+</div>

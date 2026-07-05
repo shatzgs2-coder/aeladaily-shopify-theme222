@@ -1,0 +1,94 @@
+<header class="header-wrapper" id="site-header">
+  <div class="header-container">
+    <!-- Logo -->
+    <div class="header__logo">
+      <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+        {% if settings.logo != blank %}
+          <img
+            src="{{ settings.logo | image_url: width: 160 }}"
+            alt="{{ shop.name }}"
+            width="160"
+            height="40"
+            loading="lazy"
+          >
+        {% else %}
+          <span class="header__logo-text">{{ shop.name }}</span>
+        {% endif %}
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="header__nav" role="navigation">
+      <ul class="nav-list">
+        {%- for link in section.settings.menu.links -%}
+          <li class="nav-item{% if link.links != blank %} has-dropdown{% endif %}">
+            <a href="{{ link.url }}" class="nav-link{% if link.active %} nav-link--active{% endif %}">
+              {{ link.title }}
+              {% if link.links != blank %}
+                <svg class="nav-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5"/></svg>
+              {% endif %}
+            </a>
+            {%- if link.links != blank -%}
+              <ul class="dropdown-menu">
+                {%- for child_link in link.links -%}
+                  <li><a href="{{ child_link.url }}">{{ child_link.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <!-- Actions -->
+    <div class="header__actions">
+      <a href="{{ routes.search_url }}" class="header-action" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </a>
+      <a href="{{ routes.cart_url }}" class="header-action cart-icon" aria-label="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2L7 6"/><path d="m17 6-2-4"/><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="9" cy="16" r="1"/><circle cx="15" cy="16" r="1"/></svg>
+        <span class="cart-count" data-cart-count>{{ cart.item_count }}</span>
+      </a>
+      <!-- Mobile menu toggle -->
+      <button class="mobile-menu-toggle" aria-label="Menu" data-mobile-toggle>
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav" data-mobile-nav hidden>
+    <ul class="mobile-nav-list">
+      {%- for link in section.settings.menu.links -%}
+        <li class="mobile-nav-item">
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</header>
+
+<div class="header-spacer"></div>
+
+{{ 'section-header.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "header-section",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}

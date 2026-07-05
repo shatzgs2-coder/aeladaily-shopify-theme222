@@ -1,0 +1,82 @@
+<div class="categories-section">
+  <div class="page-width">
+    <div class="section-header">
+      <h2 class="section-title">{{ section.settings.title | default: 'Shop by Category' }}</h2>
+    </div>
+    <div class="categories-grid categories-grid--{{ section.settings.columns }}">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.link }}" class="category-card" {{ block.shopify_attributes }}>
+          {% if block.settings.image %}
+            <div class="category-card__image">
+              <img
+                src="{{ block.settings.image | image_url: width: 480 }}"
+                alt="{{ block.settings.title | escape }}"
+                loading="lazy"
+                width="480"
+                height="{{ 480 | divided_by: block.settings.image.aspect_ratio | round }}"
+              >
+            </div>
+          {% endif %}
+          <div class="category-card__info">
+            <h3>{{ block.settings.title }}</h3>
+            <span class="category-arrow">&rarr;</span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Categories",
+  "tag": "section",
+  "class": "categories-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Shop by Category",
+      "label": "Heading"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "label": "Columns per row"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Category Name",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Categories"
+    }
+  ]
+}
+{% endschema %}

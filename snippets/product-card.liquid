@@ -1,0 +1,44 @@
+<article class="product-card" data-product-id="{{ product.id }}">
+  <a href="{{ product.url }}" class="product-card__image-wrapper">
+    {% if product.featured_image %}
+      <img
+        src="{{ product.featured_image | image_url: width: 480 }}"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        loading="lazy"
+        width="480"
+        height="{{ 480 | divided_by: product.featured_image.aspect_ratio | round }}"
+      >
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+
+    {%- if product.compare_at_price > product.price -%}
+      <span class="product-card__badge">Sale</span>
+    {%- endif -%}
+  </a>
+
+  <div class="product-card__info">
+    {%- if product.vendor != blank -%}
+      <span class="product-card__vendor">{{ product.vendor }}</span>
+    {%- endif -%}
+
+    <h3><a href="{{ product.url }}">{{ product.title }}</a></h3>
+
+    <div class="product-card__price">
+      <span class="price--current">{{ product.price | money }}</span>
+      {%- if product.compare_at_price > product.price -%}
+        <span class="price--compare">{{ product.compare_at_price | money }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- if product.available -%}
+      <form action="{{ routes.cart_add_url }}" method="post">
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit" class="btn btn--quick-add">Quick Add</button>
+      </form>
+    {%- else -%}
+      <span class="sold-out">Sold Out</span>
+    {%- endif -%}
+  </div>
+</article>

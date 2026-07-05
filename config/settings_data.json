@@ -1,0 +1,19 @@
+{
+  "current": {
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {
+          "text": "Free shipping on orders over 50 EUR | Wabi-sabi living essentials",
+          "show_code": false
+        }
+      },
+      "header": {
+        "type": "header"
+      }
+    }
+  },
+  "presets": {
+    "AELA Daily Theme": {}
+  }
+}

@@ -1,0 +1,125 @@
+<footer class="footer" role="contentinfo">
+  <!-- Newsletter -->
+  {%- if section.settings.show_newsletter -%}
+  <div class="footer__newsletter">
+    <div class="page-width">
+      <h3>{{ section.settings.newsletter_heading | default: 'Join the AELA Community' }}</h3>
+      <p>{{ section.settings.newsletter_text | default: 'Subscribe for new arrivals, wabi-sabi inspiration, and exclusive offers.' }}</p>
+      {% form 'customer', id: 'newsletter-form' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <div class="newsletter-form">
+          <input
+            type="email"
+            name="contact[email]"
+            placeholder="{{ 'general.newsletter.email_placeholder' | t }}"
+            required
+            aria-label="{{ 'general.newsletter.email_placeholder' | t }}"
+          >
+          <button type="submit">{{ section.settings.btn_text | default: 'Subscribe' }}</button>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+  {%- endif -%}
+
+  <!-- Footer Links -->
+  <div class="footer__main">
+    <div class="page-width footer-grid">
+      {%- for block in section.blocks -%}
+        <div class="footer-block" {{ block.shopify_attributes }}>
+          <h4>{{ block.settings.heading }}</h4>
+          <ul>
+            {%- for link in block.settings.menu.links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="footer__bottom">
+    <div class="page-width footer-bottom-inner">
+      <p class="copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+      {%- if section.settings.show_social -%}
+      <div class="social-links">
+        {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+        {%- if settings.social_pinterest != blank -%}<a href="{{ settings.social_pinterest }}" target="_blank" rel="noopener">Pinterest</a>{%- endif -%}
+        {%- if settings.social_tiktok != blank -%}<a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">TikTok</a>{%- endif -%}
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{{ 'section-footer.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "section",
+  "class": "footer-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "default": true,
+      "label": "Show newsletter signup"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "default": "Join the AELA Daily Community",
+      "label": "Newsletter heading"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_text",
+      "default": "Subscribe for new arrivals, wabi-sabi inspiration, and exclusive offers.",
+      "label": "Newsletter text"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "default": "Subscribe",
+      "label": "Button text"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "default": true,
+      "label": "Show social links"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Link column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Shop",
+          "label": "Heading"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        {"type": "link_list", "settings": {"heading": "Shop"}},
+        {"type": "link_list", "settings": {"heading": "Company"}},
+        {"type": "link_list", "settings": {"heading": "Support"}}
+      ]
+    }
+  ]
+}
+{% endschema %}

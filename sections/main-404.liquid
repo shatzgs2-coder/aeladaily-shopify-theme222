@@ -1,0 +1,22 @@
+<div class="page-404">
+  <div class="page-width page-404__inner">
+    <h1>404</h1>
+    <p>{{ 'general.404.title' | t }}</p>
+    <p>{{ 'general.404.subtext' | default: "The page you're looking for doesn't exist or has been moved." }}</p>
+    <a href="{{ routes.root_url }}" class="btn btn--primary">{{ 'general.404.link' | default: "Back to Homepage" }}</a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Main 404",
+  "tag": "section",
+  "class": "section-404",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Main 404"
+    }
+  ]
+}
+{% endschema %}

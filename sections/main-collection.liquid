@@ -1,0 +1,163 @@
+{%- assign collection = section.settings.collection | default: collection -%}
+
+<div class="collection-page">
+  <div class="page-width collection-layout">
+    <!-- Sidebar Filters -->
+    <aside class="collection-sidebar" id="collection-sidebar">
+      {%- if section.settings.enable_filtering -%}
+      <!-- Categories -->
+      <div class="sidebar-group">
+        <h4 class="sidebar-heading">Categories</h4>
+        <ul class="filter-list">
+          {%- for link in linklists[section.settings.filter_menu].links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- else -%}
+            <li><a href="{{ routes.all_products_collection_url }}">All Products</a></li>
+            <li><a href="#">Phone Cases</a></li>
+            <li><a href="#">Screen Protectors</a></li>
+            <li><a href="#">Cables & Chargers</a></li>
+            <li><a href="#">Home Decor</a></li>
+            <li><a href="#">Cushions</a></li>
+            <li><a href="#">Vases</a></li>
+            <li><a href="#">Trays</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <!-- Price Range -->
+      <div class="sidebar-group">
+        <h4 class="sidebar-heading">Price Range</h4>
+        <div class="price-range">
+          <input type="range" min="0" max="100" value="100" class="price-slider" id="price-slider">
+          <div class="price-labels"><span>€0</span> — <span id="price-max">€100+</span></div>
+        </div>
+      </div>
+
+      <!-- Color Filter -->
+      <div class="sidebar-group">
+        <h4 class="sidebar-heading">Color</h4>
+        <div class="color-filter-swatches">
+          <button class="color-swatch active" data-color="all" aria-label="All Colors"></button>
+          <button class="color-swatch" style="--c:#E8DCC8" data-color="beige" aria-label="Beige"></button>
+          <button class="color-swatch" style="--c:#A65D3F" data-color="brown" aria-label="Brown"></button>
+          <button class="color-swatch" style="--c:#2B3A42" data-color="navy" aria-label="Navy"></button>
+          <button class="color-swatch" style="--c:#F5F0EB" data-color="white" aria-label="White"></button>
+          <button class="color-swatch" style="--c:#5C5648" data-color="olive" aria-label="Olive"></button>
+        </div>
+      </div>
+
+      <button class="btn btn--small btn--outline" onclick="document.querySelectorAll('.filter-list a, .color-swatch').forEach(e => e.classList.remove('active'))">Clear All</button>
+      {%- endif -%}
+    </aside>
+
+    <!-- Product Grid Area -->
+    <div class="collection-main">
+      <!-- Sort Bar -->
+      <div class="collection-toolbar">
+        <p class="result-count">{{ collection.products_count }} products</p>
+        <div class="sort-wrapper">
+          <label for="sort-by">Sort by:</label>
+          <select id="sort-by">
+            <option value="title-ascending">Name: A-Z</option>
+            <option value="title-descending">Name: Z-A</option>
+            <option value="price-ascending">Price: Low to High</option>
+            <option value="price-descending">Price: High to Low</option>
+            <option value="created-descending">Newest</option>
+            <option value="best-selling">Best Selling</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="collection-grid collection-grid--{{ section.settings.columns }}">
+        {%- for product in collection.products limit: section.settings.products_per_page -%}
+          {% render 'product-card', product: product %}
+        {%- else -%}
+          {%- for i in (1..section.settings.columns | times: 2) -%}
+            <div class="product-card skeleton">
+              <div class="product-card__image"></div>
+              <div class="product-card__info">
+                <div class="skeleton-line" style="width:80%"></div>
+                <div class="skeleton-line" style="width:40%"></div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+
+      <!-- Pagination -->
+      {%- if paginate.pages > 1 -%}
+      <nav class="pagination" role="navigation" aria-label="Pagination">
+        <ul class="pagination-list">
+          {%- if paginate.previous -%}
+            <li><a href="{{ paginate.previous.url }}">&larr; Previous</a></li>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <li><a href="{{ part.url }}">{{ part.title }}</a></li>
+            {%- elsif part.title == paginate.current_page -%}
+              <li><span class="active">{{ part.title }}</span></li>
+            {%- else -%}
+              <li><span>{{ part.title }}</span></li>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <li><a href="{{ paginate.next.url }}">Next &rarr;</a></li>
+          {%- endif -%}
+        </ul>
+      </nav>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{{ 'section-main-collection.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "Main Collection",
+  "tag": "section",
+  "class": "collection-section",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12,
+      "label": "Products per page"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "label": "Grid columns"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "Enable sidebar filters"
+    },
+    {
+      "type": "link_list",
+      "id": "filter_menu",
+      "label": "Filter menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Collection"
+    }
+  ]
+}
+{% endschema %}
