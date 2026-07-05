@@ -1,1 +1,12 @@
-{"sections": {"main-search": {"type": "main-search", "settings": {"columns_desktop": 3, "products_per_page": 12, "show_vendor": true, "image_ratio": "square"}}}, "order": ["main-search"]}
+{
+  "sections": {
+    "main-search": {
+      "type": "main-search",
+      "settings": {
+        "heading": "Search",
+        "placeholder": "Search our collection..."
+      }
+    }
+  },
+  "order": ["main-search"]
+}

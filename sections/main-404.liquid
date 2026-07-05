@@ -1,16 +1,20 @@
-<style>
-  .aw-404{min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 20px;background:var(--aw-cream)}
-  .aw-404__code{font-family:var(--font-heading);font-size:8rem;color:var(--aw-linen);line-height:1;font-weight:700;letter-spacing:-0.05em}
-  .aw-404__msg{font-size:1.2rem;color:var(--aw-charcoal);margin:16px 0 32px}
-</style>
-
-<section class="aw-404">
-  <div>
-    <div class="aw-404__code">404</div>
-    <h1 style="font-family:var(--font-heading);margin-bottom:8px">Page Not Found</h1>
-    <p class="aw-404__msg">The page you're looking for doesn't exist or has been moved.</p>
-    <a href="{{ routes.root_url }}" class="aw-btn aw-btn--primary">Back to Home</a>
+<div class="aw-404" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 24px;background:#FAFAF7">
+  <div style="max-width:480px">
+    <h1 style="font-family:var(--aw-font-heading);font-size:6rem;font-weight:500;color:#E8E4DD;margin:0 0 16px;line-height:1">404</h1>
+    <h2 style="font-family:var(--aw-font-heading);font-size:1.8rem;font-weight:500;color:#1F1B16;margin:0 0 16px">Page Not Found</h2>
+    <p style="color:#5C5648;font-size:.95rem;font-weight:300;line-height:1.7;margin-bottom:32px">{{ section.settings.text }}</p>
+    <a href="{{ routes.root_url }}" class="aw-btn aw-btn--primary">{{ section.settings.btn_text }}</a>
   </div>
-</section>
+</div>
 
-{% schema %}{ "name":"404 Page","tag":"section","settings":[],"presets":[{"name":"404 Page"}] }{% endschema %}
+{% schema %}
+{
+  "name": "404 Page",
+  "class": "section-404",
+  "settings": [
+    {"type": "textarea","id": "text","label": "Message","default": "We are sorry, but the page you are looking for does not exist. Perhaps it moved, or was lost in the wabi-sabi of things."},
+    {"type": "text","id": "btn_text","label": "Button text","default": "Return Home"}
+  ],
+  "presets": [{"name": "404 Page", "category": "Text"}]
+}
+{% endschema %}

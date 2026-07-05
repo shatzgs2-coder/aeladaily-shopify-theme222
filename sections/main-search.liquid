@@ -1,43 +1,60 @@
 <style>
-  .aw-search{padding:var(--spacing-xl) 40px;background:var(--aw-cream);min-height:60vh}
-  .aw-search__input-wrap{max-width:580px;margin:0 auto 48px}
-  .aw-search__input{
-    width:100%;padding:18px 24px;border:2px solid var(--aw-linen);
-    border-radius:50px;font-size:1.05rem;color:var(--aw-charcoal);
-    background:#fff;outline:none;transition:border-color .3s
-  }
-  .aw-search__input:focus{border-color:var(--aw-earth)}
-  .aw-search__results{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-  @media(max-width:1024px){.aw-search__results{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:768px){.aw-search{padding:var(--spacing-lg)20px}.aw-search__results{grid-template-columns:repeat(2,1fr);gap:14px}}
+.aw-search{padding:80px 40px;background:#FAFAF7;min-height:60vh}
+.aw-search__inner{max-width:680px;margin:0 auto;text-align:center}
+.aw-search__title{font-family:var(--aw-font-heading);font-size:2rem;font-weight:500;color:#1F1B16;margin:0 0 32px}
+.aw-search__input{width:100%;padding:16px 20px;border:1.5px solid #E8E4DD;border-radius:4px;font-size:1rem;background:#fff;margin-bottom:40px;outline:none;box-sizing:border-box;transition:border-color .25s}
+.aw-search__input:focus{border-color:#8B6F47}
+.aw-search__results{text-align:left;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.aw-search__empty{color:#5C5648;font-weight:300;padding:40px}
+@media(max-width:768px){.aw-search{padding:48px 24px}.aw-search__results{grid-template-columns:repeat(2,1fr);gap:16px}}
 </style>
 
 <section class="aw-search">
-  <div class="aw-container">
-    <h1 style="text-align:center;margin-bottom:32px">Search Results for "{{ search.terms | escape }}"</h1>
+  <div class="aw-search__inner">
+    <h1 class="aw-search__title">{{ section.settings.heading }}</h1>
 
-    <form action="{{ routes.search_url }}" method="get" role="search" class="aw-search__input-wrap">
-      <div style="position:relative">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a938a" stroke-width="2" style="position:absolute;left:20px;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, collections..." class="aw-search__input" style="padding-left:54px" autocomplete="off">
-      </div>
+    <form action="{{ routes.search_url }}" method="get" role="search">
+      <input type="search" name="q" class="aw-search__input" placeholder="{{ section.settings.placeholder }}" value="{{ search.terms | escape }}" required>
+      <button type="submit" class="aw-btn aw-btn--primary" style="margin-bottom:40px">Search</button>
     </form>
 
-    {% if search.results.size > 0 %}
-    <p style="text-align:center;color:var(--aw-stone);margin-bottom:36px">{{ search.results.size }} results found</p>
-    <div class="aw-search__results">
-      {%- for item in search.results limit:12 -%}
-        {%- if item.object_type == 'product' -%}
-          {% render 'product-card', product: item, show_quick_add: false %}
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
-    {% else %}
-    <div style="text-align:center;padding:48px 20px;color:var(--aw-stone)">
-      <p>No results for "{{ search.terms | escape }}". Try a different search term.</p>
-    </div>
-    {% endif %}
+    {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        <p style="color:#5C5648;font-weight:300;margin-bottom:24px;font-size:.88rem">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for <strong>{{ search.terms }}</strong></p>
+        <div class="aw-search__results">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              <a href="{{ item.url }}" style="text-decoration:none;display:block">
+                <div style="border-radius:8px;overflow:hidden;aspect-ratio:1/1;background:#F2EFE8;margin-bottom:8px">
+                  {%- if item.featured_image -%}
+                    {{ item.featured_image | image_url: width: 300 | image_tag: alt: item.title, widths: '150,300,600', loading: 'lazy' }}
+                  {%- endif -%}
+                </div>
+                <h3 style="font-family:var(--aw-font-heading);font-size:.95rem;color:#1F1B16;margin:0 0 4px">{{ item.title }}</h3>
+                <span style="font-weight:500;color:#1F1B16;font-size:.85rem">{{ item.price | money }}</span>
+              </a>
+            {%- else -%}
+              <a href="{{ item.url }}" style="display:block;padding:12px;text-decoration:none;font-size:.9rem;color:#1F1B16;border-bottom:1px solid #E8E4DD">
+                {{ item.title }}
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <div class="aw-search__empty">No results found.</div>
+      {%- endif -%}
+    {%- endif -%}
   </div>
 </section>
 
-{% schema %}{ "name":"Main Search","tag":"section","settings":[],"presets":[{"name":"Search Page"}] }{% endschema %}
+{% schema %}
+{
+  "name": "Search Page",
+  "class": "section-search",
+  "settings": [
+    {"type": "text","id": "heading","label": "Heading","default": "Search"},
+    {"type": "text","id": "placeholder","label": "Placeholder text","default": "Search our collection..."}
+  ],
+  "presets": [{"name": "Search Page", "category": "Text"}]
+}
+{% endschema %}

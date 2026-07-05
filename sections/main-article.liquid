@@ -1,57 +1,40 @@
 <style>
-  .aw-article{padding:var(--spacing-xl) 40px;background:var(--aw-cream)}
-  .aw-article__inner{max-width:760px;margin:0 auto}
-  .aw-article__meta{display:flex;gap:16px;font-size:.82rem;color:var(--aw-stone);margin-bottom:24px;flex-wrap:wrap}
-  .aw-article__img{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:40px;box-shadow:var(--shadow-soft);aspect-ratio:16/9}
-  .aw-article__body{font-size:1.05rem;color:#5a5048;line-height:1.9;font-weight:300}
-  .aw-article__body h2,.aw-article__body h3{margin-top:36px;margin-bottom:14px;color:var(--aw-charcoal)}
-  .aw-article__body p{margin-bottom:18px}
-  .aw-article__body img{max-width:100%;border-radius:var(--radius-md);margin:24px 0}
-
-  /* Share buttons */
-  .aw-share{display:flex;gap:12px;margin-top:48px;padding-top:32px;border-top:1px solid var(--aw-linen)}
-  .aw-share a{padding:10px 20px;border:1.5px solid var(--aw-linen);border-radius:var(--radius-sm);font-size:.85rem;color:var(--aw-charcoal);transition:all .25s}
-  .aw-share a:hover{border-color:var(--aw-earth);color:var(--aw-earth)}
-
-  @media(max-width:768px){.aw-article{padding:var(--spacing-lg)20px}}
+.aw-article{padding:64px 40px;background:#FAFAF7}
+.aw-article__inner{max-width:720px;margin:0 auto}
+.aw-article__meta{font-size:.8rem;color:#7A8471;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+.aw-article h1{font-family:var(--aw-font-heading);font-size:2.2rem;font-weight:500;color:#1F1B16;margin:0 0 8px;line-height:1.3}
+.aw-article__author{font-size:.9rem;color:#5C5648;margin-bottom:32px;font-weight:300}
+.aw-article__image{border-radius:12px;overflow:hidden;margin-bottom:40px;aspect-ratio:16/9;background:#F2EFE8}
+.aw-article__image img{width:100%;height:100%;object-fit:cover}
+.aw-article__content{font-size:1.02rem;color:#5C5648;line-height:1.9;font-weight:300}
+.aw-article__content p{margin-bottom:20px}
+@media(max-width:768px){.aw-article{padding:48px 24px}.aw-article h1{font-size:1.6rem}}
 </style>
 
-<article class="aw-article" itemscope itemtype="https://schema.org/Article">
+<article class="aw-article" itemscope itemtype="http://schema.org/Article">
   <div class="aw-article__inner">
-    {%- if article.image -%}
-    <div class="aw-article__img">
-      {{ article.image | image_url: width: 1200 | image_tag:
-        loading:'eager', alt:article.title,
-        widths:'600,900,1200',
-        style:'width:100%;height:100%;object-fit:cover'
-      }}
-    </div>
+    <div class="aw-article__meta">{{ article.published_at | date: '%B %d, %Y' }}</div>
+    <h1 itemprop="headline">{{ article.title }}</h1>
+    {%- if article.author -%}
+      <div class="aw-article__author">By {{ article.author }}</div>
     {%- endif -%}
 
-    <div class="aw-article__meta">
-      <span>{{ article.published_at | date: '%B %d, %Y' }}</span>
-      {% if article.author %}
-      <span>By {{ article.author }}</span>
-      {% endif %}
-      {% if blog.title %}
-      <span>{{ blog.title }}</span>
-      {% endif %}
-    </div>
+    {%- if article.image -%}
+      <div class="aw-article__image">
+        {{ article.image | image_url: width: 1000 | image_tag: alt: article.title, widths: '400,600,800,1000,1400', loading: 'eager' }}
+      </div>
+    {%- endif -%}
 
-    <h1 style="font-family:var(--font-heading)" itemprop="headline">{{ article.title }}</h1>
-
-    <div class="aw-article__body" itemprop="articleBody">
+    <div class="aw-article__content" itemprop="articleBody">
       {{ article.content }}
-    </div>
-
-    <!-- Share -->
-    <div class="aw-share">
-      <span style="align-self:center;font-size:.88rem;color:var(--aw-stone)">Share:</span>
-      <a href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url }}{{ article.url }}" target="_blank">Facebook</a>
-      <a href="https://twitter.com/intent/tweet?text={{ article.title | url_encode }}&url={{ shop.url | url_encode }}{{ article.url }}" target="_blank">Twitter</a>
-      <a href="https://pinterest.com/pin/create/button/?url={{ shop.url | url_encode }}{{ article.url }}" target="_blank">Pinterest</a>
     </div>
   </div>
 </article>
 
-{% schema %}{ "name":"Main Article","tag":"section","settings":[],"presets":[{"name":"Article Page"}] }{% endschema %}
+{% schema %}
+{
+  "name": "Article Detail",
+  "class": "section-article",
+  "presets": [{"name": "Article Detail", "category": "Blog"}]
+}
+{% endschema %}

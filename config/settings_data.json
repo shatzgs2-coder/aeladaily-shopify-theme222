@@ -1,164 +1,48 @@
 {
-  "current": {
-    "color_primary": "#c17f59",
-    "color_secondary": "#8b7355",
-    "color_text": "#2c2825",
-    "color_text_light": "#9a938a",
-    "color_bg_page": "#faf7f2",
-    "color_bg_card": "#ffffff",
-    "color_bg_footer": "#ede8e1",
-    "color_border": "#d4c4b0",
-    "type_header_font": "cormorant_garamond_n4",
-    "type_body_font": "inter_n4",
-    "heading_scale": 100,
-    "page_width": 1360,
-    "spacing_sections": 80,
-    "cart_type": "drawer",
-    "menu": "main-menu",
-    "logo": "",
-    "logo_width": 140,
-    "sticky_header_enabled": true,
-    "footer_menu_1": "main-menu",
-    "footer_menu_2": "main-menu",
-    "footer_brand_text": "<p>Handcrafted home decor inspired by wabi-sabi philosophy.</p>",
-    "footer_newsletter_heading": "Stay Connected",
-    "footer_copyright": "© 2026 Aela Daily. All rights reserved.",
-    "show_vendor": true,
-    "show_rating": false,
-    "gallery_layout": "thumbnail",
-    "enable_sticky_gallery": true,
-    "show_size_guide": true,
-    "show_product_details_accordion": true,
-    "products_per_page": 12,
-    "collection_image_ratio": "square",
-    "collection_show_vendor": true,
-    "enable_filtering": true,
-    "enable_sorting": true
-  },
-  "sections": {
-    "announcement-bar": {
-      "type": "announcement-bar",
-      "settings": {
-        "text": "Free shipping in Germany on orders over €49 | Handcrafted with love"
-      }
-    },
-    "header": {
-      "type": "header",
-      "settings": {}
-    },
-    "footer": {
-      "type": "footer",
-      "settings": {}
-    }
-  },
-  "content_for_index": [
-    {
-      "type": "hero",
-      "settings": {
-        "eyebrow": "Est. 2026 · Berlin",
-        "heading": "Handcrafted Wabi-Sabi Home Decor",
-        "subtitle": "Each piece tells a story of imperfection and authenticity. Discover our collection of handmade textiles and natural decor for mindful living.",
-        "cta_text": "Shop Collection",
-        "cta_link": "/collections/all",
-        "cta2_text": "Our Story",
-        "cta2_link": "/pages/about"
-      }
-    },
-    {
-      "type": "featured-categories",
-      "blocks": [
-        {
-          "type": "category",
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "color_bg": "#FAFAF7",
+      "color_text": "#1F1B16",
+      "color_text_secondary": "#5C5648",
+      "color_accent": "#8B6F47",
+      "color_accent_secondary": "#7A8471",
+      "color_tertiary": "#B89484",
+      "font_heading": "cormorant_garamond_n4",
+      "font_body": "inter_n4",
+      "social_instagram": "",
+      "social_pinterest": "",
+      "favicon": "",
+      "sections": {
+        "announcement-bar": {
+          "type": "announcement-bar",
           "settings": {
-            "title": "Table Runners",
-            "description": "Hand-knotted natural fibers for elegant dining",
-            "link": "/collections/table-runners"
+            "enabled": true,
+            "text": "Free shipping on orders over 50 EUR | Handcrafted in Berlin",
+            "link": "",
+            "bg_color": "#8B6F47",
+            "text_color": "#FFFFFF"
           }
         },
-        {
-          "type": "category",
+        "header": {
+          "type": "header",
           "settings": {
-            "title": "Baskets & Storage",
-            "description": "Cotton rope artisan craft for organized living",
-            "link": "/collections/baskets"
+            "logo": "",
+            "menu": "main-menu"
           }
         },
-        {
-          "type": "category",
+        "footer": {
+          "type": "footer",
           "settings": {
-            "title": "Cushions & Textiles",
-            "description": "Soft textures in warm earthy tones",
-            "link": "/collections/cushions"
+            "heading": "Aela Daily",
+            "description": "Handcrafted home decor inspired by wabi-sabi philosophy. Each piece tells a story of natural materials and mindful craftsmanship.",
+            "newsletter_heading": "Stay Connected",
+            "show_social": true,
+            "menu_shop": "main-menu",
+            "menu_company": "footer"
           }
         }
-      ],
-      "block_order": [
-        "cat-0",
-        "cat-1",
-        "cat-2"
-      ],
-      "settings": {
-        "heading": "Shop by Category",
-        "columns_desktop": 3
-      }
-    },
-    {
-      "type": "featured-collection",
-      "settings": {
-        "collection": "frontpage",
-        "products_to_show": 8,
-        "show_vendor": true,
-        "show_rating": false,
-        "heading": "Featured Products",
-        "description": "Curated selection of our best-selling wabi-sabi pieces",
-        "columns_desktop": 4,
-        "image_ratio": "square",
-        "show_view_all": true
-      }
-    },
-    {
-      "type": "brand-story",
-      "blocks": [
-        {
-          "type": "value",
-          "settings": {
-            "title": "Artisan Crafted",
-            "description": "Every piece is made by hand using traditional techniques passed down through generations."
-          }
-        },
-        {
-          "type": "value",
-          "settings": {
-            "title": "Natural Materials",
-            "description": "We source sustainable materials - cotton, linen, clay, wood - that age beautifully."
-          }
-        },
-        {
-          "type": "value",
-          "settings": {
-            "title": "Wabi-Sabi Philosophy",
-            "description": "Slow down, appreciate imperfect beauty, create a mindful home."
-          }
-        }
-      ],
-      "block_order": [
-        "v-0",
-        "v-1",
-        "v-2"
-      ],
-      "settings": {
-        "label": "Our Story",
-        "heading": "The Beauty of Imperfection",
-        "text": "<p>Aela Daily was born from a simple belief: that beauty lies in imperfection. Founded in Berlin in 2026, we work directly with artisans to bring handcrafted wabi-sabi pieces into European homes.</p><p>Every table runner is hand-knotted over days. Every basket is coiled with intention. These are not mass-produced items - they are objects with soul.</p>"
-      }
-    },
-    {
-      "type": "philosophy",
-      "settings": {
-        "label": "Our Philosophy",
-        "quote": "In a world of mass production, we choose the path of slow craftsmanship. Each piece carries the mark of the hands that made it - a reminder that the most beautiful things in life cannot be rushed.",
-        "author": "- Aela Daily"
       }
     }
-  ]
+  }
 }

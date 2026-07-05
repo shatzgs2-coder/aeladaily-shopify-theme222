@@ -1,1 +1,43 @@
-{"sections": {"about-content": {"type": "about-content", "settings": {"heading": "About Aela Daily", "text": "<p>Aela Daily is a Berlin-based brand dedicated to bringing the wabi-sabi philosophy into everyday home decor. We believe in the beauty of imperfection, the value of handmade craftsmanship, and the power of natural materials.</p><p>Founded in 2026, we work directly with artisans across Asia to create pieces that tell stories — each knot, each weave, each texture carries the maker's intention and skill.</p>", "values": [{"title": "Artisan Crafted", "description": "Each piece made by skilled hands using traditional techniques"}, {"title": "Natural Materials", "description": "Sustainable fibers — cotton, jute, linen, reclaimed wood"}, {"title": "Wabi-Sabi Philosophy", "description": "Embracing imperfection as beauty. No two pieces alike."}]}}}, "order": ["about-content"]}
+{
+  "sections": {
+    "page-hero": {
+      "type": "page-hero",
+      "settings": {
+        "label": "Get to Know Us",
+        "title": "About Us",
+        "description": "Learn more about our story, our values, and the people behind the craft."
+      }
+    },
+    "about-content": {
+      "type": "about-content",
+      "blocks": {
+        "v-0": {
+          "type": "value",
+          "settings": {
+            "icon": "▲",
+            "title": "Handcrafted",
+            "description": "Made by hand with love and attention."
+          }
+        },
+        "v-1": {
+          "type": "value",
+          "settings": {
+            "icon": "●",
+            "title": "Sustainable",
+            "description": "Natural materials sourced responsibly."
+          }
+        },
+        "v-2": {
+          "type": "value",
+          "settings": {
+            "icon": "■",
+            "title": "Timeless",
+            "description": "Designs that age gracefully."
+          }
+        }
+      },
+      "block_order": ["v-0", "v-1", "v-2"]
+    }
+  },
+  "order": ["page-hero", "about-content"]
+}

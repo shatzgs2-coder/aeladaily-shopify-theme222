@@ -1,18 +1,25 @@
 <style>
-  .aw-page{padding:var(--spacing-xl) 40px;background:var(--aw-cream);min-height:50vh}
-  .aw-page__inner{max-width:760px;margin:0 auto}
-  .aw-page__inner h1{margin-bottom:24px}
-  .aw-page__inner{font-size:1.05rem;color:#5a5048;line-height:1.9}
-  .aw-page__inner p{margin-bottom:18px}
-  .aw-page__inner img{max-width:100%;border-radius:var(--radius-md);margin:24px 0}
-  @media(max-width:768px){.aw-page{padding:var(--spacing-lg)20px}}
+.aw-page{padding:64px 40px;background:#FAFAF7;min-height:50vh}
+.aw-page__inner{max-width:720px;margin:0 auto}
+.aw-page h1{font-family:var(--aw-font-heading);font-size:2.2rem;font-weight:500;color:#1F1B16;margin:0 0 24px}
+.aw-page__content{font-size:1.02rem;color:#5C5648;line-height:1.9;font-weight:300}
+.aw-page__content p{margin-bottom:20px}
+@media(max-width:768px){.aw-page{padding:48px 24px}.aw-page h1{font-size:1.6rem}}
 </style>
 
-<section class="aw-page">
+<div class="aw-page">
   <div class="aw-page__inner">
     <h1>{{ page.title }}</h1>
-    {{ page.content }}
+    <div class="aw-page__content">
+      {{ page.content }}
+    </div>
   </div>
-</section>
+</div>
 
-{% schema %}{ "name":"Main Page","tag":"section","settings":[],"presets":[{"name":"Page Content"}] }{% endschema %}
+{% schema %}
+{
+  "name": "Page Content",
+  "class": "section-page",
+  "presets": [{"name": "Default Page", "category": "Text"}]
+}
+{% endschema %}

@@ -1,0 +1,69 @@
+{
+  "general": {
+    "accessibility": {
+      "skip_to_content": "Skip to content",
+      "close": "Close",
+      "menu": "Menu",
+      "search": "Search",
+      "cart": "Cart",
+      "loading": "Loading"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Cart",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "quantity": "Quantity",
+      "size_guide": "Size Guide",
+      "color": "Color",
+      "size": "Size",
+      "price": "Price",
+      "compare_at": "Compare at",
+      "vendor": "Vendor",
+      "description": "Description"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your Cart",
+      "empty": "Your cart is empty",
+      "checkout": "Checkout",
+      "continue_shopping": "Continue Shopping",
+      "subtotal": "Subtotal",
+      "remove": "Remove"
+    }
+  },
+  "collections": {
+    "general": {
+      "no_products": "No products found in this collection.",
+      "all_collections": "All Collections"
+    }
+  },
+  "search": {
+    "general": {
+      "title": "Search",
+      "placeholder": "Search our collection...",
+      "no_results": "No results found.",
+      "results_count": "{{ count }} result{% if count != 1 %}s{% endif %} for {{ terms }}"
+    }
+  },
+  "404": {
+    "title": "Page Not Found",
+    "subtext": "We are sorry, but the page you are looking for does not exist.",
+    "button": "Return Home"
+  },
+  "newsletter": {
+    "form": {
+      "heading": "Stay Connected",
+      "placeholder": "Your email address",
+      "submit": "Subscribe",
+      "success": "Thank you for subscribing!",
+      "error": "Something went wrong. Please try again."
+    }
+  },
+  "footer": {
+    "copyright": "© {{ year }} {{ shop_name }}. All rights reserved.",
+    "payment_methods": "Payment methods accepted"
+  }
+}

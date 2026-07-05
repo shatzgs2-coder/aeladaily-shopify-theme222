@@ -1,72 +1,47 @@
 <style>
-  .aw-blog{padding:var(--spacing-xl) 40px;background:var(--aw-cream)}
-  .aw-blog__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
-  .aw-blog__card{background:#fff;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-soft);transition:all .35s var(--ease-out)}
-  .aw-blog__card:hover{transform:translateY(-6px);box-shadow:var(--aw-shadow-strong)}
-  .aw-blog__card-img{aspect-ratio:16/10;overflow:hidden}
-  .aw-blog__card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease-out)}
-  .aw-blog__card:hover .aw-blog__card-img img{transform:scale(1.05)}
-  .aw-blog__card-body{padding:22px}
-  .aw-blog__card-date{font-size:.75rem;color:var(--aw-terracotta);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;font-weight:500}
-  .aw-blog__card-title{font-family:var(--font-heading);font-size:1.15rem;color:var(--aw-charcoal);line-height:1.35;margin-bottom:8px}
-  .aw-blog__card-excerpt{font-size:.88rem;color:var(--aw-stone);line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-
-  /* Pagination */
-  .aw-blog__pagination{display:flex;justify-content:center;gap:8px;margin-top:48px;flex-wrap:wrap}
-  .aw-blog__pagination a,.aw-blog__pagination span{padding:10px 18px;border:1.5px solid var(--aw-linen);border-radius:var(--radius-sm);font-size:.88rem;color:var(--aw-charcoal);transition:all .25s}
-  .aw-blog__pagination a:hover{border-color:var(--aw-earth);color:var(--aw-earth)}
-  .aw-blog__pagination .active{background:var(--aw-earth);color:#fff;border-color:var(--aw-earth)}
-
-  @media(max-width:768px){.aw-blog{padding:var(--spacing-lg)20px}.aw-blog__grid{grid-template-columns:1fr;gap:16px}}
+.aw-blog{padding:64px 40px;background:#FAFAF7}
+.aw-blog__inner{max-width:900px;margin:0 auto}
+.aw-blog h1{font-family:var(--aw-font-heading);font-size:2rem;font-weight:500;color:#1F1B16;text-align:center;margin:0 0 40px}
+.aw-blog__grid{display:flex;flex-direction:column;gap:32px}
+.aw-blog__card{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:24px;background:#fff;border-radius:12px;text-decoration:none;transition:all .3s}
+.aw-blog__card:hover{transform:translateY(-2px)}
+.aw-blog__card-img{border-radius:8px;overflow:hidden;aspect-ratio:4/3;background:#F2EFE8}
+.aw-blog__card-img img{width:100%;height:100%;object-fit:cover}
+.aw-blog__card-info{display:flex;flex-direction:column;justify-content:center}
+.aw-blog__card-date{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:#7A8471;margin-bottom:4px}
+.aw-blog__card-title{font-family:var(--aw-font-heading);font-size:1.25rem;color:#1F1B16;margin:0 0 8px}
+.aw-blog__card-excerpt{font-size:.88rem;color:#5C5648;font-weight:300;line-height:1.6}
+@media(max-width:768px){.aw-blog{padding:48px 24px}.aw-blog__card{grid-template-columns:1fr;gap:16px}}
 </style>
 
 <section class="aw-blog">
-  <div class="aw-container">
-    <p class="aw-label">Journal</p>
-    <h1>{{ blog.title | default: 'Our Blog' }}</h1>
-
-    {% if blog.articles.size > 0 %}
+  <div class="aw-blog__inner">
+    <h1>{{ blog.title | default: 'Journal' }}</h1>
     <div class="aw-blog__grid">
-      {% for article in blog.articles limit:9 %}
+      {%- for article in blog.articles -%}
         <a href="{{ article.url }}" class="aw-blog__card">
           <div class="aw-blog__card-img">
-            {% if article.image %}
-              {{ article.image | image_url: width: 500 | image_tag:
-                loading:'lazy', alt:article.title,
-                widths:'300,400,500',
-                style:'width:100%;height:100%;object-fit:cover'
-              }}
-            {% else %}
-              <div style="width:100%;height:100%;background:linear-gradient(135deg,#ede8e1,#d4c4b0)"></div>
-            {% endif %}
+            {%- if article.image -%}
+              {{ article.image | image_url: width: 300 | image_tag: alt: article.title, widths: '150,300,600', loading: 'lazy' }}
+            {%- endif -%}
           </div>
-          <div class="aw-blog__card-body">
-            <p class="aw-blog__card-date">{{ article.published_at | date: '%B %d, %Y' }}</p>
-            <h3 class="aw-blog__card-title">{{ article.title }}</h3>
-            <p class="aw-blog__card-excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 25 }}</p>
+          <div class="aw-blog__card-info">
+            <span class="aw-blog__card-date">{{ article.published_at | date: '%B %d, %Y' }}</span>
+            <h2 class="aw-blog__card-title">{{ article.title }}</h2>
+            {%- if article.excerpt.size > 0 -%}
+              <p class="aw-blog__card-excerpt">{{ article.excerpt | strip_html | truncatewords: 30 }}</p>
+            {%- endif -%}
           </div>
         </a>
-      {% endfor %}
+      {%- endfor -%}
     </div>
-
-    <!-- Pagination -->
-    {% if paginate.pages > 1 %}
-    <nav class="aw-blog__pagination" role="navigation" aria-label="Blog pagination">
-      {% if paginate.previous %}<a href="{{ paginate.previous.url }}">&laquo;</a>{% endif %}
-      {% for part in paginate.parts %}
-        {% if part.is_link %}<a href="{{ part.url }}">{{ part.title }}</a>
-        {% else %}{% if part.title != '…' %}<span class="active">{{ part.title }}</span><% else %}<span>{{ part.title }}</span>{% endif %}{% endif %}
-      {% endfor %}
-      {% if paginate.next %}<a href="{{ paginate.next.url }}">&raquo;</a>{% endif %}
-    </nav>
-    {% endif %}
-
-    {% else %}
-    <div style="text-align:center;padding:60px 20px;color:var(--aw-stone)">
-      <p>No articles yet. Check back soon for updates from our journal.</p>
-    </div>
-    {% endif %}
   </div>
 </section>
 
-{% schema %}{ "name":"Main Blog","tag":"section","settings":[],"presets":[{"name":"Blog Page"}] }{% endschema %}
+{% schema %}
+{
+  "name": "Blog Listing",
+  "class": "section-blog",
+  "presets": [{"name": "Blog Listing", "category": "Blog"}]
+}
+{% endschema %}

@@ -1,22 +1,41 @@
-{%- assign product = product -%}
-
 <style>
-  .aw-related{padding:var(--spacing-xl) 40px;background:var(--aw-wheat)}
-  .aw-related__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px}
-  @media(max-width:1024px){.aw-related__grid{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:768px){.aw-related{padding:var(--spacing-lg)20px}.aw-related__grid{grid-template-columns:repeat(2,1fr);gap:14px}}
+.aw-rel{padding:80px 40px;background:#fff}
+.aw-rel__inner{max-width:1280px;margin:0 auto}
+.aw-rel__heading{font-family:var(--aw-font-heading);font-size:1.8rem;font-weight:500;color:#1F1B16;text-align:center;margin:0 0 40px}
+.aw-rel__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+@media(max-width:1024px){.aw-rel__grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.aw-rel{padding:48px 20px}.aw-rel__grid{grid-template-columns:repeat(2,1fr);gap:16px}}
 </style>
 
-<section class="aw-related">
-  <div class="aw-container">
-    <p class="aw-label">{{ section.settings.label | default: 'Complete the Look' }}</p>
-    <h2>{{ section.settings.title | default: 'You May Also Like' }}</h2>
-    <div class="aw-related__grid">
-      {%- for i in (1..section.settings.products_count) -%}
-        {% render 'product-card', product: product %}
-      {%- endfor -%}
+{%- if recommendations.performed -%}
+  {%- if recommendations.products_count > 0 -%}
+    <section class="aw-rel">
+      <div class="aw-rel__inner">
+        <h2 class="aw-rel__heading">{{ section.settings.heading }}</h2>
+        <div class="aw-rel__grid">
+          {%- for product in recommendations.products -%}
+            {%- render 'product-card', product: product -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+{%- else -%}
+  <div class="aw-rel" data-base-url="{{ routes.product_recommendations_url }}" data-product-id="{{ product.id }}" data-section-type="product-recommendations">
+    <div class="aw-rel__inner" data-recommendations-container>
+      <h2 class="aw-rel__heading">{{ section.settings.heading }}</h2>
+      <div class="aw-rel__grid" data-recommendations-grid></div>
     </div>
   </div>
-</section>
+{%- endif -%}
 
-{% schema %}{ "name":"Related Products","tag":"section","settings":[{"type":"text","id":"title","label":"Heading","default":"You May Also Like"},{"type":"text","id":"label","label":"Label"},{"type":"range","id":"products_count","label":"Products to show","min":2,"max":8,"default":4}],"presets":[{"name":"Related Products"}] }{% endschema %}
+{% schema %}
+{
+  "name": "Related Products",
+  "class": "section-related-products",
+  "settings": [
+    {"type": "text","id": "heading","label": "Heading","default": "You May Also Like"}
+  ],
+  "presets": [{"name": "Related Products", "category": "Product"}]
+}
+{% endschema %}

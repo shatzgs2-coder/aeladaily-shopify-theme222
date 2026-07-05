@@ -1,1 +1,110 @@
-{"sections": {"hero": {"type": "hero", "settings": {"eyebrow": "Est. 2026 · Berlin", "heading": "Handcrafted Wabi-Sabi Home Decor", "subtitle": "Each piece tells a story of imperfection and authenticity. Discover our collection of handmade textiles and natural decor for mindful living.", "cta_text": "Shop Collection", "cta_link": "/collections/all", "cta2_text": "Our Story", "cta2_link": "/pages/about"}}, "featured-categories": {"type": "featured-categories", "blocks": {"cat-0": {"type": "category", "settings": {"title": "Table Runners", "description": "Hand-knotted natural fibers for elegant dining", "link": "/collections/table-runners"}}, "cat-1": {"type": "category", "settings": {"title": "Baskets & Storage", "description": "Cotton rope artisan craft for organized living", "link": "/collections/baskets"}}, "cat-2": {"type": "category", "settings": {"title": "Cushions & Textiles", "description": "Soft textures in warm earthy tones", "link": "/collections/cushions"}}}, "block_order": ["cat-0", "cat-1", "cat-2"], "settings": {"heading": "Shop by Category", "columns_desktop": 3}}, "featured-collection": {"type": "featured-collection", "settings": {"collection": "frontpage", "products_to_show": 8, "show_vendor": true, "show_rating": false, "heading": "Featured Products", "description": "Curated selection of our best-selling wabi-sabi pieces", "columns_desktop": 4, "image_ratio": "square", "show_view_all": true}}, "brand-story": {"type": "brand-story", "blocks": {"v-0": {"type": "value", "settings": {"title": "Artisan Crafted", "description": "Every piece is made by hand using traditional techniques passed down through generations."}}, "v-1": {"type": "value", "settings": {"title": "Natural Materials", "description": "We source sustainable materials — cotton, linen, clay, wood — that age beautifully over time."}}, "v-2": {"type": "value", "settings": {"title": "Wabi-Sabi Philosophy", "description": "Slow down, appreciate imperfect beauty, create a mindful home."}}}, "block_order": ["v-0", "v-1", "v-2"], "settings": {"label": "Our Story", "heading": "The Beauty of Imperfection", "text": "<p>Aela Daily was born from a simple belief: that beauty lies in imperfection. Founded in Berlin in 2026, we work directly with artisans to bring handcrafted wabi-sabi pieces into European homes.</p><p>Every table runner is hand-knotted over days. Every basket is coiled with intention. These are not mass-produced items — they are objects with soul.</p>"}}, "philosophy": {"type": "philosophy", "settings": {"label": "Our Philosophy", "quote": "In a world of mass production, we choose the path of slow craftsmanship. Each piece carries the mark of the hands that made it — a reminder that the most beautiful things in life cannot be rushed.", "author": "— Aela Daily"}}}, "order": ["hero", "featured-categories", "featured-collection", "brand-story", "philosophy"]}
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "label": "Est. 2026 | Berlin, Germany",
+        "heading": "Handcrafted Wabi-Sabi Home Decor",
+        "subtitle": "Each piece tells a story of imperfection and authenticity. Discover our collection of handmade textiles and natural decor for mindful living.",
+        "cta_text": "Shop Collection",
+        "cta_link": "/collections/all",
+        "cta2_text": "Our Story",
+        "cta2_link": "/pages/about"
+      }
+    },
+    "featured-categories": {
+      "type": "featured-categories",
+      "blocks": {
+        "cat-0": {
+          "type": "category",
+          "settings": {
+            "title": "Table Runners",
+            "description": "Hand-knotted natural fibers for elegant dining",
+            "link": "/collections/all",
+            "icon": "*"
+          }
+        },
+        "cat-1": {
+          "type": "category",
+          "settings": {
+            "title": "Baskets & Storage",
+            "description": "Cotton rope artisan craft for organized living",
+            "link": "/collections/all",
+            "icon": "*"
+          }
+        },
+        "cat-2": {
+          "type": "category",
+          "settings": {
+            "title": "Cushions & Textiles",
+            "description": "Soft textures in warm earthy tones",
+            "link": "/collections/all",
+            "icon": "*"
+          }
+        }
+      },
+      "block_order": ["cat-0", "cat-1", "cat-2"],
+      "settings": {
+        "heading": "Shop by Category",
+        "columns_desktop": 3
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Featured Products",
+        "description": "Curated selection of our best-selling wabi-sabi pieces",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "image_ratio": "square",
+        "show_vendor": true,
+        "show_view_all": true,
+        "btn_text": "View All Products"
+      }
+    },
+    "brand-story": {
+      "type": "brand-story",
+      "blocks": {
+        "v-0": {
+          "type": "value",
+          "settings": {
+            "icon": "▲",
+            "title": "Artisan Crafted",
+            "text": "Every piece is made by hand using traditional techniques passed down through generations."
+          }
+        },
+        "v-1": {
+          "type": "value",
+          "settings": {
+            "icon": "●",
+            "title": "Natural Materials",
+            "text": "We source sustainable materials - cotton, linen, clay, wood - that age beautifully over time."
+          }
+        },
+        "v-2": {
+          "type": "value",
+          "settings": {
+            "icon": "■",
+            "title": "Wabi-Sabi Philosophy",
+            "text": "Slow down, appreciate imperfect beauty, create a mindful home."
+          }
+        }
+      },
+      "block_order": ["v-0", "v-1", "v-2"],
+      "settings": {
+        "label": "Our Philosophy",
+        "heading": "The Art of Imperfect Beauty",
+        "description": "Rooted in the Japanese philosophy of wabi-sabi, we celebrate the beauty of natural materials, handmade craftsmanship, and the quiet elegance of simple, mindful living."
+      }
+    },
+    "philosophy": {
+      "type": "philosophy",
+      "settings": {
+        "label": "In Our Words",
+        "quote": "Imperfection is not a flaw. It is a reminder that in a world of mass production, the beauty of the human hand remains irreplaceable.",
+        "author": "Aela Daily Studio, Berlin"
+      }
+    }
+  },
+  "order": ["hero", "featured-categories", "featured-collection", "brand-story", "philosophy"]
+}

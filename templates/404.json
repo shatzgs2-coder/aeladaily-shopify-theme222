@@ -1,1 +1,12 @@
-{"sections": {"main-404": {"type": "main-404", "settings": {}}}, "order": ["main-404"]}
+{
+  "sections": {
+    "main-404": {
+      "type": "main-404",
+      "settings": {
+        "text": "We are sorry, but the page you are looking for does not exist. Perhaps it moved, or was lost in the wabi-sabi of things.",
+        "btn_text": "Return Home"
+      }
+    }
+  },
+  "order": ["main-404"]
+}

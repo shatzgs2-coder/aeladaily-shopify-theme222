@@ -1,1 +1,18 @@
-{"sections": {"main-product": {"type": "main-product", "settings": {"show_vendor": true, "show_rating": false, "show_size_guide": true, "show_product_details": true, "enable_sticky_gallery": true, "gallery_layout": "thumbnail", "columns_desktop": 2}}}, "order": ["main-product"]}
+{
+  "sections": {
+    "main-product": {
+      "type": "main-product",
+      "settings": {
+        "show_size_guide": true,
+        "atc_text": "Add to Cart"
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You May Also Like"
+      }
+    }
+  },
+  "order": ["main-product", "related-products"]
+}

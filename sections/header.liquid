@@ -1,118 +1,71 @@
 {%- assign menu = linklists[section.settings.menu] -%}
 
 <style>
-  .aw-header {
-    padding: 0 40px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(250,247,242,0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    transition: all .3s ease;
-  }
-  .aw-header.is-sticky { box-shadow: 0 1px 6px rgba(44,40,37,0.06); }
-  .aw-header__inner { max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px; }
-  .aw-header__logo { font-family:var(--font-heading);font-size:1.5rem;font-weight:600;color:var(--aw-earth);letter-spacing:1px;text-decoration:none; }
-  .aw-header__logo img { height:38px;width:auto;object-fit:contain; }
-
-  .aw-header__menu { display:flex;gap:32px;list-style:none; }
-  .aw-header__menu a {
-    font-size:.82rem;color:#6b5e53;text-transform:uppercase;letter-spacing:1.5px;
-    position:relative;font-weight:500;padding:4px 0;transition:color .25s;
-  }
-  .aw-header__menu a::after {
-    content:'';position:absolute;bottom:-2px;left:0;width:0;height:1.5px;
-    background:var(--aw-earth);transition:width .3s var(--ease-out);
-  }
-  .aw-header__menu a:hover { color: var(--aw-earth); }
-  .aw-header__menu a:hover::after { width:100%; }
-  .aw-header__menu li:first-child a::after { width:100%; } /* highlight first nav item */
-
-  .aw-header__icons { display:flex;align-items:center;gap:18px;flex-shrink:0; }
-  .aw-header__icon-btn { background:none;border:none;cursor:pointer;color:#6b5e53;font-size:1.15rem;padding:8px;position:relative;transition:color .25s; }
-  .aw-header__icon-btn:hover { color: var(--aw-earth); }
-  .aw-header__cart-count { position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--aw-terracotta);color:#fff;border-radius:50%;font-size:.62rem;display:flex;align-items:center;justify-content:center;font-weight:600; }
-
-  /* Mobile */
-  .aw-header__menu-toggle { display:none;flex-direction:column;gap:5px;padding:8px;background:none;border:none;cursor:pointer;z-index:101; }
-  .aw-header__menu-toggle span { display:block;width:22px;height:2px;background:var(--aw-charcoal);transition:all .3s;border-radius:1px; }
-  .aw-mobile-menu {
-    display:none;position:fixed;top:72px;left:0;right:0;bottom:0;
-    background:var(--aw-cream);z-index:99;padding:48px 32px;
-    opacity:0;pointer-events:none;transition:opacity .35s ease;overflow-y:auto;
-  }
-  .aw-mobile-menu.is-open { display:block;opacity:1;pointer-events:auto; }
-  .aw-mobile-menu a { display:block;font-size:1.45rem;font-family:var(--font-heading);color:var(--aw-charcoal);padding:16px 0;border-bottom:1px solid var(--aw-linen);font-weight:500;transition:color .25s; }
-  .aw-mobile-menu a:hover { color: var(--aw-earth); }
-
-  @media (max-width: 968px) {
-    .aw-header__menu { display:none; }
-    .aw-header__menu-toggle { display:flex; }
-    .aw-header { padding:0 20px; }
-    .aw-header__inner { height:64px; }
-  }
+.aw-hdr{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid #E8E4DD}
+.aw-hdr.scrolled{box-shadow:0 1px 6px rgba(44,40,37,.06)}
+.aw-hdr__inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px;padding:0 40px}
+.aw-hdr__logo{font-family:var(--aw-font-heading);font-size:1.5rem;font-weight:600;color:#1F1B16;letter-spacing:1px;text-decoration:none;flex-shrink:0}
+.aw-hdr__logo img{height:38px;width:auto;object-fit:contain}
+.aw-hdr__nav{display:flex;gap:32px;list-style:none;margin:0;padding:0}
+.aw-hdr__nav a{font-size:.8rem;color:#5C5648;text-transform:uppercase;letter-spacing:1.5px;font-weight:500;padding:4px 0;transition:color .25s;position:relative}
+.aw-hdr__nav a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1.5px;background:#8B6F47;transition:width .3s}
+.aw-hdr__nav a:hover,.aw-hdr__nav a[aria-current]{color:#8B6F47}
+.aw-hdr__nav a:hover::after,.aw-hdr__nav a[aria-current]::after{width:100%}
+.aw-hdr__icons{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.aw-hdr__ico{background:none;border:none;cursor:pointer;color:#5C5648;padding:8px;transition:color .25s;display:flex;align-items:center}
+.aw-hdr__ico:hover{color:#8B6F47}
+.aw-hdr__ico--cart{position:relative}
+.aw-hdr__badge{position:absolute;top:2px;right:2px;width:16px;height:16px;background:#B89484;color:#fff;border-radius:50%;font-size:.6rem;display:flex;align-items:center;justify-content:center;font-weight:600}
+.aw-mob-btn{display:none;flex-direction:column;gap:5px;padding:8px;background:none;border:none;cursor:pointer;z-index:101}
+.aw-mob-btn span{display:block;width:22px;height:2px;background:#1F1B16;transition:all .3s;border-radius:1px}
+.aw-mob-menu{display:none;position:fixed;top:72px;left:0;right:0;bottom:0;background:#FAFAF7;z-index:99;padding:48px 32px;opacity:0;pointer-events:none;transition:opacity .35s;overflow-y:auto}
+.aw-mob-menu.open{display:block;opacity:1;pointer-events:auto}
+.aw-mob-menu a{display:block;font-size:1.4rem;font-family:var(--aw-font-heading);color:#1F1B16;padding:16px 0;border-bottom:1px solid #E8E4DD;font-weight:500}
+@media(max-width:968px){.aw-hdr__nav{display:none}.aw-mob-btn{display:flex}.aw-hdr__inner{padding:0 20px;height:64px}}
 </style>
 
 <sticky-header>
-<header class="aw-header" role="banner">
-  <div class="aw-header__inner">
-
-    <!-- Logo -->
-    <a href="{{ routes.root_url }}" class="aw-header__logo">
+<header class="aw-hdr" role="banner">
+  <div class="aw-hdr__inner">
+    <a href="{{ routes.root_url }}" class="aw-hdr__logo">
       {%- if section.settings.logo != blank -%}
         {{ section.settings.logo | image_url: width: 200 | image_tag: alt: shop.name }}
       {%- else -%}
-        {{ shop.name }}
+        Aela Daily
       {%- endif -%}
     </a>
 
-    <!-- Desktop Navigation -->
-    <nav class="aw-header__menu" role="navigation" aria-label="Main menu">
-      {%- if menu.links.size > 0 -%}
-        {%- for link in menu.links -%}
-          <a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>
-            {{ link.title }}
-          </a>
-        {%- endfor -%}
+    <nav class="aw-hdr__nav">
+      {%- for link in menu.links -%}
+        <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title }}</a>
       {%- else -%}
-        <a href="{{ routes.collections_url }}" aria-current="{% if template == 'index' %}page{% endif %}">Shop</a>
-        <a href="{{ routes.all_products_collection_url }}">All Products</a>
-        <a href="{{ pages['about-us'].url | default: '/pages/about' }}">About</a>
-        <a href="{{ routes.root_url }}pages/contact">Contact</a>
-      {%- endif -%}
+        <a href="{{ routes.all_products_collection_url }}">Shop</a>
+        <a href="/pages/about">About</a>
+        <a href="/pages/contact">Contact</a>
+      {%- endfor -%}
     </nav>
 
-    <!-- Icons (Search + Cart) -->
-    <div class="aw-header__icons">
-      <a href="{{ routes.search_url }}" class="aw-header__icon-btn" aria-label="Search">
+    <div class="aw-hdr__icons">
+      <a href="{{ routes.search_url }}" class="aw-hdr__ico" aria-label="Search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </a>
-      <button type="button" class="aw-header__icon-btn" data-cart-toggle aria-label="Cart">
+      <button type="button" class="aw-hdr__ico aw-hdr__ico--cart" data-cart-toggle aria-label="Cart">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        <span class="aw-header__cart-count aw-cart-count" style="display:{% if cart.item_count > 0 %}inline-flex{% else %}none{% endif %}">{{ cart.item_count }}</span>
+        <span class="aw-hdr__badge aw-cart-count" style="display:{% if cart.item_count > 0 %}flex{% else %}none{% endif %}">{{ cart.item_count }}</span>
       </button>
-
-      <!-- Mobile Toggle -->
-      <button class="aw-header__menu-toggle" aria-label="Menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="aw-mob-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
 
-  <!-- Mobile Menu Panel -->
-  <nav class="aw-mobile-menu" role="navigation" aria-label="Mobile menu">
-    {%- if menu.links.size > 0 -%}
-      {%- for link in menu.links -%}
-        <a href="{{ link.url }}">{{ link.title }}</a>
-      {%- endfor -%}
+  <nav class="aw-mob-menu">
+    {%- for link in menu.links -%}
+      <a href="{{ link.url }}">{{ link.title }}</a>
     {%- else -%}
-      <a href="{{ routes.collections_url }}">Shop All</a>
-      <a href="{{ pages['about-us'].url | default: '/pages/about' }}">About Us</a>
-      <a href="{{ routes.root_url }}pages/contact">Contact</a>
-      <a href="{{ routes.cart_url }}">Cart ({% if cart.item_count > 0 %}{{ cart.item_count }}{% else %}0{% endif %})</a>
-    {%- endif -%}
+      <a href="{{ routes.all_products_collection_url }}">Shop All</a>
+      <a href="/pages/about">About Us</a>
+      <a href="/pages/contact">Contact</a>
+      <a href="{{ routes.cart_url }}">Cart ({{ cart.item_count }})</a>
+    {%- endfor -%}
   </nav>
 </header>
 </sticky-header>
@@ -120,22 +73,11 @@
 {% schema %}
 {
   "name": "Header",
-  "tag": "header",
-  "class": "aw-header-section",
+  "class": "section-header",
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo",
-      "info": "Recommended: PNG or SVG, max height 48px"
-    },
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Main menu",
-      "default": "main-menu"
-    }
+    {"type": "image_picker","id": "logo","label": "Logo","info": "PNG or SVG, max 48px height"},
+    {"type": "link_list","id": "menu","label": "Main menu","default": "main-menu"}
   ],
-  "presets": [{ "name": "Header", "category": "Header" }]
+  "presets": [{"name": "Header", "category": "Header"}]
 }
 {% endschema %}

@@ -1,42 +1,17 @@
-{%- assign product = product -%}
-<article class="aw-product-card" {{ block.shopify_attributes }}>
-  <!-- Image -->
-  <div class="aw-product-card__img-wrap">
-    <a href="{{ product.url }}">
-      {%- if product.featured_image -%}
-        {{ product.featured_image | image_url: width: 500 | image_tag:
-          loading:'lazy', alt:product.title,
-          widths:'300,400,500',
-          class:'aw-product-card__img'
-        }}
-      {%- else -%}
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,#ede8e1,#d4c4b0);display:flex;align-items:center;justify-content:center">
-          <span style="font-family:var(--font-heading);color:#c4a882;font-size:1.2rem">{{ product.title }}</span>
-        </div>
-      {%- endif -%}
-    </a>
-
-    {%- if show_quick_add and product.variants.first.available -%}
-      {%- assign first_variant = product.variants.first -%}
-      <a href="{{ routes.cart_add_url }}?id={{ first_variant.id }}&quantity=1"
-         class="aw-btn aw-btn--primary aw-product-card__quick-add"
-         data-variant-id="{{ first_variant.id }}"
-         style="width:calc(100% - 24px);margin:0 12px;padding:12px;font-size:.82rem"
-      >Quick Add</a>
+<a href="{{ product.url }}" class="aw-feat__card">
+  <div class="aw-feat__card-img">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 500 | image_tag: alt: product.title, widths: '250,400,500,800', loading: 'lazy' }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+    {%- unless product.available -%}<span class="aw-badge aw-badge--sold">Sold Out</span>{%- endunless -%}
+  </div>
+  <div class="aw-feat__card-body">
+    <h3 class="aw-feat__card-title">{{ product.title }}</h3>
+    <span class="aw-feat__card-price">{{ product.price | money }}</span>
+    {%- if product.compare_at_price > product.price -%}
+      <span class="aw-feat__card-compare">{{ product.compare_at_price | money }}</span>
     {%- endif -%}
   </div>
-
-  <!-- Info -->
-  <div class="aw-product-card__body">
-    {% if section.settings.show_vendor %}
-    <p class="aw-product-card__vendor">{{ product.vendor }}</p>
-    {% endif %}
-    <h3 class="aw-product-card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
-    <p class="aw-product-card__price">
-      {%- if product.compare_at_price_max > product.price_min -%}
-        <del style="font-size:.85rem;color:var(--aw-stone);margin-right:6px;display:inline-block">{{ product.compare_at_price_min | money }}</del>
-      {%- endif -%}
-      {{ product.price | money }}
-    </p>
-  </div>
-</article>
+</a>

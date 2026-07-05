@@ -1,60 +1,59 @@
 <style>
-  .aw-about{padding:var(--spacing-xl) 40px;background:var(--aw-cream)}
-  .aw-about__inner{max-width:900px;margin:0 auto}
-  .aw-about__image{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:48px;box-shadow:var(--shadow-medium);aspect-ratio:16/9}
-  .aw-about__content{font-size:1.05rem;color:#6b5e53;line-height:1.9;font-weight:300;max-width:720px;margin:0 auto}
-  .aw-about__values{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px;text-align:center}
-  .aw-about__value{padding:28px 20px;background:#fff;border-radius:var(--radius-sm);box-shadow:var(--shadow-soft)}
-  .aw-about__value-icon{font-size:2rem;margin-bottom:12px}
-  .aw-about__value h3{font-family:var(--font-heading);font-size:1.15rem;margin-bottom:8px}
-  .aw-about__value p{font-size:.88rem;color:var(--aw-stone)}
-  @media(max-width:768px){.aw-about{padding:var(--spacing-lg)20px}.aw-about__values{grid-template-columns:1fr}}
+.aw-about-content{padding:0 40px;max-width:900px;margin:0 auto}
+.aw-about-content__text{font-size:1.02rem;color:#5C5648;line-height:1.9;font-weight:300}
+.aw-about-content__image{border-radius:12px;overflow:hidden;margin:40px 0;box-shadow:none;aspect-ratio:16/9}
+.aw-about-content__image img{width:100%;height:100%;object-fit:cover}
+.aw-about-content__values{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin:56px 0 80px;text-align:center}
+.aw-about-content__value{padding:36px 20px;background:#fff;border-radius:12px;box-shadow:none}
+.aw-about-content__value-icon{font-size:2rem;margin-bottom:12px;display:block}
+.aw-about-content__value h3{font-family:var(--aw-font-heading);font-size:1.15rem;color:#1F1B16;margin:0 0 8px}
+.aw-about-content__value p{font-size:.88rem;color:#5C5648;line-height:1.6;font-weight:300}
+@media(max-width:768px){.aw-about-content{padding:0 24px}.aw-about-content__values{grid-template-columns:1fr;margin-bottom:64px}}
 </style>
 
-<section class="aw-about">
-  <div class="aw-about__inner">
-    <p class="aw-label" style="text-align:center">{{ section.settings.label | default: 'About Us' }}</p>
-    <h1 style="text-align:center;font-family:var(--font-heading);margin-bottom:32px">{{ section.settings.heading }}</h1>
+<section class="aw-about-content">
+  {%- if section.settings.image != blank -%}
+    <div class="aw-about-content__image">
+      {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'eager', alt: section.settings.heading, widths: '600,900,1200' }}
+    </div>
+  {%- endif -%}
 
-    {%- if section.settings.image != blank -%}
-      <div class="aw-about__image">
-        {{ section.settings.image | image_url: width: 1200 | image_tag:
-          loading:'eager', alt:section.settings.heading,
-          widths:'600,900,1200',
-          style:'width:100%;height:100%;object-fit:cover'
-        }}
+  <div class="aw-about-content__text">
+    {{ page.content | default: section.settings.text }}
+  </div>
+
+  <div class="aw-about-content__values">
+    {%- for block in section.blocks -%}
+      <div class="aw-about-content__value" {{ block.shopify_attributes }}>
+        <span class="aw-about-content__value-icon">{{ block.settings.icon }}</span>
+        <h3>{{ block.settings.title }}</h3>
+        <p>{{ block.settings.description }}</p>
       </div>
-    {%- endif -%}
-
-    <div class="aw-about__content">
-      {{ page.content | default: section.settings.text }}
-    </div>
-
-    <!-- Values -->
-    <div class="aw-about__values">
-      {%- for block in section.blocks -%}
-        <div class="aw-about__value aw-fade-up" {{ block.shopify_attributes }}>
-          <div class="aw-about__value-icon">{{ block.settings.icon | default: '✦' }}</div>
-          <h3>{{ block.settings.title }}</h3>
-          <p>{{ block.settings.description }}</p>
-        </div>
-      {%- endfor -%}
-    </div>
+    {%- endfor -%}
   </div>
 </section>
 
-{% schema %}{
-  "name":"About Content","tag":"section",
-  "settings":[
-    {"type":"text","id":"label","label":"Label","default":"Our Story"},
-    {"type":"text","id":"heading","label":"Heading","default":"About Aeladaily"},
-    {"type":"richtext","id":"text","label":"Default Text"},
-    {"type":"image_picker","id":"image","label":"Hero Image"}
+{% schema %}
+{
+  "name": "About Content",
+  "class": "section-about-content",
+  "settings": [
+    {"type": "text","id": "label","label": "Label","default": "Our Story"},
+    {"type": "text","id": "heading","label": "Heading","default": "About Aela Daily"},
+    {"type": "richtext","id": "text","label": "Default Text"},
+    {"type": "image_picker","id": "image","label": "Hero Image"}
   ],
-  "blocks":[{"type":"value","name":"Value Card","settings":[
-    {"type":"text","id":"icon","label":"Icon (emoji)","default":"✦"},
-    {"type":"text","id":"title","label":"Title","default":"Handcrafted"},
-    {"type":"textarea","id":"description","label":"Description","default":"Made by hand with love."}
-  ]},{"type":"value","name":"Value Card"},{"type":"value","name":"Value Card"}],
-  "presets":[{"name":"About Content","category":"Text"}]
-}{% endschema %}
+  "blocks": [{
+    "type": "value","name": "Value Card","settings": [
+      {"type": "text","id": "icon","label": "Icon (emoji)","default": "*"},
+      {"type": "text","id": "title","label": "Title","default": "Handcrafted"},
+      {"type": "textarea","id": "description","label": "Description","default": "Made by hand with love and attention."}
+    ]
+  }],
+  "presets": [{"name": "About Content", "category": "Text","blocks":[
+    {"type":"value","settings":{"icon":"*","title":"Handcrafted","description":"Made by hand with love and attention."}},
+    {"type":"value","settings":{"icon":"*","title":"Sustainable","description":"Natural materials sourced responsibly."}},
+    {"type":"value","settings":{"icon":"*","title":"Timeless","description":"Designs that age gracefully."}}
+  ]}]
+}
+{% endschema %}

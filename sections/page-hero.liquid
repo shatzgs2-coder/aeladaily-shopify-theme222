@@ -1,16 +1,31 @@
 <style>
-  .aw-page-hero{padding:60px 40px;text-align:center;background:var(--aw-wheat)}
-  .aw-page-hero h1{margin-bottom:10px}
-  .aw-page-hero p{font-size:1rem;color:var(--aw-stone);max-width:480px;margin:0 auto}
-  @media(max-width:768px){.aw-page-hero{padding:48px 20px}}
+.aw-page-hero{background:#F2EFE8;padding:100px 40px;text-align:center}
+.aw-page-hero__inner{max-width:720px;margin:0 auto}
+.aw-page-hero__label{font-size:.75rem;text-transform:uppercase;letter-spacing:3px;color:#7A8471;font-weight:500;margin-bottom:16px;display:block}
+.aw-page-hero__title{font-family:var(--aw-font-heading);font-size:3rem;font-weight:500;color:#1F1B16;margin:0 0 16px}
+.aw-page-hero__desc{font-size:1.05rem;color:#5C5648;line-height:1.7;font-weight:300}
+@media(max-width:768px){.aw-page-hero{padding:64px 24px}.aw-page-hero__title{font-size:2rem}}
 </style>
 
 <section class="aw-page-hero">
-  <p class="aw-label">{{ section.settings.label }}</p>
-  <h1>{{ page.title | default: collection.title | default: blog.title | default: 'Page' }}</h1>
-  {% if section.settings.description != blank %}
-    <p>{{ section.settings.description }}</p>
-  {% endif %}
+  <div class="aw-page-hero__inner">
+    <span class="aw-page-hero__label">{{ section.settings.label }}</span>
+    <h1 class="aw-page-hero__title">{{ page.title | default: section.settings.title }}</h1>
+    {%- if section.settings.description != blank -%}
+      <p class="aw-page-hero__desc">{{ section.settings.description }}</p>
+    {%- endif -%}
+  </div>
 </section>
 
-{% schema %}{ "name":"Page Hero","tag":"section","settings":[{"type":"text","id":"label","label":"Label"},{"type":"textarea","id":"description","label":"Description"}],"presets":[{"name":"Page Hero"}] }{% endschema %}
+{% schema %}
+{
+  "name": "Page Hero",
+  "class": "section-page-hero",
+  "settings": [
+    {"type": "text","id": "label","label": "Label","default": "Get to Know Us"},
+    {"type": "text","id": "title","label": "Fallback title","default": "About Us"},
+    {"type": "textarea","id": "description","label": "Description","default": "Learn more about our story, our values, and the people behind the craft."}
+  ],
+  "presets": [{"name": "Page Hero", "category": "Hero"}]
+}
+{% endschema %}

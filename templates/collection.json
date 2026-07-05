@@ -1,1 +1,12 @@
-{"sections": {"main-collection": {"type": "main-collection", "settings": {"columns_desktop": 3, "products_per_page": 12, "show_vendor": true, "show_rating": false, "image_ratio": "square", "enable_filtering": true, "enable_sorting": true, "filter_type": "vertical", "padding_top": 60, "padding_bottom": 72}}}, "order": ["main-collection"]}
+{
+  "sections": {
+    "main-collection": {
+      "type": "main-collection",
+      "settings": {
+        "products_per_page": 24,
+        "columns_desktop": 3
+      }
+    }
+  },
+  "order": ["main-collection"]
+}

@@ -1,65 +1,79 @@
-{%- assign collection = collections[section.settings.collection] -%}
-
 <style>
-  .aw-collection{padding:var(--spacing-xl) 40px;background:var(--aw-wheat)}
-  .aw-collection__header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;flex-wrap:wrap;gap:12px}
-  .aw-collection__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-  .aw-collection__empty{text-align:center;padding:60px 20px;color:var(--aw-stone)}
-  @media(max-width:1024px){.aw-collection__grid{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:768px){.aw-collection{padding:var(--spacing-lg)20px}.aw-collection__grid{grid-template-columns:repeat(2,1fr);gap:14px}}
+.aw-feat{padding:80px 40px;background:#fff}
+.aw-feat__inner{max-width:1280px;margin:0 auto}
+.aw-feat__heading{font-family:var(--aw-font-heading);font-size:2rem;font-weight:500;color:#1F1B16;text-align:center;margin:0 0 8px}
+.aw-feat__desc{text-align:center;color:#5C5648;font-size:.95rem;margin:0 0 40px;font-weight:300}
+.aw-feat__grid{display:grid;grid-template-columns:repeat({{ section.settings.columns_desktop }},1fr);gap:24px}
+.aw-feat__card{text-decoration:none;display:block;position:relative}
+.aw-feat__card-img{border-radius:12px;overflow:hidden;aspect-ratio:{% if section.settings.image_ratio == 'portrait' %}3/4{% elsif section.settings.image_ratio == 'landscape' %}4/3{% else %}1/1{% endif %};background:#F2EFE8;margin-bottom:12px}
+.aw-feat__card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.aw-feat__card:hover .aw-feat__card-img img{transform:scale(1.04)}
+.aw-feat__card-body{padding:0 4px}
+.aw-feat__card-title{font-family:var(--aw-font-heading);font-size:1.05rem;color:#1F1B16;margin:0 0 4px}
+.aw-feat__card-vendor{font-size:.75rem;color:#7A8471;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.aw-feat__card-price{font-weight:500;color:#1F1B16;font-size:.95rem}
+.aw-feat__card-compare{text-decoration:line-through;color:#B89484;margin-left:8px;font-weight:300}
+.aw-feat__actions{text-align:center;margin-top:48px}
+@media(max-width:1024px){.aw-feat__grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.aw-feat__grid{grid-template-columns:repeat(2,1fr);gap:16px}.aw-feat{padding:48px 20px}}
 </style>
 
-<section class="aw-collection aw-fade-up">
-  <div class="aw-container">
-    <div class="aw-collection__header">
-      <div>
-        <p class="aw-label">{{ section.settings.label | default: 'Featured' }}</p>
-        <h2>{{ section.settings.title | default: 'Shop Our Favorites' }}</h2>
-      </div>
-      <a href="{{ collection.url }}" class="aw-btn aw-btn--outline" style="font-size:.8rem;padding:10px 24px">
-        View All
-      </a>
-    </div>
-
-    {%- if collection.products.size > 0 -%}
-    <div class="aw-collection__grid">
-      {%- for product in collection.products limit:section.settings.products_count -%}
-        {% render 'product-card', product: product, show_quick_add: true %}
+{%- assign collection = collections[section.settings.collection] -%}
+{%- if collection != blank and collection.products.size > 0 -%}
+<section class="aw-feat">
+  <div class="aw-feat__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="aw-feat__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.description != blank -%}
+      <p class="aw-feat__desc">{{ section.settings.description }}</p>
+    {%- endif -%}
+    <div class="aw-feat__grid">
+      {%- for product in collection.products limit: section.settings.products_to_show -%}
+        <a href="{{ product.url }}" class="aw-feat__card">
+          <div class="aw-feat__card-img">
+            {%- if product.featured_image -%}
+              {{ product.featured_image | image_url: width: 500 | image_tag: alt: product.title, widths: '250,400,500,800', loading: 'lazy' }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+            {%- unless product.available -%}<span class="aw-badge aw-badge--sold">Sold Out</span>{%- endunless -%}
+          </div>
+          <div class="aw-feat__card-body">
+            {%- if section.settings.show_vendor -%}<p class="aw-feat__card-vendor">{{ product.vendor }}</p>{%- endif -%}
+            <h3 class="aw-feat__card-title">{{ product.title }}</h3>
+            <span class="aw-feat__card-price">{{ product.price | money }}</span>
+            {%- if product.compare_at_price > product.price -%}
+              <span class="aw-feat__card-compare">{{ product.compare_at_price | money }}</span>
+            {%- endif -%}
+          </div>
+        </a>
       {%- endfor -%}
     </div>
-    {%- else -%}
-      <!-- Placeholder products for demo -->
-      <div class="aw-collection__grid" style="grid-template-columns:repeat(4,1fr)">
-        {%- for i in (1..4) -%}
-          <div class="aw-product-card">
-            <div class="aw-product-card__img-wrap"><div class="skeleton" style="aspect-ratio:1"></div></div>
-            <div class="aw-product-card__body">
-              <p class="aw-product-card__vendor">Product {{ i }}</p>
-              <h3 class="aw-product-card__title">Coming Soon</h3>
-              <p class="aw-product-card__price">€0.00</p>
-            </div>
-          </div>
-        {%- endfor -%}
+    {%- if section.settings.show_view_all and section.settings.btn_text != blank -%}
+      <div class="aw-feat__actions">
+        <a href="{{ collection.url }}" class="aw-btn aw-btn--outline">{{ section.settings.btn_text }}</a>
       </div>
     {%- endif -%}
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "Featured Collection",
-  "tag": "section",
-  "class": "aw-featured-coll-section",
+  "class": "section-featured-collection",
   "settings": [
-    { "type":"text","id":"label","label":"Label","default":"Featured" },
-    { "type":"text","id":"title","label":"Heading","default":"Shop Our Favorites" },
-    {
-      "type":"collection","id":"collection","label":"Collection to feature"
-    },
-    { "type":"range","id":"products_count","label":"Products to show","min":4,"max":12,"step":1,"default":8 }
+    {"type": "collection","id": "collection","label": "Collection"},
+    {"type": "text","id": "heading","label": "Heading","default": "Featured Products"},
+    {"type": "textarea","id": "description","label": "Description","default": "Curated selection of our best-selling wabi-sabi pieces"},
+    {"type": "range","id": "products_to_show","label": "Products to show","min":2,"max":12,"step":1,"default":8},
+    {"type": "range","id": "columns_desktop","label": "Desktop columns","min":2,"max":4,"step":1,"default":4},
+    {"type": "select","id": "image_ratio","label": "Image ratio","options":[{"value":"square","label":"Square"},{"value":"portrait","label":"Portrait"},{"value":"landscape","label":"Landscape"}],"default":"square"},
+    {"type": "checkbox","id": "show_vendor","label": "Show vendor","default": false},
+    {"type": "checkbox","id": "show_view_all","label": "Show view all button","default": true},
+    {"type": "text","id": "btn_text","label": "Button text","default": "View All Products"}
   ],
-  "presets":[
-    {"name":"Featured Collection","category":"Collection"}
-  ]
+  "presets": [{"name": "Featured Collection", "category": "Collection"}]
 }
 {% endschema %}

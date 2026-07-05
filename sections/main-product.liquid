@@ -1,320 +1,173 @@
-{%- assign current_variant = product.selected_or_first_available_variant -%}
-{%- assign featured_img = current_variant.featured_image | default: product.featured_image -%}
-
 <style>
-  .aw-pdp{padding:var(--spacing-xl) 40px;background:var(--aw-cream);min-height:70vh}
-  .aw-pdp__inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
-
-  /* Gallery */
-  .aw-pdp__gallery{position:sticky;top:100px}
-  .aw-pdp__main-img{aspect-ratio:1;background:var(--aw-linen);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-soft)}
-  .aw-pdp__main-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s var(--ease-out)}
-  .aw-pdp__main-img:hover img{transform:scale(1.03)}
-  .aw-pdp__thumbs{display:flex;gap:10px;flex-wrap:wrap}
-  .aw-pdp__thumb{
-    width:72px;height:72px;border-radius:8px;overflow:hidden;
-    cursor:pointer;border:2px solid transparent;transition:border-color .25s;background:var(--aw-wheat)
-  }
-  .aw-pdp__thumb:hover,.aw-pdp__thumb.active{border-color:var(--aw-earth)}
-  .aw-pdp__thumb img{width:100%;height:100%;object-fit:cover}
-
-  /* Info */
-  .aw-pdp__info{padding-top:8px}
-  .aw-pdp__vendor{font-size:.78rem;color:var(--aw-terracotta);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;font-weight:500}
-  .aw-pdp__type{font-size:.7rem;color:var(--aw-stone);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:10px;font-weight:500}
-  .aw-pdp__title{font-family:var(--font-heading);font-size:clamp(2rem,4vw,3rem);color:var(--aw-charcoal);line-height:1.15;margin-bottom:16px}
-  .aw-pdp__price{font-family:var(--font-heading);font-size:2rem;color:var(--aw-earth);font-weight:600;margin-bottom:24px}
-  .aw-pdp__sku{font-size:.8rem;color:var(--aw-stone);margin-bottom:20px}
-
-  /* Variant Swatches */
-  .aw-variant-group{margin-bottom:24px}
-  .aw-variant-group label{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--aw-charcoal);margin-bottom:10px;font-weight:600}
-  .swatch-group{display:flex;gap:8px;flex-wrap:wrap}
-  /* Color swatch — round dots */
-  .aw-swatch--color{
-    width:36px;height:36px;border-radius:50%;border:2px solid #d4c4b0;
-    cursor:pointer;transition:all .25s var(--ease-out);padding:0;min-width:auto;
-    position:relative;outline:none !important;
-  }
-  .aw-swatch--color:hover{border-color:var(--aw-earth);transform:scale(1.1)}
-  .aw-swatch--color.selected{border-color:var(--aw-charcoal);box-shadow:0 0 0 2px var(--aw-cream),0 0 0 4px var(--aw-charcoal)}
-  .aw-swatch--color::after{content:'';position:absolute;inset:4px;border-radius:50%;background:currentColor}
-  /* Size/Text swatch — pill buttons */
-  .aw-swatch{
-    padding:9px 22px;border:1.5px solid #d4cec4;background:transparent;
-    border-radius:50px;font-size:.88rem;color:var(--aw-charcoal);cursor:pointer;
-    transition:all .25s var(--ease-out);min-width:44px;text-align:center;font-weight:500
-  }
-  .aw-swatch:hover{border-color:var(--aw-earth);color:var(--aw-earth)}
-  .aw-swatch.selected{background:var(--aw-earth);color:#fff;border-color:var(--aw-earth)}
-
-  /* Size Guide (Always visible) */
-  .aw-size-guide{margin:28px 0;border:1px solid var(--aw-linen);border-radius:var(--radius-sm);overflow:hidden}
-  .aw-size-guide summary{
-    padding:16px 22px;background:var(--aw-wheat);cursor:pointer;font-weight:600;
-    list-style:none;display:flex;justify-content:space-between;align-items:center;
-    font-family:var(--font-heading);font-size:1rem;color:var(--aw-charcoal);
-  }
-  .aw-size-guide summary::-webkit-details-marker{display:none}
-  .aw-size-guide summary::after{content:'+';font-size:1.3rem;color:var(--aw-terracotta);transition:transform .3s}
-  .aw-size-guide[open] summary::after{transform:rotate(45deg)}
-  .aw-size-guide table{width:100%;border-collapse:collapse}
-  .aw-size-guide th,.aw-size-guide td{padding:13px 22px;text-align:left;border-top:1px solid var(--aw-linen);font-size:.9rem}
-  .aw-size-guide th{background:var(--aw-cream);font-weight:600;color:var(--aw-charcoal)}
-
-  /* Details Accordion */
-  .aw-details{margin:20px 0;border:1px solid var(--aw-linen);border-radius:var(--radius-sm);overflow:hidden}
-  .aw-details summary{
-    padding:16px 22px;background:var(--aw-wheat);cursor:pointer;font-weight:600;
-    list-style:none;display:flex;justify-content:space-between;align-items:center;
-    font-size:.95rem;color:var(--aw-charcoal);
-  }
-  .aw-details summary::-webkit-details-marker{display:none}
-  .aw-details summary::after{content:'▸';font-size:1rem;color:var(--aw-terracotta);transition:transform .3s}
-  .aw-details[open] summary::after{transform:rotate(90deg)}
-  .aw-details__content{padding:18px 22px;font-size:.9rem;color:#6b5e53;line-height:1.75}
-
-  /* Features List */
-  .aw-pdp__features{list-style:none;padding:0;margin:28px 0 0}
-  .aw-pdp__features li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--aw-stone);padding:7px 0}
-  .aw-pdp__features li svg{flex-shrink:0;color:var(--aw-terracotta)}
-
-  /* Stock status */
-  .aw-stock-status{font-size:.82rem;padding:6px 0;margin-bottom:12px;display:inline-flex;align-items:center;gap:6px}
-  .aw-stock-status--in{color:#4a7c59}
-  .aw-stock-status--out{color:#c17f59}
-
-  @media(max-width:768px){.aw-pdp{padding:var(--spacing-lg)20px}.aw-pdp__inner{grid-template-columns:1fr;gap:36px}.aw-pdp__gallery{position:static}}
+.aw-prod{padding:64px 40px;background:#FAFAF7}
+.aw-prod__inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.aw-prod__gallery{position:sticky;top:88px}
+.aw-prod__main-img{border-radius:12px;overflow:hidden;aspect-ratio:1/1;background:#F2EFE8;margin-bottom:12px}
+.aw-prod__main-img img{width:100%;height:100%;object-fit:cover}
+.aw-prod__thumbs{display:flex;gap:10px}
+.aw-prod__thumb{width:72px;height:72px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s;background:#F2EFE8}
+.aw-prod__thumb.active{border-color:#8B6F47}
+.aw-prod__thumb img{width:100%;height:100%;object-fit:cover}
+.aw-prod__info{display:flex;flex-direction:column;gap:20px}
+.aw-prod__vendor{font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:#7A8471;font-weight:500}
+.aw-prod__title{font-family:var(--aw-font-heading);font-size:2.4rem;font-weight:500;color:#1F1B16;margin:0;line-height:1.2}
+.aw-prod__price-wrap{display:flex;align-items:baseline;gap:12px}
+.aw-prod__price{font-size:1.4rem;font-weight:500;color:#1F1B16}
+.aw-prod__compare{font-size:1rem;text-decoration:line-through;color:#B89484}
+.aw-prod__desc{font-size:.95rem;color:#5C5648;line-height:1.8;font-weight:300}
+.aw-prod__form{display:flex;flex-direction:column;gap:24px;padding:24px 0;border-top:1px solid #E8E4DD;border-bottom:1px solid #E8E4DD}
+.aw-prod__opt-label{font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;color:#1F1B16;font-weight:500;margin-bottom:10px}
+.aw-prod__opts{display:flex;flex-wrap:wrap;gap:10px}
+.aw-prod__opt{min-width:44px;height:44px;padding:0 16px;border-radius:4px;border:1.5px solid #E8E4DD;background:#fff;cursor:pointer;font-size:.85rem;color:#1F1B16;text-align:center;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.aw-prod__opt:hover{border-color:#8B6F47}
+.aw-prod__opt.active{border-color:#8B6F47;background:#F2EFE8;font-weight:500}
+.aw-prod__opt--color{width:36px;height:36px;border-radius:50%;padding:0;position:relative}
+.aw-prod__opt--color.active::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid #8B6F47}
+.aw-prod__qty{display:flex;align-items:center;gap:12px}
+.aw-prod__qty-label{font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;color:#1F1B16;font-weight:500}
+.aw-prod__qty-input{width:64px;height:44px;text-align:center;border:1.5px solid #E8E4DD;border-radius:4px;font-size:.9rem;background:#fff}
+.aw-prod__atc{width:100%;padding:16px;font-size:1rem}
+.aw-prod__meta{display:flex;flex-direction:column;gap:16px}
+.aw-prod__size-guide{padding:20px;background:#F2EFE8;border-radius:12px;margin-top:8px}
+.aw-prod__size-guide h4{font-size:.85rem;text-transform:uppercase;letter-spacing:1.5px;color:#1F1B16;margin:0 0 16px}
+.aw-prod__size-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.aw-prod__size-table th,.aw-prod__size-table td{padding:10px 12px;text-align:left;border-bottom:1px solid #E8E4DD}
+.aw-prod__size-table th{font-weight:500;color:#1F1B16;font-size:.78rem;text-transform:uppercase;letter-spacing:1px}
+.aw-prod__size-table td{color:#5C5648;font-weight:300}
+@media(max-width:968px){.aw-prod__inner{grid-template-columns:1fr;gap:40px}.aw-prod{padding:32px 20px}.aw-prod__title{font-size:1.8rem}.aw-prod__gallery{position:static}}
 </style>
 
-<section class="aw-pdp">
-  <div class="aw-pdp__inner">
+{%- assign current_variant = product.selected_or_first_available_variant -%}
 
-    <!-- ===== GALLERY ===== -->
-    <div class="aw-pdp__gallery" data-product-gallery>
-      <!-- Main Image -->
-      <div class="aw-pdp__main-img">
-        {%- if featured_img -%}
-          {{ featured_img | image_url: width: 800 | image_tag:
-            id:'pdp-main-img', loading:'eager',
-            alt:product.title | escape,
-            widths:'400,600,800',
-            style:'width:100%;height:100%;object-fit:cover'
-          }}
+<section class="aw-prod" data-section-type="product">
+  <div class="aw-prod__inner">
+    <!-- Gallery -->
+    <div class="aw-prod__gallery">
+      <div class="aw-prod__main-img">
+        {%- if product.featured_image -%}
+          {{ product.featured_image | image_url: width: 800 | image_tag: alt: product.title, id: 'aw-prod-main-img', widths: '400,600,800,1200', loading: 'eager' }}
         {%- else -%}
-          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ede8e1,#d4c4b0)">
-            <span style="font-family:var(--font-heading);color:var(--aw-clay);font-size:2rem">Atelier Wabi</span>
-          </div>
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
         {%- endif -%}
       </div>
-
-      <!-- Thumbnails -->
-      {%- if product.images.size > 1 -%}
-      <div class="aw-pdp__thumbs">
-        {%- for image in product.images limit:6 -%}
-          <button class="aw-pdp__thumb{% if forloop.first %} active{% endif %}"
-            onclick="document.getElementById('pdp-main-img').src='{{ image | image_url: width: 800 }}';
-              this.closest('.aw-pdp__thumbs').querySelectorAll('.aw-pdp__thumb').forEach(function(t){t.classList.remove('active')});
-              this.classList.add('active')"
-            type="button"
-            aria-label="{{ 'products.product.media.load_image' | t: index: forloop.index }}"
-          >
-            {{ image | image_url: width: 150 | image_tag:
-              alt:product.title | append: ' - Image ' | append: forloop.index,
-              loading:'lazy',
-              style:'width:100%;height:100%;object-fit:cover'
-            }}
-          </button>
-        {%- endfor -%}
-      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="aw-prod__thumbs">
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              <div class="aw-prod__thumb{% if forloop.first %} active{% endif %}" data-media-id="{{ media.id }}">
+                {{ media | image_url: width: 150 | image_tag: alt: product.title, widths: '75,150,300' }}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
       {%- endif -%}
     </div>
 
-    <!-- ===== PRODUCT INFO ===== -->
-    <div class="aw-pdp__info">
-
+    <!-- Product Info -->
+    <div class="aw-prod__info">
       {%- if product.vendor != blank -%}
-        <p class="aw-pdp__vendor">{{ product.vendor }}</p>
+        <span class="aw-prod__vendor">{{ product.vendor }}</span>
       {%- endif -%}
-      <p class="aw-pdp__type">{{ product.type | default: 'Home Decor' }}</p>
-      <h1 class="aw-pdp__title">{{ product.title }}</h1>
+      <h1 class="aw-prod__title">{{ product.title }}</h1>
 
-      <p class="aw-pdp__sku" id="pdp-sku">SKU: {{ current_variant.sku | default: '—' }}</p>
-
-      <div class="aw-price-display aw-pdp__price" id="pdp-price">
+      <div class="aw-prod__price-wrap">
+        <span class="aw-prod__price" data-price>{{ current_variant.price | money }}</span>
         {%- if current_variant.compare_at_price > current_variant.price -%}
-          <del style="font-size:1.1rem;color:var(--aw-stone);margin-right:8px">{{ current_variant.compare_at_price | money }}</del>
-        {%- endif -%}
-        {{ current_variant.price | money }}
-      </div>
-
-      <!-- Stock Status -->
-      <div class="aw-stock-status {% if current_variant.available %}aw-stock-status--in{% else %}aw-stock-status--out{% endif %}" id="pdp-stock">
-        {%- if current_variant.available -%}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          In stock — Ships in 1-2 business days
-        {%- else -%}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          Currently unavailable
+          <span class="aw-prod__compare" data-compare-price>{{ current_variant.compare_at_price | money }}</span>
         {%- endif -%}
       </div>
 
-      <div style="height:1px;background:linear-gradient(to right,var(--aw-linen),transparent);margin:24px 0"></div>
-
-      <!-- Description -->
       {%- if product.description != blank -%}
-        <div class="aw-pdp__desc" style="font-size:.98rem;color:#6b5e53;line-height:1.85;margin-bottom:32px">{{ product.description }}</div>
-      {%- else -%}
-        <p style="font-size:.98rem;color:#6b5e53;line-height:1.85;margin-bottom:32px">
-          Handcrafted piece from our Atelier Wabi collection. Made with natural materials and designed to bring warmth to your living space.
-        </p>
+        <p class="aw-prod__desc">{{ product.description | strip_html | truncatewords: 50 }}</p>
       {%- endif -%}
 
-      {% form 'product', product, class:'aw-product-form', id:'pdp-form', data-product-id: product.id %}
-        <input type="hidden" name="id" value="{{ current_variant.id }}" id="pdp-hidden-input">
+      <!-- Variant Selector -->
+      {%- form 'product', product, class: 'aw-prod__form', data-product-form: '' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-product-select>
+        <input type="hidden" name="quantity" value="1">
 
-        <!-- Variant Selectors -->
-        {%- for option in product.options_with_values -%}
-          {%- assign is_color = false -%}
-          {%- assign option_downcase = option.name | downcase -%}
-          {%- if option_downcase == 'color' or option_downcase == 'colour' or option_downcase == 'farbe' -%}
-            {%- assign is_color = true -%}
-          {%- endif -%}
-
-          <div class="aw-variant-group" data-option-name="{{ option.name | handle }}" data-option-index="{{ forloop.index0 }}">
-            <label>{{ option.name }}:</label>
-            <div class="swatch-group">
-              {%- for value in option.values -%}
-                {%- if is_color -%}
+        {%- if product.variants.size > 1 -%}
+          {%- for option in product.options_with_values -%}
+            <div class="aw-prod__variant">
+              <p class="aw-prod__opt-label">{{ option.name }}: <span data-option-name>{{ option.selected_value }}</span></p>
+              <div class="aw-prod__opts" data-option-index="{{ forloop.index0 }}">
+                {%- for value in option.values -%}
+                  {%- assign opt_class = 'aw-prod__opt' -%}
+                  {%- if option.name == 'Color' or option.name == 'Colour' -%}
+                    {%- assign opt_class = opt_class | append: ' aw-prod__opt--color' -%}
+                    {%- assign bg = value | handle | prepend: 'var(--aw-color-' | append: ')' -%}
+                  {%- endif -%}
                   <button type="button"
-                    class="aw-swatch aw-swatch--color{% if option.selected_value == value %} selected{% endif %}"
-                    data-value="{{ value }}"
-                    style="color:{{ value | downcase }}"
-                    title="{{ value }}"
-                    aria-label="{{ value }}"
-                  ></button>
-                {%- else -%}
-                  <button type="button"
-                    class="aw-swatch{% if option.selected_value == value %} selected{% endif %}"
-                    data-value="{{ value }}"
+                    class="{{ opt_class }}{% if option.selected_value == value %} active{% endif %}"
+                    data-option-value="{{ value | escape }}"
+                    {%- if option.name == 'Color' or option.name == 'Colour' -%}
+                      style="background-color:{{ value | downcase | replace: ' ','-' }};color:transparent"
+                    {%- endif -%}
+                    {%- if option.selected_value == value %}aria-current="true"{% endif -%}
                   >{{ value }}</button>
-                {%- endif -%}
-              {%- endfor -%}
+                {%- endfor -%}
+              </div>
             </div>
+          {%- endfor -%}
+
+          <div class="aw-prod__qty">
+            <span class="aw-prod__qty-label">Qty</span>
+            <input type="number" name="quantity" class="aw-prod__qty-input" value="1" min="1" pattern="[0-9]*">
           </div>
-        {%- endfor -%}
+        {%- endif -%}
 
-        <!-- Hidden select for Shopify (used by JS to find variant ID) -->
-        {%- unless product.has_only_default_variant -%}
-          <select name="id" id="ProductSelect-{{ section.id }}" style="position:absolute;left:-9999px;height:1px;width:1px;opacity:0;overflow:hidden" aria-label="Variant selection" form="pdp-form">
-            {%- for variant in product.variants -%}
-              <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %}
-                data-available="{{ variant.available }}"
-                data-option1="{{ variant.option1 | escape }}"
-                data-option2="{% if variant.option2 %}{{ variant.option2 | escape }}{% endif %}"
-                data-option3="{% if variant.option3 %}{{ variant.option3 | escape }}{% endif %}">
-                {{ variant.title }}
-              </option>
-            {%- endfor -%}
-          </select>
-        {%- endunless -%}
-
-        <!-- SIZE GUIDE (always visible) -->
-        <details class="aw-size-guide aw-details">
-          <summary><span>Size Guide &#038; Dimensions</span></summary>
-          <table>
-            <thead><tr><th>Size</th><th>Width (cm)</th><th>Height/Length (cm)</th><th>Ideal For</th></tr></thead>
-            <tbody>
-              <tr><td>S</td><td>30–40</td><td>25–35</td><td>Small spaces / side tables / shelves</td></tr>
-              <tr><td>M</td><td>45–60</td><td>38–50</td><td>Dining tables / consoles / mantels</td></tr>
-              <tr><td>L</td><td>65+</td><td>55+</td><td>Floor pieces / statement items / focal points</td></tr>
-            </tbody>
-          </table>
-          <div style="padding:18px 22px;background:var(--aw-cream);font-size:.85rem;color:var(--aw-earth);line-height:1.75;border-top:1px solid var(--aw-linen)">
-            <strong>Note:</strong> Each piece is handmade, so dimensions may vary slightly.
-            This is part of the wabi-sabi charm — no two items are exactly identical.
-          </div>
-        </details>
-
-        <!-- Product Details Accordion -->
-        <details class="aw-details">
-          <summary><span>Product Details</span></summary>
-          <div class="aw-details__content">
-            <ul style="list-style:disc;padding-left:20px;margin:0">
-              {%- if product.material != blank -%}<li>Material: {{ product.material }}</li>{%- endif -%}
-              <li>Handcrafted by skilled artisans</li>
-              <li>Each piece is unique due to the handmade process</li>
-              {%- if product.care != blank -%}<li>Care: {{ product.care }}</li>{%- else -%}<li>Spot clean with damp cloth; air dry flat</li>{%- endif -%}
-              <li>Packaged in eco-friendly materials</li>
-            </ul>
-          </div>
-        </details>
-
-        <details class="aw-details">
-          <summary><span>Shipping &#038; Returns</span></summary>
-          <div class="aw-details__content">
-            <p><strong>Germany:</strong> Free shipping on orders over €49. Standard shipping €4.99 (3–5 business days).</p>
-            <p><strong>Europe:</strong> From €9.99 (5–8 business days). Free on orders over €99.</p>
-            <p><strong>Returns:</strong> 30-day return policy. Items must be unused and in original packaging.</p>
-          </div>
-        </details>
-
-        <!-- Quantity -->
-        <div style="display:flex;align-items:center;gap:16px;margin-top:28px">
-          <quantity-input class="aw-qty">
-            <button type="button" class="aw-qty__btn" data-action="minus">&#8722;</button>
-            <input type="number" name="quantity" value="1" min="1" max="{{ section.settings.max_quantity | default: 10 }}" class="aw-qty__input">
-            <button type="button" class="aw-qty__btn" data-action="plus">+</button>
-          </quantity-input>
-          <span style="font-size:.85rem;color:var(--aw-stone)">Quantity</span>
-        </div>
-
-        <!-- Add to Cart Button -->
-        <button type="submit" name="add"
-          class="aw-btn aw-btn--primary"
-          style="width:100%;margin-top:20px;padding:18px;font-size:.95rem;letter-spacing:1.5px"
-          {% unless current_variant.available %}disabled{% endunless %}
-        >
+        <button type="submit" name="add" class="aw-btn aw-btn--primary aw-prod__atc"
+          {%- unless current_variant.available %}disabled{% endunless -%}
+          data-add-to-cart>
           {%- if current_variant.available -%}
-            Add to Cart — <span id="pdp-btn-price">{{ current_variant.price | money }}</span>
+            {{ section.settings.atc_text }}
           {%- else -%}
             Sold Out
           {%- endif -%}
         </button>
+      {%- endform -%}
 
-        <!-- Trust badges -->
-        <div style="display:flex;justify-content:center;gap:20px;margin-top:18px;font-size:.75rem;color:var(--aw-stone)">
-          <span>&#128666; Secure Checkout</span>
-          <span>&#127775; Carbon-neutral Shipping</span>
-          <span;&#128279; 30-Day Returns</span>
-        </div>
-      {% endform %}
-
-      <!-- Features -->
-      {%- if section.settings.show_features -%}
-      <div style="height:1px;background:linear-gradient(to right,var(--aw-linen),transparent);margin:36px 0"></div>
-      <ul class="aw-pdp__features">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>Handcrafted with natural materials</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>Wabi-sabi inspired design — each piece unique</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Free shipping in Germany over €49</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>30-day return guarantee</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Carbon-neutral packaging</li>
-      </ul>
+      <!-- Size Guide -->
+      {%- if section.settings.show_size_guide -%}
+        <details class="aw-prod__size-guide">
+          <summary style="cursor:pointer;font-weight:500;color:#1F1B16;list-style:none;display:flex;justify-content:space-between;align-items:center">
+            <span>Size Guide</span>
+            <span style="font-size:.8rem;color:#7A8471">+</span>
+          </summary>
+          <table class="aw-prod__size-table" style="margin-top:16px">
+            <thead><tr><th>Size</th><th>Length (cm)</th><th>Width (cm)</th><th>Height (cm)</th></tr></thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>20</td><td>10</td></tr>
+              <tr><td>M</td><td>40</td><td>25</td><td>12</td></tr>
+              <tr><td>L</td><td>50</td><td>30</td><td>15</td></tr>
+            </tbody>
+          </table>
+        </details>
       {%- endif -%}
 
-    </div><!-- /info -->
+      <!-- Shipping Info -->
+      <div class="aw-prod__meta">
+        <span style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#5C5648">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Free shipping on orders over 50 EUR
+        </span>
+        <span style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#5C5648">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Handcrafted in Berlin, Germany
+        </span>
+      </div>
+    </div>
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Main Product",
-  "tag": "section",
-  "class": "aw-product-section",
-  "settings":[
-    {"type":"checkbox","id":"show_features","label":"Show feature list","default":true},
-    {"type":"range","id":"max_quantity","label":"Max quantity per order","min":1,"max":99,"default":10}
+  "name": "Product Detail",
+  "class": "section-main-product",
+  "settings": [
+    {"type": "checkbox","id": "show_size_guide","label": "Show size guide","default": true},
+    {"type": "text","id": "atc_text","label": "Add to cart button text","default": "Add to Cart"}
   ],
-  "presets":[{"name":"Product Page"}]
+  "presets": [{"name": "Product Detail", "category": "Product"}]
 }
 {% endschema %}

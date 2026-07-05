@@ -1,1 +1,11 @@
-{"sections": {"page-hero": {"type": "page-hero", "settings": {"title": "Collections", "subtitle": "Browse our curated wabi-sabi collections"}}}, "order": ["page-hero"]}
+{
+  "sections": {
+    "main-list-collections": {
+      "type": "main-list-collections",
+      "settings": {
+        "heading": "All Collections"
+      }
+    }
+  },
+  "order": ["main-list-collections"]
+}

@@ -1,74 +1,63 @@
 <style>
-  .aw-cart{padding:var(--spacing-xl) 40px;background:var(--aw-cream);min-height:60vh}
-  .aw-cart__inner{max-width:900px;margin:0 auto}
-
-  .aw-cart__items{margin-bottom:40px}
-  .aw-cart__item{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--aw-linen);align-items:center}
-  .aw-cart__item-img{width:100px;height:100px;border-radius:var(--radius-sm);overflow:hidden;background:var(--aw-wheat);flex-shrink:0}
-  .aw-cart__item-img img{width:100%;height:100%;object-fit:cover}
-  .aw-cart__item-info{flex:1;min-width:0}
-  .aw-cart__item-title{font-family:var(--font-heading);font-size:1.05rem;color:var(--aw-charcoal);font-weight:500;margin-bottom:2px}
-  .aw-cart__item-meta{font-size:.82rem;color:var(--aw-stone);margin-bottom:8px}
-  .aw-cart__item-price{font-family:var(--font-heading);color:var(--aw-earth);font-weight:600;font-size:1.1rem}
-  .aw-cart__remove{background:none;border:none;color:var(--aw-stone);cursor:pointer;font-size:.82rem;padding:6px;transition:color .25s}
-  .aw-cart__remove:hover{color:var(--aw-terracotta)}
-
-  .aw-cart__summary{background:#fff;padding:28px 32px;border-radius:var(--radius-md);box-shadow:var(--shadow-soft)}
-  .aw-cart__summary-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:.92rem}
-  .aw-cart__summary-total{display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:1.3rem;color:var(--aw-charcoal);font-weight:600;margin-top:16px;padding-top:16px;border-top:1px solid var(--aw-linen)}
-  .aw-cart__empty{text-align:center;padding:80px 20px}
-  .aw-cart__continue{margin-top:32px;text-align:center}
+.aw-cart{padding:64px 40px;background:#FAFAF7;min-height:60vh}
+.aw-cart__inner{max-width:900px;margin:0 auto}
+.aw-cart h1{font-family:var(--aw-font-heading);font-size:2.4rem;font-weight:500;color:#1F1B16;margin:0 0 40px;text-align:center}
+.aw-cart__empty{text-align:center;padding:80px 0;color:#5C5648}
+.aw-cart__empty p{font-size:1.05rem;margin-bottom:24px}
+.aw-cart__item{display:grid;grid-template-columns:100px 1fr auto auto;gap:20px;align-items:center;padding:20px 0;border-bottom:1px solid #E8E4DD}
+.aw-cart__item-img{border-radius:8px;overflow:hidden;aspect-ratio:1/1;background:#F2EFE8}
+.aw-cart__item-img img{width:100%;height:100%;object-fit:cover}
+.aw-cart__item-info h3{font-family:var(--aw-font-heading);font-size:1.1rem;margin:0 0 4px;color:#1F1B16}
+.aw-cart__item-info p{font-size:.82rem;color:#5C5648;margin:0}
+.aw-cart__item-price{font-weight:500;color:#1F1B16}
+.aw-cart__item-qty{width:56px;height:36px;text-align:center;border:1px solid #E8E4DD;border-radius:4px;font-size:.85rem}
+.aw-cart__item-remove{background:none;border:none;color:#B89484;cursor:pointer;font-size:.8rem;text-decoration:underline}
+.aw-cart__footer{margin-top:32px;text-align:right}
+.aw-cart__total{font-size:1.2rem;font-weight:500;color:#1F1B16;margin-bottom:16px}
+@media(max-width:768px){.aw-cart{padding:32px 20px}.aw-cart__item{grid-template-columns:80px 1fr;gap:12px}.aw-cart__item-price,.aw-cart__item-qty,.aw-cart__item-remove{font-size:.82rem}}
 </style>
 
 <section class="aw-cart">
   <div class="aw-cart__inner">
-    <h1 style="text-align:center;margin-bottom:48px">Shopping Cart</h1>
-
+    <h1>Your Cart</h1>
     {%- if cart.item_count > 0 -%}
-      <!-- Cart Items -->
-      <div class="aw-cart__items">
-        {%- for item in cart.items -%}
-          <div class="aw-cart__item" data-line-key="{{ item.key }}">
-            <div class="aw-cart__item-img">
-              {% if item.image %}
-                {{ item.image | image_url: width:200 | image_tag: alt:item.title, loading:'lazy', style:'width:100%;height:100%;object-fit:cover' }}
-              {% endif %}
-            </div>
-            <div class="aw-cart__item-info">
-              <p class="aw-cart__item-title">{{ item.product.title }}</p>
-              <p class="aw-cart__item-meta">{{ item.variant.title }} &middot; {{ item.quantity }} × {{ item.final_price | money }}</p>
-              <quantity-input class="aw-qty" style="--aw-clay:#e8e3d8">
-                <button type="button" class="aw-qty__btn" data-action="minus">&#8722;</button>
-                <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="aw-qty__input" aria-label="Quantity">
-                <button type="button" class="aw-qty__btn" data-action="plus">+</button>
-              </quantity-input>
-            </div>
-            <p class="aw-cart__item-price">{{ item.final_line_price | money }}</p>
-            <button class="aw-cart__remove" onclick="updateCartItem('{{ item.key }}',0)">Remove</button>
+      {%- for item in cart.items -%}
+        <div class="aw-cart__item" data-line="{{ forloop.index }}">
+          <div class="aw-cart__item-img">
+            {%- if item.image -%}
+              {{ item.image | image_url: width: 200 | image_tag: alt: item.title, widths: '100,200' }}
+            {%- endif -%}
           </div>
-        {%- endfor -%}
-      </div>
-
-      <!-- Summary -->
-      <form action="{{ routes.cart_url }}" method="post" id="cart-form">
-        <div class="aw-cart__summary">
-          <div class="aw-cart__summary-row"><span>Subtotal</span><span>{{ cart.items_subtotal_price | money }}</span></div>
-          <div class="aw-cart__summary-row"><span>Shipping</span><span>Calculated at checkout</span></div>
-          <div class="aw-cart__summary-total"><span>Total</span><span>{{ cart.total_price | money }}</span></div>
-          <p style="font-size:.8rem;color:var(--aw-stone);margin:12px 0 20px">Shipping and taxes calculated at checkout.</p>
-          <button type="submit" name="checkout" class="aw-btn aw-btn--primary" style="width:100%">Proceed to Checkout</button>
+          <div class="aw-cart__item-info">
+            <h3><a href="{{ item.url }}" style="text-decoration:none;color:inherit">{{ item.product.title }}</a></h3>
+            {%- unless item.product.has_only_default_variant -%}
+              <p>{{ item.variant.title }}</p>
+            {%- endunless -%}
+          </div>
+          <span class="aw-cart__item-price">{{ item.final_price | money }}</span>
+          <div>
+            <input type="number" class="aw-cart__item-qty" value="{{ item.quantity }}" min="0" data-line="{{ forloop.index }}">
+            <a href="{{ item.url_to_remove }}" class="aw-cart__item-remove" style="display:block;margin-top:6px">Remove</a>
+          </div>
         </div>
-      </form>
+      {%- endfor -%}
+      <div class="aw-cart__footer">
+        <div class="aw-cart__total">Subtotal: {{ cart.total_price | money }}</div>
+        <a href="/checkout" class="aw-btn aw-btn--primary">Checkout</a>
+      </div>
     {%- else -%}
-      <!-- Empty Cart -->
       <div class="aw-cart__empty">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="opacity:0.25;margin-bottom:16px"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        <h3 style="font-family:var(--font-heading);color:var(--aw-charcoal);margin-bottom:8px">Your cart is empty</h3>
-        <p style="color:var(--aw-stone);margin-bottom:24px">Discover our handcrafted collection.</p>
-        <a href="{{ routes.collections_url }}" class="aw-btn aw-btn--primary">Continue Shopping</a>
+        <p>Your cart is empty.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="aw-btn aw-btn--primary">Continue Shopping</a>
       </div>
     {%- endif -%}
   </div>
 </section>
 
-{% schema %}{ "name":"Main Cart","tag":"section","settings":[],"presets":[{"name":"Cart Page"}] }{% endschema %}
+{% schema %}
+{
+  "name": "Cart",
+  "class": "section-main-cart",
+  "presets": [{"name": "Cart", "category": "Cart"}]
+}
+{% endschema %}

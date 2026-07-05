@@ -1,1 +1,8 @@
-{"sections": {"main-blog": {"type": "main-blog", "settings": {"columns_desktop": 3, "posts_per_page": 9}}}, "order": ["main-blog"]}
+{
+  "sections": {
+    "main-blog": {
+      "type": "main-blog"
+    }
+  },
+  "order": ["main-blog"]
+}

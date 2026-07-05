@@ -1,22 +1,62 @@
-<!-- Cart Drawer (Slide-in Panel) -->
-<div class="aw-cart-drawer" id="aw-cart-drawer" aria-hidden="true">
-  <div class="aw-cart-drawer__header">
-    <h3>Your Cart <span class="aw-cart-count" style="font-weight:400;color:var(--aw-stone)">({{ cart.item_count }})</span></h3>
-    <button type="button" class="aw-cart-drawer__close" aria-label="Close cart">&times;</button>
+<style>
+.aw-drawer{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:100vw;background:#FAFAF7;z-index:200;transform:translateX(100%);transition:transform .4s cubic-bezier(.28,0,.04,1);display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.08)}
+.aw-drawer.open{transform:translateX(0)}
+.aw-drawer__overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:199;opacity:0;pointer-events:none;transition:opacity .35s}
+.aw-drawer__overlay.open{opacity:1;pointer-events:auto}
+.aw-drawer__header{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:1px solid #E8E4DD}
+.aw-drawer__header h3{font-family:var(--aw-font-heading);font-size:1.2rem;margin:0;color:#1F1B16}
+.aw-drawer__close{background:none;border:none;font-size:1.4rem;color:#5C5648;cursor:pointer;padding:4px}
+.aw-drawer__items{flex:1;overflow-y:auto;padding:20px}
+.aw-drawer__item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid #E8E4DD}
+.aw-drawer__item-img{width:80px;height:80px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#F2EFE8}
+.aw-drawer__item-img img{width:100%;height:100%;object-fit:cover}
+.aw-drawer__item-info{flex:1;min-width:0}
+.aw-drawer__item-info h4{font-size:.9rem;margin:0 0 4px;color:#1F1B16}
+.aw-drawer__item-info p{font-size:.78rem;color:#5C5648;margin:0}
+.aw-drawer__item-price{font-weight:500;font-size:.9rem;color:#1F1B16}
+.aw-drawer__footer{padding:20px;border-top:1px solid #E8E4DD}
+.aw-drawer__total{display:flex;justify-content:space-between;font-size:1.1rem;font-weight:500;color:#1F1B16;margin-bottom:16px}
+.aw-drawer__empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#5C5648;text-align:center;padding:40px}
+@media(max-width:480px){.aw-drawer{width:100vw}}
+</style>
+
+<div class="aw-drawer__overlay" data-cart-overlay></div>
+<div class="aw-drawer" data-cart-drawer>
+  <div class="aw-drawer__header">
+    <h3>Cart ({{ cart.item_count }})</h3>
+    <button class="aw-drawer__close" data-cart-close aria-label="Close cart">&times;</button>
   </div>
 
-  <!-- Items rendered by JS -->
-  <div class="aw-cart-drawer__body" id="aw-cart-items">
-    <div class="aw-cart-empty">
-      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#d4c4b0" stroke-width="1">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-      </svg>
-      <p>Your cart is empty</p>
+  {%- if cart.item_count > 0 -%}
+    <div class="aw-drawer__items">
+      {%- for item in cart.items -%}
+        <div class="aw-drawer__item">
+          <div class="aw-drawer__item-img">
+            {%- if item.image -%}
+              {{ item.image | image_url: width: 160 | image_tag: alt: item.title, widths: '80,160' }}
+            {%- endif -%}
+          </div>
+          <div class="aw-drawer__item-info">
+            <h4>{{ item.product.title }}</h4>
+            <p>{{ item.variant.title }} x {{ item.quantity }}</p>
+          </div>
+          <span class="aw-drawer__item-price">{{ item.final_price | money }}</span>
+        </div>
+      {%- endfor -%}
     </div>
-  </div>
-
-  <!-- Footer -->
-  <div class="aw-cart-drawer__footer" id="aw-cart-footer"></div>
+    <div class="aw-drawer__footer">
+      <div class="aw-drawer__total">
+        <span>Subtotal</span>
+        <span>{{ cart.total_price | money }}</span>
+      </div>
+      <a href="/checkout" class="aw-btn aw-btn--primary" style="width:100%;display:block;text-align:center;margin-bottom:8px">Checkout</a>
+      <a href="{{ routes.cart_url }}" class="aw-btn aw-btn--outline" style="width:100%;display:block;text-align:center">View Cart</a>
+    </div>
+  {%- else -%}
+    <div class="aw-drawer__empty">
+      <p style="font-size:1.1rem;margin-bottom:8px">Your cart is empty</p>
+      <p style="font-size:.88rem;margin-bottom:24px">Discover our handcrafted collection</p>
+      <a href="{{ routes.all_products_collection_url }}" class="aw-btn aw-btn--primary">Start Shopping</a>
+    </div>
+  {%- endif -%}
 </div>
-<!-- Overlay -->
-<div class="aw-cart-drawer__overlay" id="aw-cart-overlay"></div>

@@ -1,41 +1,38 @@
 <style>
-  .aw-categories{padding:var(--spacing-xl) 40px;background:#fff}
-  .aw-categories__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
-  .aw-categories__card{position:relative;border-radius:var(--radius-md);overflow:hidden;aspect-ratio:3/4}
-  .aw-categories__card-img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
-  .aw-categories__card:hover .aw-categories__card-img{transform:scale(1.06)}
-  .aw-categories__card-overlay{
-    position:absolute;inset:0;
-    background:linear-gradient(to top,rgba(44,36,32,.72) 0%,transparent 60%);
-    display:flex;align-items:flex-end;padding:28px;transition:background .35s
-  }
-  .aw-categories__card:hover .aw-categories__card-overlay{background:linear-gradient(to top,rgba(44,36,32,.84) 0%,transparent 65%)}
-  .aw-categories__card-title{font-family:var(--font-heading);font-size:1.4rem;color:#fff;font-weight:600}
-  @media(max-width:768px){.aw-categories{padding:var(--spacing-lg)20px}.aw-categories__grid{grid-template-columns:repeat(2,1fr);gap:16px}}
+.aw-cats{padding:64px 40px;background:#FAFAF7}
+.aw-cats__inner{max-width:1280px;margin:0 auto}
+.aw-cats__heading{font-family:var(--aw-font-heading);font-size:2rem;font-weight:500;color:#1F1B16;text-align:center;margin:0 0 40px}
+.aw-cats__grid{display:grid;grid-template-columns:repeat({{ section.settings.columns_desktop }},1fr);gap:24px}
+.aw-cats__card{position:relative;border-radius:12px;overflow:hidden;background:#fff;transition:transform .3s;text-decoration:none;display:block}
+.aw-cats__card:hover{transform:translateY(-4px)}
+.aw-cats__card-img{aspect-ratio:1/1;background:#E8E4DD;display:flex;align-items:center;justify-content:center;font-size:3rem;color:#B89484}
+.aw-cats__card-img img{width:100%;height:100%;object-fit:cover}
+.aw-cats__card-body{padding:20px;text-align:center}
+.aw-cats__card-body h3{font-family:var(--aw-font-heading);font-size:1.1rem;color:#1F1B16;margin:0 0 6px}
+.aw-cats__card-body p{font-size:.85rem;color:#5C5648;margin:0;font-weight:300}
+@media(max-width:768px){.aw-cats{padding:48px 24px}.aw-cats__grid{grid-template-columns:repeat(2,1fr);gap:16px}}
 </style>
 
-<section class="aw-categories aw-fade-up">
-  <div class="aw-container">
-    <p class="aw-label">{{ section.settings.label | default: 'Shop by Category' }}</p>
-    <h2>{{ section.settings.title | default: 'Curated Collections' }}</h2>
-
-    <div class="aw-categories__grid">
+<section class="aw-cats">
+  <div class="aw-cats__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="aw-cats__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    <div class="aw-cats__grid">
       {%- for block in section.blocks -%}
-        <a href="{{ block.settings.link | default: '#' }}" class="aw-categories__card" {{ block.shopify_attributes }}>
-          {%- if block.settings.image != blank -%}
-            {{ block.settings.image | image_url: width: 500 | image_tag:
-              loading:'lazy', alt:block.settings.title,
-              class:'aw-categories__card-img',
-              widths:'300,400,500'
-            }}
-          {%- else -%}
-            <!-- Fallback gradient background -->
-            <div style="width:100%;height:100%;background:linear-gradient(135deg,#d4c4b0,#8b7355);display:flex;align-items:center;justify-content:center">
-              <span style="font-family:var(--font-heading);color:#fff;font-size:1.5rem;font-weight:600">{{ block.settings.title }}</span>
-            </div>
-          {%- endif -%}
-          <div class="aw-categories__card-overlay">
-            <h3 class="aw-categories__card-title">{{ block.settings.title }}</h3>
+        <a href="{{ block.settings.link }}" class="aw-cats__card" {{ block.shopify_attributes }}>
+          <div class="aw-cats__card-img">
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 400 | image_tag: alt: block.settings.title, widths: '200,400,600' }}
+            {%- else -%}
+              {{ block.settings.icon | default: '&#9670;' }}
+            {%- endif -%}
+          </div>
+          <div class="aw-cats__card-body">
+            <h3>{{ block.settings.title }}</h3>
+            {%- if block.settings.description != blank -%}
+              <p>{{ block.settings.description }}</p>
+            {%- endif -%}
           </div>
         </a>
       {%- endfor -%}
@@ -46,33 +43,24 @@
 {% schema %}
 {
   "name": "Featured Categories",
-  "tag": "section",
-  "class": "aw-categories-section",
+  "class": "section-featured-categories",
   "settings": [
-    { "type":"text","id":"label","label":"Section Label","default":"Shop by Category" },
-    { "type":"text","id":"title","label":"Heading","default":"Our Collections" }
+    {"type": "text","id": "heading","label": "Heading","default": "Shop by Category"},
+    {"type": "range","id": "columns_desktop","label": "Desktop columns","min":2,"max":4,"step":1,"default":3}
   ],
-  "blocks": [
-    {
-      "type":"category",
-      "name":"Category Card",
-      "settings": [
-        { "type":"text","id":"title","label":"Title","default":"Vases & Ceramics" },
-        { "type":"image_picker","id":"image","label":"Card Image" },
-        { "type":"url","id":"link","label":"Link to Collection" }
-      ]
-    }
-  ],
-  "presets":[
-    {
-      "name":"Featured Categories",
-      "category":"Collection",
-      "blocks":[
-        {"type":"category","settings":{"title":"Vases & Ceramics"}},
-        {"type":"category","settings":{"title":"Textiles & Linen"}},
-        {"type":"category","settings":{"title":"Candles & Scents"}}
-      ]
-    }
-  ]
+  "blocks": [{
+    "type": "category","name": "Category","settings": [
+      {"type": "text","id": "title","label": "Title","default": "Category Name"},
+      {"type": "textarea","id": "description","label": "Description","default": "Category description"},
+      {"type": "url","id": "link","label": "Link","default": "/collections/all"},
+      {"type": "image_picker","id": "image","label": "Image"},
+      {"type": "text","id": "icon","label": "Fallback icon (emoji)","default": "*","info": "Shown when no image is set"}
+    ]
+  }],
+  "presets": [{"name": "Featured Categories", "category": "Collection","blocks":[
+    {"type":"category","settings":{"title":"Table Runners","description":"Hand-knotted natural fibers","link":"/collections/all","icon":"*"}},
+    {"type":"category","settings":{"title":"Baskets & Storage","description":"Cotton rope artisan craft","link":"/collections/all","icon":"*"}},
+    {"type":"category","settings":{"title":"Cushions & Textiles","description":"Soft textures in earthy tones","link":"/collections/all","icon":"*"}}
+  ]}]
 }
 {% endschema %}

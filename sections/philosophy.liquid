@@ -1,41 +1,31 @@
 <style>
-  .aw-philosophy{padding:var(--spacing-xl)40px;background:var(--aw-wheat);text-align:center;position:relative}
-  .aw-philosophy__inner{max-width:720px;margin:0 auto}
-  .aw-philosophy__quote{
-    font-family:var(--font-heading);font-style:italic;
-    font-size:clamp(1.5rem,3vw,2.2rem);color:var(--aw-earth);
-    line-height:1.5;margin:32px auto 24px;position:relative;font-weight:400
-  }
-  .aw-philosophy__quote::before{
-    content:'\201C';font-size:5rem;display:block;color:var(--aw-clay);opacity:.3;
-    line-height:1;margin-bottom:-20px;font-family:Georgia,serif
-  }
-  .aw-philosophy__text{font-size:1.05rem;color:var(--aw-stone);line-height:1.8;font-weight:300;max-width:580px;margin:0 auto}
-  .aw-philosophy__text p{color:var(--aw-stone)}
+.aw-phil{padding:80px 40px;background:#FAFAF7;text-align:center}
+.aw-phil__inner{max-width:720px;margin:0 auto}
+.aw-phil__label{font-size:.75rem;text-transform:uppercase;letter-spacing:3px;color:#7A8471;font-weight:500;margin-bottom:16px;display:block}
+.aw-phil__quote{font-family:var(--aw-font-heading);font-size:2rem;font-weight:400;font-style:italic;color:#8B6F47;line-height:1.6;margin:0 0 20px}
+.aw-phil__author{font-size:.9rem;color:#5C5648;font-weight:300}
+@media(max-width:768px){.aw-phil{padding:56px 24px}.aw-phil__quote{font-size:1.4rem}}
 </style>
 
-<section class="aw-philosophy aw-fade-up">
-  <div class="aw-philosophy__inner">
-    <p class="aw-label">{{ section.settings.label | default: 'Our Philosophy' }}</p>
-    <blockquote class="aw-philosophy__quote">{{ section.settings.quote }}</blockquote>
-    <div class="aw-philosophy__text">{{ section.settings.text }}</div>
+<section class="aw-phil">
+  <div class="aw-phil__inner">
+    <span class="aw-phil__label">{{ section.settings.label }}</span>
+    <blockquote class="aw-phil__quote">{{ section.settings.quote }}</blockquote>
+    {%- if section.settings.author != blank -%}
+      <p class="aw-phil__author">{{ section.settings.author }}</p>
+    {%- endif -%}
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Philosophy",
-  "tag": "section",
-  "class": "aw-philosophy-section",
-  "settings":[
-    {"type":"text","id":"label","label":"Label","default":"Our Philosophy"},
-    {"type":"textarea","id":"quote","label":"Quote Text",
-      "default":"In a world of mass production, we choose the path of imperfection — where each crack tells a story, each thread reveals the hand that wove it."},
-    {
-      "type":"richtext","id":"text","label":"Description",
-      "default":"<p>From hand-knotted table runners to cotton rope baskets, our collection invites you to slow down and appreciate the beauty found in nature's own design.</p>"
-    }
+  "name": "Philosophy Quote",
+  "class": "section-philosophy",
+  "settings": [
+    {"type": "text","id": "label","label": "Label","default": "Our Philosophy"},
+    {"type": "textarea","id": "quote","label": "Quote","default": "Imperfection is not a flaw. It is a reminder that in a world of mass production, the beauty of the human hand remains irreplaceable."},
+    {"type": "text","id": "author","label": "Author / Attribution","default": "Aela Daily Studio, Berlin"}
   ],
-  "presets":[{"name":"Philosophy","category":"Text"}]
+  "presets": [{"name": "Philosophy Quote", "category": "Text"}]
 }
 {% endschema %}
