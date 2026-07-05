@@ -1,1 +1,1 @@
-{"sections": {"main-product": {"type": "main-product", "settings": {}}, "related-products": {"type": "related-products", "settings": {}}}, "order": ["main-product", "related-products"]}
+{"sections": {"main-product": {"type": "main-product", "settings": {}}, "related-products": {"type": "related-products", "settings": {"title": "You May Also Like", "products_count": 4}}}, "order": ["main-product", "related-products"]}

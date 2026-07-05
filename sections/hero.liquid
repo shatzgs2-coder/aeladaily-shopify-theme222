@@ -5,59 +5,89 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: linear-gradient(170deg, #f5f0e8 0%, #faf7f2 40%, #ede6d8 100%);
     position: relative;
     overflow: hidden;
   }
-  .aw-hero::before {
+  /* Background image layer */
+  .aw-hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .aw-hero__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .aw-hero__bg::after {
     content: '';
     position: absolute;
-    width: 600px; height: 600px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(196,168,130,0.12) 0%, transparent 70%);
-    top: -200px; right: -100px;
+    inset: 0;
+    background: linear-gradient(170deg, rgba(245,240,232,0.92) 0%, rgba(250,247,242,0.85) 40%, rgba(237,230,216,0.90) 100%);
   }
-  .aw-hero::after {
-    content: '';
-    position: absolute;
-    width: 400px; height: 400px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(183,183,164,0.10) 0%, transparent 70%);
-    bottom: -150px; left: -80px;
+  /* Gradient fallback when no image */
+  .aw-hero--no-image {
+    background: linear-gradient(170deg, #f5f0e8 0%, #faf7f2 40%, #ede6d8 100%);
   }
-  .aw-hero__content { position: relative; z-index: 1; max-width: 720px; padding: 0 24px; }
-  .aw-hero__eyebrow { font-size: .75rem; text-transform: uppercase; letter-spacing: 3px; color: #c17f59; margin-bottom: 24px; font-weight: 500; }
-  .aw-hero__title { font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:400;color:#2c2420;line-height:1.15;margin-bottom:24px; }
-  .aw-hero__title em { font-style:italic;color:#8b7355; }
-  .aw-hero__subtitle { font-size:1.1rem;color:#6b5e53;max-width:480px;margin:0 auto 40px;font-weight:300;line-height:1.8; }
-  .aw-hero__ctas { display:flex;gap:16px;justify-content:center;flex-wrap:wrap; }
-  .aw-hero__scroll { position:absolute;bottom:40px;left:50%;transform:translateX(-50%);animation:awFloat 2s ease-in-out infinite; }
-  .aw-hero__scroll span{display:block;width:1px;height:48px;background:#c4a882;margin:0 auto 8px; }
-  .aw-hero__scroll small{font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:#c4a882; }
-  @keyframes awFloat {0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
 
-  @media (max-width:768px){ .aw-hero{min-height:80vh} .aw-hero__ctas{flex-direction:column;align-items:center} }
+  /* Decorative circles */
+  .aw-hero__deco {
+    position: absolute; z-index: 1; pointer-events: none;
+  }
+  .aw-hero__deco--1 { width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(196,168,130,.12) 0%,transparent 70%);top:-200px;right:-100px }
+  .aw-hero__deco--2 { width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(183,183,164,.10) 0%,transparent 70%);bottom:-150px;left:-80px }
+
+  .aw-hero__content { position:relative;z-index:2;max-width:720px;padding:0 24px }
+  .aw-hero__eyebrow { font-size:.75rem;text-transform:uppercase;letter-spacing:3px;color:#c17f59;margin-bottom:24px;font-weight:500 }
+  .aw-hero__title { font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:400;color:#2c2420;line-height:1.15;margin-bottom:24px }
+  .aw-hero__title em { font-style:italic;color:#8b7355 }
+  .aw-hero__subtitle { font-size:1.1rem;color:#6b5e53;max-width:480px;margin:0 auto 40px;font-weight:300;line-height:1.8 }
+  .aw-hero__ctas { display:flex;gap:16px;justify-content:center;flex-wrap:wrap }
+  .aw-hero__scroll { position:absolute;bottom:40px;left:50%;transform:translateX(-50%);animation:awFloat 2s ease-in-out infinite;z-index:2 }
+  .aw-hero__scroll span{display:block;width:1px;height:48px;background:#c4a882;margin:0 auto 8px }
+  .aw-hero__scroll small{font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:#c4a882 }
+  @keyframes awFloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+  @media(max-width:768px){ .aw-hero{min-height:80vh} .aw-hero__ctas{flex-direction:column;align-items:center} }
 </style>
 
-<section class="aw-hero">
+<section class="aw-hero{% if section.settings.image == blank %} aw-hero--no-image{% endif %}">
+  <!-- Background Image -->
+  <div class="aw-hero__bg">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 1920 | image_tag: loading:'eager', alt:'' }}
+    {%- endif -%}
+  </div>
+
+  <!-- Decorative circles -->
+  <div class="aw-hero__deco aw-hero__deco--1"></div>
+  <div class="aw-hero__deco aw-hero__deco--2"></div>
+
+  <!-- Content -->
   <div class="aw-hero__content">
     <p class="aw-hero__eyebrow">{{ section.settings.eyebrow | default: "Est. 2026 — Berlin" }}</p>
     <h1 class="aw-hero__title">{{ section.settings.title | default: "The Beauty of <em>Imperfection</em>" }}</h1>
-    <p class="aw-hero__subtitle">{{ section.settings.subtitle | default: "Handcrafted home decor inspired by wabi-sabi philosophy. Curated pieces that bring warmth, texture, and quiet beauty to every corner of your living space." }}</p>
+    <p class="aw-hero__subtitle">{{ section.settings.subtitle | default: "Handcrafted home decor inspired by wabi-sabi philosophy. Curated pieces that bring warmth, texture, and quiet beauty to your living space." }}</p>
     <div class="aw-hero__ctas">
-      <a href="/collections/all" class="aw-btn aw-btn--primary">{{ section.settings.cta_primary | default: "Explore Collection" }}</a>
-      {% if section.settings.cta_secondary != blank %}
+      <a href="{{ section.settings.cta_primary_url | default: '/collections/all' }}" class="aw-btn aw-btn--primary">{{ section.settings.cta_primary | default: "Explore Collection" }}</a>
+      {%- if section.settings.cta_secondary != blank -%}
         <a href="{{ section.settings.cta_secondary_url | default: '/pages/about' }}" class="aw-btn aw-btn--outline">{{ section.settings.cta_secondary }}</a>
-      {% endif %}
+      {%- endif -%}
     </div>
   </div>
-  <div class="aw-hero__scroll">
-    <span></span><small>Scroll</small>
-  </div>
+
+  <div class="aw-hero__scroll"><span></span><small>Scroll</small></div>
 </section>
 
 {% schema %}
 {
   "name": "Hero",
   "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
+    },
     {
       "type": "text",
       "id": "eyebrow",
@@ -68,7 +98,7 @@
       "type": "html",
       "id": "title",
       "label": "Hero Title (HTML allowed)",
-      "default": "The Beauty of <em>Imperfection</em>"
+      "default": "Handcrafted <em>Wabi-Sabi</em> Home Decor"
     },
     {
       "type": "textarea",
@@ -82,9 +112,15 @@
       "default": "Explore Collection"
     },
     {
+      "type": "url",
+      "id": "cta_primary_url",
+      "label": "Primary CTA URL"
+    },
+    {
       "type": "text",
       "id": "cta_secondary",
-      "label": "Secondary CTA Text"
+      "label": "Secondary CTA Text",
+      "default": "Our Story"
     },
     {
       "type": "url",
