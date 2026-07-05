@@ -1,206 +1,284 @@
-{%- assign product = section.settings.product | default: product -%}
+<style>
+  .aw-product-page {
+    padding: 60px 40px;
+    background: var(--aw-cream);
+    min-height: 70vh;
+  }
+  .aw-product-page__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  /* Gallery */
+  .aw-product-page__gallery { position: sticky; top: 100px; }
+  .aw-product-page__main-img {
+    aspect-ratio: 1;
+    background: var(--aw-linen);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .aw-product-page__main-img img { width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg); }
+  .aw-product-page__thumbnails { display:flex; gap:10px; flex-wrap:wrap; }
+  .aw-product-page__thumb {
+    width:72px;height:72px;border-radius:8px;overflow:hidden;cursor:pointer;
+    border:2px solid transparent; transition:border-color 0.2s;
+  }
+  .aw-product-page__thumb:hover,
+  .aw-product-page__thumb.active { border-color:#8b7355; }
+  .aw-product-page__thumb img { width:100%;height:100%;object-fit:cover; }
 
-<section class="product-section">
-  <div class="page-width product-container">
-    <!-- Product Gallery -->
-    <div class="product-gallery">
-      {%- if product.featured_image -%}
-        <div class="gallery-main">
-          <img
-            src="{{ product.featured_image | image_url: width: 800 }}"
-            alt="{{ product.featured_image.alt | default: product.title | escape }}"
-            id="main-product-image"
-            width="800"
-            height="{{ 800 | divided_by: product.featured_image.aspect_ratio | round }}"
-          >
-        </div>
-        {% if product.images.size > 1 %}
-          <div class="gallery-thumbs">
-            {%- for image in product.images limit: 4 -%}
-              <button class="thumb-btn" data-image-url="{{ image | image_url: width: 800 }}">
-                <img src="{{ image | image_url: width: 100 }}" alt="" loading="lazy" width="100" height="100">
-              </button>
-            {%- endfor -%}
+  /* Info */
+  .aw-product-page__info { padding-top: 8px; }
+
+  /* Type label */
+  .aw-product-page__type {
+    font-size:0.72rem;color:var(--aw-accent);text-transform:uppercase;letter-spacing:2px;
+    margin-bottom:12px;font-weight:600;display:inline-block;
+  }
+
+  /* Title */
+  .aw-product-page__title {
+    font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);
+    color:var(--aw-dark);line-height:1.2;margin-bottom:16px;font-weight:500;
+  }
+
+  /* Price */
+  .aw-product-page__price {
+    font-family:'Cormorant Garamond',serif;font-size:2rem;color:#8b7355;
+    font-weight:600;margin-bottom:24px;
+  }
+  .aw-product-page__price-compare {
+    text-decoration:line-through;color:var(--color-text-muted);margin-left:12px;font-size:1.15rem;
+  }
+
+  /* Divider */
+  .aw-product-page__divider { height:1px;background:var(--color-border);margin:24px 0; }
+
+  /* Description */
+  .aw-product-page__desc { font-size:1rem;color:var(--aw-stone);line-height:1.85;margin-bottom:28px; }
+
+  /* Variants (Atelier pill style) */
+  .aw-product-page__variants { margin-bottom:28px; }
+  .aw-product-page__variants label {
+    display:block;font-size:0.78rem;text-transform:uppercase;letter-spacing:1.5px;
+    color:var(--aw-charcoal);margin-bottom:10px;font-weight:600;
+  }
+  .aw-variant-btns-row { display:flex;gap:8px;flex-wrap:wrap; }
+  .aw-variant-btn {
+    padding:8px 20px;border:1.5px solid var(--color-border);background:transparent;
+    border-radius:4px;font-size:0.88rem;color:var(--aw-charcoal);cursor:pointer;
+    transition:all 0.2s;
+  }
+  .aw-variant-btn:hover,
+  .aw-variant-btn.selected { border-color:#8b7355;background:#8b7355;color:white; }
+
+  /* Color swatches */
+  .aw-color-swatches { display:flex;gap:10px;flex-wrap:wrap;margin-top:6px; }
+  .aw-color-swatch {
+    width:32px;height:32px;border-radius:50%;border:2px solid transparent;
+    cursor:pointer;transition:all 0.2s;outline-offset:2px;
+  }
+  .aw-color-swatch:hover,
+  .aw-color-swatch.selected { border-color:var(--aw-charcoal);transform:scale(1.12); }
+
+  /* Quantity */
+  .aw-product-page__qty {
+    display:flex;align-items:center;gap:0;width:fit-content;
+    border:1.5px solid var(--color-border);border-radius:4px;overflow:hidden;margin-bottom:24px;
+  }
+  .aw-product-page__qty-btn {
+    width:40px;height:44px;background:transparent;border:none;
+    font-size:1.2rem;color:var(--aw-charcoal);cursor:pointer;transition:background 0.2s;
+  }
+  .aw-product-page__qty-btn:hover { background:var(--aw-linen); }
+  .aw-product-page__qty-input {
+    width:50px;height:44px;border:none;border-left:1.5px solid var(--color-border);
+    border-right:1.5px solid var(--color-border);text-align:center;font-size:1rem;
+    color:var(--aw-charcoal);background:transparent;-moz-appearance:textfield;
+  }
+
+  /* Add to Cart Button (Atelier pill) */
+  .aw-add-btn {
+    width:100%;padding:16px;background:#8b7355;color:white;border:none;border-radius:50px;
+    font-size:0.9rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+    transition:all 0.3s;margin-bottom:14px;
+  }
+  .aw-add-btn:hover { background:var(--aw-dark);transform:translateY(-2px);box-shadow:var(--shadow-md); }
+  .aw-buy-btn {
+    width:100%;padding:16px;background:transparent;color:#8b7355;
+    border:1.5px solid #8b7355;border-radius:50px;font-size:0.9rem;
+    letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-bottom:28px;
+  }
+  .aw-buy-btn:hover { background:#8b7355;color:white; }
+
+  /* Feature list */
+  .aw-feature-list { list-style:none;padding:0;margin:0; }
+  .aw-feature-list li {
+    display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--aw-stone);padding:6px 0;
+  }
+  .aw-feature-list li::before { content:'\2726';color:var(--aw-accent);font-size:0.65rem; }
+
+  @media (max-width:768px) {
+    .aw-product-page{padding:32px 20px;}
+    .aw-product-page__inner{grid-template-columns:1fr;gap:32px;}
+    .aw-product-page__gallery{position:static;}
+  }
+</style>
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<section class="aw-product-page">
+  <div class="aw-product-page__inner">
+
+    <!-- Gallery -->
+    <div class="aw-product-page__gallery">
+      <div class="aw-product-page__main-img" id="aw-main-img">
+        {% if product.featured_image %}
+          {{ product.featured_image | image_url: width: 800 | image_tag:
+            id: 'aw-main-img-tag',
+            loading: 'eager',
+            alt: product.title
+          }}
+        {% else %}
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;
+            color:var(--aw-clay);font-family:'Cormorant Garamond',serif;font-size:2rem;letter-spacing:4px;">
+            AELA Daily
           </div>
         {% endif %}
-      {%- else -%}
-        <div class="gallery-placeholder">
-          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+
+      {% if product.images.size > 1 %}
+        <div class="aw-product-page__thumbnails">
+          {% for image in product.images limit: 6 %}
+            <div class="aw-product-page__thumb {% if forloop.first %}active{% endif %}"
+              onclick="document.getElementById('aw-main-img-tag').src='{{ image | image_url: width: 800 }}';
+                document.querySelectorAll('.aw-product-page__thumb').forEach(t=>t.classList.remove('active'));
+                this.classList.add('active')">
+              {{ image | image_url: width: 150 | image_tag: alt: product.title }}
+            </div>
+          {% endfor %}
         </div>
-      {%- endif -%}
+      {% endif %}
     </div>
 
     <!-- Product Info -->
-    <div class="product-info">
-      <!-- Vendor / Breadcrumb -->
-      {%- if product.vendor != blank -%}
-        <span class="product-vendor">{{ product.vendor }}</span>
-      {%- endif -%}
+    <div class="aw-product-page__info">
+      <span class="aw-product-page__type">{{ product.type | default: 'Home Decor' }}</span>
+      <h1 class="aw-product-page__title">{{ product.title }}</h1>
+      <p class="aw-product-page__price">
+        {{ current_variant.price | money }}
+        {% if current_variant.compare_at_price > current_variant.price %}
+          <span class="aw-product-page__price-compare">{{ current_variant.compare_at_price | money }}</span>
+        {% endif %}
+      </p>
 
-      <!-- Title -->
-      <h1 class="product-title">{{ product.title }}</h1>
+      <div class="aw-product-page__divider"></div>
 
-      <!-- Price -->
-      <div class="product-price-wrapper">
-        <span class="price--current">{{ product.price | money }}</span>
-        {%- if product.compare_at_price > product.price -%}
-          <span class="price--compare">{{ product.compare_at_price | money }}</span>
-          <span class="price--save">Save {{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%</span>
-        {%- endif -%}
-      </div>
+      <div class="aw-product-page__desc">{{ product.description }}</div>
 
-      <!-- Short Description -->
-      {%- if product.description != blank -%}
-        <div class="product-short-desc">
-          {{ product.description | strip_html | truncatewords: 30 }}
-        </div>
-      {%- endif -%}
+      <!-- Product Form -->
+      {% form 'product', product, id: 'aw-product-form' %}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
 
-      <!-- Color Picker (Variant Option) -->
-      {%- if product.has_only_default_variant == false -%}
-        {%- for option in product.options_with_values -%}
-          {%- if option.name == 'Color' or option.name == 'Colour' -%}
-          <div class="product-option" data-option-name="{{ option.name | handleize }}">
-            <label>{{ option.name }}: <strong data-selected-value>{{ option.selected_value }}</strong></label>
-            <div class="swatch-group">
-              {%- for value in option.values -%}
-                <button
-                  type="button"
-                  class="swatch swatch--color{% if value == option.selected_value %} is-active{% endif %}"
-                  data-value="{{ value }}"
-                  aria-label="{{ value }}"
-                  style="--swatch-color: {{ value | handle }}"
-                >
-                  <span class="swatch__check">&check;</span>
-                </button>
-              {%- endfor -%}
+        <!-- Variant Buttons -->
+        {% if product.has_only_default_variant == false %}
+          {% for option in product.options_with_values %}
+            <div class="aw-product-page__variants">
+              <label>{{ option.name }}</label>
+              <div class="aw-variant-btns-row">
+                {% for value in option.values %}
+                  <button type="button" class="aw-variant-btn{% if option.selected_value == value %} selected{% endif %}">
+                    {{ value }}
+                  </button>
+                {% endfor %}
+              </div>
             </div>
-          </div>
-          {%- else -%}
-          <div class="product-option" data-option-name="{{ option.name | handleize }}">
-            <label>{{ option.name }}: <strong data-selected-value>{{ option.selected_value }}</strong></label>
-            <div class="size-btns">
-              {%- for value in option.values -%}
-                <button type="button" class="size-btn{% if value == option.selected_value %} is-active{% endif %}" data-value="{{ value }}">{{ value }}</button>
-              {%- endfor -%}
-            </div>
-          </div>
-          {%- endif -%}
-        {%- endfor -%}
-      {%- endif -%}
+          {% endfor %}
+        {% endif %}
 
-      <!-- Size Guide Table -->
-      {%- if section.settings.show_size_guide -%}
-      <details class="details-modal size-guide-details">
-        <summary class="details-summary">Size Guide</summary>
-        <div class="details-content">
-          <table class="size-table">
-            <thead>
-              <tr>
-                <th>Size</th>
-                <th>Dimensions</th>
-                <th>Weight</th>
-                <th>Fill</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>S</td><td>30 × 20 cm</td><td>~180g</td><td>Polyester fiber</td></tr>
-              <tr><td>M</td><td>40 × 25 cm</td><td>~300g</td><td>Polyester fiber</td></tr>
-              <tr><td>L</td><td>50 × 35 cm</td><td>~500g</td><td>PP cotton</td></tr>
-            </tbody>
-          </table>
+        <!-- Quantity -->
+        <div class="aw-product-page__qty">
+          <button type="button" class="aw-product-page__qty-btn"
+            onclick="let i=this.nextElementSibling;if(i.value>1)i.value--">&minus;</button>
+          <input type="number" name="quantity" value="1" min="1" class="aw-product-page__qty-input">
+          <button type="button" class="aw-product-page__qty-btn"
+            onclick="this.previousElementSibling.value++">+</button>
         </div>
-      </details>
-      {%- endif -%}
 
-      <!-- Quantity & Add to Cart -->
-      <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" id="product-form">
-        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-selected-variant>
+        <!-- Add to Cart -->
+        <button type="submit" name="add" class="aw-add-btn">
+          Add to Cart
+        </button>
+      {% endform %}
 
-        <div class="product-actions">
-          <quantity-input class="qty-selector">
-            <button type="button" class="qty-btn" data-decrease>&minus;</button>
-            <input type="number" name="quantity" value="1" min="1" class="qty-input" readonly>
-            <button type="button" class="qty-btn" data-increase>&plus;</button>
-          </quantity-input>
+      <div class="aw-product-page__divider"></div>
 
-          <button type="submit" name="add" class="btn btn--primary btn--add-to-cart"{% unless product.available %} disabled{% endunless %}>
-            {%- if product.available -%}
-              {{ 'products.product.add_to_cart' | t }}
-            {%- else -%}
-              Sold Out
-            {%- endif -%}
-          </button>
-        </div>
-      </form>
-
-      <!-- Product Details Accordion -->
-      {%- if section.settings.show_details -%}
-      <div class="product-details">
-        <details class="details-modal" open>
-          <summary class="details-summary">Description</summary>
-          <div class="details-content rte">{{ product.description }}</div>
-        </details>
-        <details class="details-modal">
-          <summary class="details-summary">Material & Care</summary>
-          <div class="details-content">
-            <p>{{ section.settings.material_text | default: "Made from premium natural materials. Spot clean only; air dry flat." }}</p>
-          </div>
-        </details>
-        <details class="details-modal">
-          <summary class="details-summary">Shipping & Returns</summary>
-          <div class="details-content">
-            <p>{{ section.settings.shipping_text | default: "Free shipping on orders over €50. Returns accepted within 14 days of delivery." }}</p>
-          </div>
-        </details>
-      </div>
-      {%- endif -%}
+      <!-- Features List -->
+      <ul class="aw-feature-list">
+        <li>Handcrafted with natural materials</li>
+        <li>Wabi-sabi inspired design</li>
+        <li>Free shipping in Germany over &euro;49</li>
+        <li>30-day return guarantee</li>
+        <li>Carbon-neutral packaging</li>
+      </ul>
     </div>
   </div>
 </section>
 
-{{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+<!-- Size Guide & Details Accordions -->
+<div style="max-width:1100px;margin:0 auto;padding:0 40px 64px;">
+  <details class="details-modal" open style="margin-bottom:12px;">
+    <summary class="details-summary">Size Guide</summary>
+    <div class="details-content">
+      <table class="size-table">
+        <thead>
+          <tr><th>Size</th><th>Dimensions</th><th>Filling</th><th>Weight</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>S</td><td>40 x 40 cm</td><td>Buckwheat hull</td><td>~1.2 kg</td></tr>
+          <tr><td>M</td><td>50 x 50 cm</td><td>Buckwheat hull</td><td>~1.8 kg</td></tr>
+          <tr><td>L</td><td>60 x 60 cm</td><td>Buckwheat hull</td><td>~2.5 kg</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="details-modal" style="margin-bottom:12px;">
+    <summary class="details-summary">Materials & Care</summary>
+    <div class="details-content">
+      <p>Cover: 100% washed linen, pre-washed for softness. Inner: organic buckwheat hull filling.</p>
+      <p><strong>Care:</strong> Machine wash cover on gentle cycle at 30&deg;C. Tumble dry low. Do not bleach. Iron medium heat if needed.</p>
+    </div>
+  </details>
+
+  <details class="details-modal" style="margin-bottom:12px;">
+    <summary class="details-summary">Shipping & Returns</summary>
+    <div class="details-content">
+      <p>Free shipping within Germany on orders over &euro;49. EU shipping from &euro;6.90. Worldwide from &euro;14.90.</p>
+      <p>30-day hassle-free returns. Items must be unused and in original packaging.</p>
+    </div>
+  </details>
+
+  <details class="details-modal">
+    <summary class="details-summary">Origin Story</summary>
+    <div class="details-content">
+      <p>Each piece is hand-finished in our small studio in Germany. We source natural materials directly from artisans who share our values of sustainability and mindful craftsmanship.</p>
+    </div>
+  </details>
+</div>
 
 {% schema %}
 {
   "name": "Main Product",
-  "tag": "section",
   "class": "product-section",
+  "tag": "section",
   "settings": [
-    {
-      "type": "product",
-      "id": "product",
-      "label": "Product"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_size_guide",
-      "default": true,
-      "label": "Show size guide"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_details",
-      "default": true,
-      "label": "Show details accordion"
-    },
-    {
-      "type": "textarea",
-      "id": "material_text",
-      "default": "Made from premium natural materials. Spot clean only; air dry flat.",
-      "Label": "Material text"
-    },
-    {
-      "type": "textarea",
-      "id": "shipping_text",
-      "default": "Free shipping on orders over €50. Returns accepted within 14 days of delivery.",
-      "label": "Shipping text"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Main Product"
-    }
+    {"type":"checkbox","id":"show_vendor","default":true,"label":"Show vendor"},
+    {"type":"checkbox","id":"show_sku","default":false,"label":"Show SKU"}
   ]
 }
 {% endschema %}

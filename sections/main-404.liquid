@@ -1,22 +1,23 @@
-<div class="page-404">
-  <div class="page-width page-404__inner">
-    <h1>404</h1>
-    <p>{{ 'general.404.title' | t | default: 'Page Not Found' }}</p>
-    <p>{{ 'general.404.subtext' | t | default: "The page you're looking for doesn't exist or has been moved." }}</p>
-    <a href="{{ routes.root_url }}" class="btn btn--primary">{{ 'general.404.link' | t | default: 'Back to Homepage' }}</a>
-  </div>
+<style>
+  .aw-404 {
+    padding: 100px 20px; text-align:center;
+    background: var(--aw-linen); min-height:60vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+  }
+  .aw-404__title { font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,8vw,6rem);color:#d4cec4;font-weight:400;line-height:1;margin-bottom:16px; }
+  .aw-404__text { font-size:1.1rem;color:var(--aw-stone);margin-bottom:32px;max-width:420px;line-height:1.7; }
+</style>
+
+<div class="aw-404">
+  <h1 class="aw-404__title">404</h1>
+  <p class="aw-404__text">This page seems to have wandered off the path. Let's find our way back home.</p>
+  <a href="{{ routes.root_url }}" class="btn btn--primary btn--large">Back to Homepage</a>
 </div>
 
 {% schema %}
 {
   "name": "Main 404",
   "tag": "section",
-  "class": "section-404",
-  "settings": [],
-  "presets": [
-    {
-      "name": "Main 404"
-    }
-  ]
+  "settings": []
 }
 {% endschema %}

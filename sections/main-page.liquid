@@ -1,52 +1,30 @@
-<div class="main-page">
-  <div class="page-width">
-    <div class="rte page-content">
-      {{ page.content }}
-    </div>
-  </div>
-</div>
-
 <style>
-.main-page { padding: var(--space-2xl) 0; }
-.page-content { max-width: 800px; margin: 0 auto; }
-.page-content h1 { font-size: var(--font-size-3xl); margin-bottom: var(--space-lg); }
-.page-content h2 { font-size: var(--font-size-2xl); margin-top: var(--space-2xl); }
-.page-content h3 { font-size: var(--font-size-xl); margin-top: var(--space-xl); }
-.page-content p { line-height: 1.8; color: var(--color-text-light); }
-.page-content ul, .page-content ol {
-  list-style: disc inside;
-  padding-left: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-.page-content img {
-  border-radius: var(--radius-md);
-  max-width: 100%;
-  height: auto;
-  margin: var(--space-xl) auto;
-  display: block;
-}
-.page-content blockquote {
-  border-left: 3px solid var(--color-accent);
-  padding-left: var(--space-lg);
-  margin: var(--space-lg) 0;
-  color: var(--color-text-light);
-  font-style: italic;
-}
-@media (max-width: 768px) {
-  .main-page { padding: var(--space-xl) 0; }
-}
+  .aw-page { padding: var(--space-2xl) 0 var(--space-3xl); background: white; }
+  .aw-page__inner { max-width: 780px; margin:0 auto; padding:0 40px; }
+  .aw-page__inner h1{font-family:'Cormorant Garamond',serif;color:var(--aw-dark);font-size:clamp(2rem,4vw,3rem);line-height:1.15;margin-bottom:28px;}
+  .aw-page__inner h2,.aw-page__inner h3{font-family:'Cormorant Garamond',serif;color:var(--aw-dark);}
+  .aw-page__body{font-size:1rem;line-height:1.85;color:var(--aw-stone);}
+  .aw-page__body img{border-radius:8px;margin:24px 0;}
+
+  @media(max-width:768px){.aw-page__inner{padding:0 20px;}}
 </style>
+
+<section class="aw-page">
+  <div class="aw-page__inner">
+    {% if page.content != blank %}
+      <h1>{{ page.title }}</h1>
+      <div class="aw-page__body rte">{{ page.content }}</div>
+    {% else %}
+      <h1>{{ page.title }}</h1>
+      <p style="color:var(--aw-stone);">Page content coming soon.</p>
+    {% endif %}
+  </div>
+</section>
 
 {% schema %}
 {
   "name": "Main Page",
   "tag": "section",
-  "class": "main-page-section",
-  "settings": [],
-  "presets": [
-    {
-      "name": "Main Page"
-    }
-  ]
+  "settings": []
 }
 {% endschema %}

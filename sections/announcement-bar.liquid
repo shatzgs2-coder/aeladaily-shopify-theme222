@@ -1,31 +1,50 @@
-<div class="announcement-bar" role="region" aria-label="{{ 'sections.announcement_bar.announcement' | t }}">
-  {%- if section.settings.text != blank -%}
+<style>
+  .aw-announcement {
+    background: var(--aw-dark);
+    color: var(--aw-white);
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+  }
+  .aw-announcement__link { color: inherit; text-decoration: none; }
+  .aw-announcement a:hover { color: var(--aw-wheat); }
+  .aw-announcement--hidden { display: none; }
+</style>
+
+{%- if section.settings.text != blank -%}
+<div class="aw-announcement" id="announcement-bar" role="region" aria-label="{{ 'sections.announcement_bar.announcement' | t | default: 'Announcement' }}">
+  <div class="page-width">
     {%- if section.settings.link != blank -%}
-      <a href="{{ section.settings.link }}" class="announcement-bar__link">
-    {%- endif -%}
-      <p class="announcement-bar__message center">
+      <a href="{{ section.settings.link }}" class="aw-announcement__link">
         {{ section.settings.text }}
-        {% if section.settings.show_code %}
-          <span class="announcement-bar__code">{{ section.settings.code_text }}</span>
-        {% endif %}
-      </p>
-    {%- if section.settings.link != blank -%}
+        {%- if section.settings.show_code and section.settings.code_text != blank -%}
+          <span class="aw-announcement__code">{{ section.settings.code_text }}</span>
+        {%- endif -%}
       </a>
+    {%- else -%}
+      <p class="aw-announcement__message">
+        {{ section.settings.text }}
+        {%- if section.settings.show_code and section.settings.code_text != blank -%}
+          <span class="aw-announcement__code">{{ section.settings.code_text }}</span>
+        {%- endif -%}
+      </p>
     {%- endif -%}
-  {%- endif -%}
+  </div>
 </div>
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Announcement bar",
-  "tag": "aside",
+  "name": "Announcement Bar",
   "class": "announcement-bar-section",
   "settings": [
     {
       "type": "text",
       "id": "text",
       "default": "Free shipping on orders over €50 | Wabi-sabi living essentials",
-      "label": "Text"
+      "label": "Announcement Text"
     },
     {
       "type": "url",
@@ -36,18 +55,13 @@
       "type": "checkbox",
       "id": "show_code",
       "default": false,
-      "label": "Show promo code hint"
+      "label": "Show promo code"
     },
     {
       "type": "text",
       "id": "code_text",
-      "default": "Use code: AELA10",
-      "label": "Promo code text"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Announcement bar"
+      "default": "WABI2024",
+      "label": "Code Text"
     }
   ]
 }

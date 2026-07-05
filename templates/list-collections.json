@@ -1,1 +1,1 @@
-{"sections": {"main-list-collections": {"type": "main-list-collections", "settings": {"columns": 3}}}, "order": ["main-list-collections"]}
+{"sections": {"page-hero": {"type": "page-hero", "disabled": false, "settings": {"title": "All Collections", "subtext": "Browse our curated categories"}}, "main-list-collections": {"type": "main-list-collections", "disabled": false, "settings": {}}}, "order": ["page-hero", "main-list-collections"]}

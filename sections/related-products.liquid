@@ -1,63 +1,42 @@
-{%- assign product = section.settings.product | default: product -%}
+<style>
+  .aw-related { padding: var(--space-3xl) 0; background: white; }
+  .aw-related__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+  @media (max-width:900px){.aw-related__grid{grid-template-columns:repeat(2,1fr);gap:20px;padding:0 20px;}}
+  @media (max-width:550px){.aw-related__grid{grid-template-columns:1fr 1fr;}}
+</style>
 
-{%- if product -%}
-  {%- assign collection = product.collections.first | default: collections.all -%}
-  {%- if collection.products.size > 1 -%}
-  <section class="related-products">
-    <div class="page-width">
-      <h2 class="section-title">{{ section.settings.heading | default: 'You May Also Like' }}</h2>
-      <div class="collection-grid collection-grid--{{ section.settings.columns }}">
-        {%- for related in collection.products limit: section.settings.products_to_show -%}
-          {%- unless related.id == product.id -%}
-            {% render 'product-card', product: related %}
-          {%- endunless -%}
-        {%- endfor -%}
-      </div>
+<section class="aw-related">
+  <div class="page-width">
+    <span class="section-label">You May Also Like</span>
+    <h2 class="section-title">Related Products</h2>
+  </div>
+
+  {%- assign current_product = product -%}
+  {% if current_product.collections.size > 0 %}
+    {% assign collection = current_product.collections.first %}
+    <div class="aw-related__grid">
+      {% for related_product in collection.products limit: 4 %}
+        {% unless related_product.handle == current_product.handle %}
+          {% render 'product-card', product: related_product %}
+        {% endunless %}
+      {% endfor %}
     </div>
-  </section>
-  {%- endif -%}
-{%- endif -%}
+  {% else %}
+    <div class="aw-related__grid" style="padding:0 40px;margin-top:var(--space-lg);">
+      {% for i in (1..4) %}
+        <div class="product-card">
+          <div class="product-card__image-wrapper" style="background:var(--aw-linen);"></div>
+          <div class="product-card__info"><span class="product-card__type">Product</span><h3>Product {{ i }}</h3><p class="product-card__price">&euro;32.00</p></div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
 
 {% schema %}
 {
   "name": "Related Products",
-  "tag": "section",
   "class": "related-section",
-  "settings": [
-    {
-      "type": "product",
-      "id": "product",
-      "label": "Product"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "default": "You May Also Like",
-      "label": "Heading"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "min": 2,
-      "max": 8,
-      "step": 1,
-      "default": 4,
-      "label": "Products to show"
-    },
-    {
-      "type": "range",
-      "id": "columns",
-      "min": 2,
-      "max": 5,
-      "step": 1,
-      "default": 4,
-      "label": "Columns"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Related Products"
-    }
-  ]
+  "settings": []
 }
 {% endschema %}

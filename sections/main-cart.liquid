@@ -1,102 +1,127 @@
-<div class="cart-page">
-  <div class="page-width">
-    <h1 class="page-title">{{ 'sections.cart.title' | t }}</h1>
+<style>
+  .aw-cart { padding: var(--space-2xl) 0 var(--space-3xl); background: var(--aw-cream); }
+  .aw-cart__inner { max-width: 960px; margin: 0 auto; padding: 0 40px; }
 
-    {%- if cart.item_count > 0 -%}
-      <form action="{{ routes.cart_url }}" method="post" id="cart-form">
-        <table class="cart-table" role="table">
+  .aw-cart__title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: var(--aw-dark); margin-bottom: var(--space-xl);
+  }
+
+  /* Items table */
+  .aw-cart__items { width: 100%; border-collapse: collapse; }
+  .aw-cart__items th {
+    text-align:left;font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--aw-stone);padding:var(--space-md) var(--space-sm);border-bottom:1px solid var(--color-border);
+    font-weight:600;
+  }
+  .aw-cart__items td { padding: var(--space-lg) var(--space-sm); border-bottom:1px solid var(--color-border);vertical-align:middle; }
+  .aw-cart-item { display:flex;align-items:center;gap:16px; }
+  .aw-cart-item__img { width:80px;height:80px;border-radius:8px;object-fit:cover;background:var(--aw-linen); }
+  .aw-cart-item__title { font-weight:500;color:var(--aw-charcoal);font-size:0.95rem;display:block;margin-bottom:4px;}
+  .aw-cart-item__variant { font-size:0.82rem;color:var(--color-text-muted); }
+  .aw-cart-item__price { font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#8b7355;font-weight:600; }
+
+  .aw-remove-btn { color:var(--color-text-muted);cursor:pointer;font-size:0.85rem;transition:color var(--transition-fast);border:none;background:none;padding:6px 10px; }
+  .aw-remove-btn:hover { color:#b33a3a; }
+
+  /* Summary */
+  .aw-cart__summary {
+    margin-top: var(--space-xl);
+    padding: var(--space-xl);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: white;
+    max-width: 400px;
+    margin-left: auto;
+  }
+  .aw-summary-row { display:flex;justify-content:space-between;padding:8px 0;font-size:0.92rem; }
+  .aw-summary-row--total {
+    border-top:2px solid var(--aw-charcoal);margin-top:12px;padding-top:16px;
+    font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--aw-dark);font-weight:600;
+  }
+  .aw-checkout-btn {
+    width:100%;padding:16px;background:#8b7355;color:white;border:none;
+    border-radius:50px;font-size:0.9rem;letter-spacing:1.5px;text-transform:uppercase;
+    cursor:pointer;margin-top:20px;transition:all 0.3s;
+  }
+  .aw-checkout-btn:hover { background:var(--aw-dark);transform:translateY(-2px);box-shadow:var(--shadow-md); }
+  .aw-continue-link { display:block;text-align:center;margin-top:16px;font-size:0.88rem;color:var(--aw-accent);text-decoration:underline; }
+
+  .aw-empty-cart { text-align:center;padding:60px 20px; }
+  .aw-empty-cart h2 { font-family:'Cormorant Garamond',serif;margin-bottom:12px;color:var(--aw-dark); }
+  .aw-empty-cart p { color:var(--aw-stone);margin-bottom:24px; }
+
+  @media (max-width:768px){
+    .aw-cart__inner{padding:0 20px;}
+    .aw-cart__items{display:block;}
+    .aw-cart__items thead{display:none;}
+    .aw-cart__items tr{display:block;margin-bottom:24px;border:1px solid var(--color-border);border-radius:8px;padding:16px;}
+    .aw-cart__items td{display:block;padding:8px 0;border:none;}
+    .aw-cart__summary{max-width:100%;}
+  }
+</style>
+
+<section class="aw-cart">
+  <div class="aw-cart__inner">
+    <h1 class="aw-cart__title">Shopping Cart</h1>
+
+    {% if cart.item_count > 0 %}
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+        <table class="aw-cart__items">
           <thead>
-            <tr>
-              <th scope="col">{{ 'sections.cart.headings.product' | t }}</th>
-              <th scope="col">{{ 'sections.cart.headings.quantity' | t }}</th>
-              <th scope="col">{{ 'sections.cart.headings.total' | t }}</th>
-            </tr>
+            <tr><th>Product</th><th>Quantity</th><th>Total</th><th></th></tr>
           </thead>
           <tbody>
-            {%- for item in cart.items -%}
-            <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}">
-              <td data-label="{{ 'sections.cart.headings.product' | t }}" class="cart-item__product">
-                <a href="{{ item.url }}">
-                  {% if item.image %}
-                    <img
-                      src="{{ item.image | image_url: width: 120 }}"
-                      alt="{{ item.image.alt | default: item.title | escape }}"
-                      loading="lazy"
-                      width="120"
-                      height="{{ 120 | divided_by: item.image.aspect_ratio | round }}"
-                    >
-                  {% endif %}
-                </a>
-                <div class="cart-item__info">
-                  <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title }}</a>
-                  {%- if product.has_only_default_variant == false -%}
-                    <p class="cart-item__variant">{%- for option in item.options -%}{{ option }}{%- unless forloop.last -%} / {%- endunless -%}{%- endfor -%}</p>
-                  {%- endif -%}
-                  {%- if item.selling_plan_allocation -%}
-                    <p>{{ item.selling_plan_allocation.selling_plan.name }}</p>
-                  {%- endif -%}
-                  <button type="button" class="cart-item__remove" data-index="{{ item.index | plus: 1 }}">{{ 'sections.cart.remove_title' | t }}</button>
-                </div>
-              </td>
-              <td data-label="{{ 'sections.cart.headings.quantity' | t }}">
-                <quantity-input class="qty-selector qty-selector--small">
-                  <button type="button" class="qty-btn" name="minus{{ item.index | plus: 1 }}">&minus;</button>
-                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="{{ 'products.product.quantity.label' | t }}">
-                  <button type="button" class="qty-btn" name="plus{{ item.index | plus: 1 }}">&plus;</button>
-                </quantity-input>
-              </td>
-              <td data-label="{{ 'sections.cart.headings.total' | t }}">
-                <span class="price--current">{{ item.final_line_price | money }}</span>
-              </td>
-            </tr>
-            {%- endfor -%}
+            {% for item in cart.items %}
+              <tr>
+                <td>
+                  <div class="aw-cart-item">
+                    {{ item.image | image_url: width: 160 | image_tag:
+                      loading: 'lazy',
+                      alt: item.title,
+                      class: 'aw-cart-item__img'
+                    }}
+                    <div>
+                      <a href="{{ item.url }}" class="aw-cart-item__title">{{ item.product.title }}</a>
+                      {% unless item.product.has_only_default_variant %}<p class="aw-cart-item__variant">{{ item.variant.title }}</p>{% endunless %}
+                    </div>
+                  </div>
+                </td>
+                <td>{{ item.quantity }}</td>
+                <td class="aw-cart-item__price">{{ item.final_line_price | money }}</td>
+                <td>
+                  <a href="{{ item.url_to_remove }}" class="aw-remove-btn" aria-label="Remove">&times;</a>
+                </td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
 
-        <div class="cart-footer">
-          <div class="cart-totals">
-            <p class="cart-subtotal">Subtotal: <strong>{{ cart.total_price | money }}</strong></p>
-            {%- capture taxes_shipping_checkout -%}
-              {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
-                {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
-              {%- elsif cart.taxes_included -%}
-                {{ 'sections.cart.taxes_included' | t }}
-              {%- elsif shop.shipping_policy.body != blank -%}
-                {{ 'sections.cart.taxes_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
-              {%- else -%}
-                {{ 'sections.cart.taxes_and_shipping' | t }}
-              {%- endif -%}
-            {%- endcapture -%}
-            <p class="tax-note rte">{{ taxes_shipping_checkout }}</p>
-          </div>
-          <div class="cart-actions">
-            <button type="submit" name="checkout" class="btn btn--primary btn--large">{{ 'sections.cart.checkout' | t }}</button>
-            <a href="{{ routes.all_products_collection_url }}" class="btn btn--outline">Continue Shopping</a>
-          </div>
+        <!-- Summary -->
+        <div class="aw-cart__summary">
+          <div class="aw-summary-row"><span>Subtotal</span><span>{{ cart.items_subtotal_price | money }}</span></div>
+          <div class="aw-summary-row"><span>Shipping</span><span>Calculated at checkout</span></div>
+          <div class="aw-summary-row aw-summary-row--total"><span>Total</span><span>{{ cart.total_price | money }}</span></div>
+          <button type="submit" name="checkout" class="aw-checkout-btn">Checkout</button>
+          <a href="{{ routes.all_products_collection_url }}" class="aw-continue-link">Continue Shopping</a>
         </div>
       </form>
-    {%- else -%}
-      <div class="cart-empty">
+    {% else %}
+      <div class="aw-empty-cart">
         <h2>Your cart is empty</h2>
-        <p>Looks like you haven't added anything yet.</p>
-        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Continue Shopping</a>
+        <p>Discover our collection of wabi-sabi essentials.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Browse Products</a>
       </div>
-    {%- endif -%}
+    {% endif %}
   </div>
-</div>
-
-{{ 'section-main-cart.css' | asset_url | stylesheet_tag }}
+</section>
 
 {% schema %}
 {
   "name": "Main Cart",
-  "tag": "section",
   "class": "cart-section",
-  "settings": [],
-  "presets": [
-    {
-      "name": "Main Cart"
-    }
-  ]
+  "tag": "section",
+  "settings": []
 }
 {% endschema %}

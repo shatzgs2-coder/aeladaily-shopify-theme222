@@ -1,53 +1,44 @@
-<section class="about-section">
-  <div class="page-width">
-    <div class="about-grid">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
+<style>
+  .aw-about { padding: var(--space-3xl) 0; background: white; }
+  .aw-about__inner { max-width: 900px; margin:0 auto; padding:0 40px; }
+  .aw-about__image { border-radius:var(--radius-lg); width:100%; aspect-ratio:16/9; object-fit:cover; margin-bottom:40px; }
+  .aw-about__text h2 { font-family:'Cormorant Garamond',serif;color:var(--aw-dark);margin-bottom:20px;font-size:clamp(1.5rem,3vw,2.25rem); }
+  .aw-about__text p { color:var(--aw-stone);line-height:1.85;margin-bottom:20px;font-size:1rem; }
+  .aw-about__values { display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px; }
+  .aw-value-item { text-align:center;padding:24px;border-radius:var(--radius-md);background:var(--aw-linen); }
+  .aw-value-icon { font-size:2rem;margin-bottom:12px; }
+  .aw-value-title { font-weight:600;color:var(--aw-charcoal);font-size:0.95rem;margin-bottom:8px; }
+  .aw-value-desc { font-size:0.85rem;color:var(--aw-stone); }
 
-        {%- when 'heading' -%}
-          <div class="about-intro" {{ block.shopify_attributes }}>
-            <h1>{{ block.settings.title | default: page.title }}</h1>
-            <p class="about-lead">{{ block.settings.lead }}</p>
-          </div>
+  @media(max-width:768px){.aw-about__values{grid-template-columns:1fr;gap:20px;}.aw-about__inner{padding:0 20px;}}
+</style>
 
-        {%- when 'text_block' -%}
-          <div class="about-text-block" {{ block.shopify_attributes }}>
-            {% if block.settings.heading %}
-              <h2>{{ block.settings.heading }}</h2>
-            {% endif %}
-            <div class="rte">{{ block.settings.text }}</div>
-          </div>
+<section class="aw-about">
+  <div class="aw-about__inner">
+    {% if section.settings.image != blank %}
+      {{ section.settings.image | image_url: width: 1200 | image_tag:
+        loading: 'eager',
+        class: 'aw-about__image',
+        alt: page.title
+      }}
+    {% endif %}
 
-        {%- when 'image' -%}
-          <div class="about-image" {{ block.shopify_attributes }}>
-            {% if block.settings.image %}
-              <img
-                src="{{ block.settings.image | image_url: width: 800 }}"
-                alt="{{ block.settings.image.alt | escape }}"
-                loading="lazy"
-                width="800"
-                height="{{ 800 | divided_by: block.settings.image.aspect_ratio | round }}"
-              >
-            {% endif %}
-          </div>
+    <div class="aw-about__text">
+      {% if page.content != blank %}
+        {{ page.content }}
+      {% else %}
+        <h2>{{ section.settings.title | default: 'Our Story' }}</h2>
+        <p>At AELA Daily, we believe in the beauty of imperfection. Our collection is inspired by the Japanese concept of wabi-sabi — finding elegance in simplicity, and value in what is natural and authentic.</p>
+        <p>Every piece we create is thoughtfully designed to bring warmth, calm, and intention into your home. We work with natural materials — linen, wood, clay — sourced from artisans who share our values.</p>
+        <p>Our studio in Germany is where ideas take shape. From sketch to finished piece, each item goes through a careful process of creation that honors both tradition and modern living.</p>
+      {% endif %}
+    </div>
 
-        {%- when 'values' -%}
-          <div class="about-values" {{ block.shopify_attributes }}>
-            <h2>{{ block.settings.title | default: 'Our Values' }}</h2>
-            <div class="values-grid">
-              {%- for i in (1..3) -%}
-                {%- assign heading = 'value_' | append: i | append: '_title' -%}
-                {%- assign text = 'value_' | append: i | append: '_text' -%}
-                <div class="value-card">
-                  <h3>{{ block.settings[heading] }}</h3>
-                  <p>{{ block.settings[text] }}</p>
-                </div>
-              {%- endfor -%}
-            </div>
-          </div>
-
-        {%- endcase -%}
-      {%- endfor -%}
+    <!-- Values (if configured or default) -->
+    <div class="aw-about__values">
+      <div class="aw-value-item"><p class="aw-value-icon">&#127793;</p><h4 class="aw-value-title">Natural</h4><p class="aw-value-desc">Organic materials & sustainable sourcing</p></div>
+      <div class="aw-value-item"><p class="aw-value-icon">&#9733;</p><h4 class="aw-value-title">Handcrafted</h4><p class="aw-value-desc">Made with care by skilled artisans</p></div>
+      <div class="aw-value-item"><p class="aw-value-icon">&#9829;</p><h4 class="aw-value-title">Mindful</h4><p class="aw-value-desc">Designed for slow, intentional living</p></div>
     </div>
   </div>
 </section>
@@ -56,112 +47,9 @@
 {
   "name": "About Content",
   "tag": "section",
-  "class": "about-section",
-  "settings": [],
-  "blocks": [
-    {
-      "type": "heading",
-      "name": "Page Heading",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Heading"
-        },
-        {
-          "type": "textarea",
-          "id": "lead",
-          "label": "Lead paragraph"
-        }
-      ]
-    },
-    {
-      "type": "text_block",
-      "name": "Text Block",
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "label": "Sub-heading"
-        },
-        {
-          "type": "richtext",
-          "id": "text",
-          "label": "Text content"
-        }
-      ]
-    },
-    {
-      "type": "image",
-      "name": "Image",
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Image"
-        }
-      ]
-    },
-    {
-      "type": "values",
-      "name": "Values Grid",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "default": "Our Values",
-          "label": "Section Title"
-        },
-        {
-          "type": "text",
-          "id": "value_1_title",
-          "default": "Authenticity",
-          "label": "Value 1 title"
-        },
-        {
-          "type": "textarea",
-          "id": "value_1_text",
-          "default": "We celebrate real materials and honest craftsmanship.",
-          "label": "Value 1 text"
-        },
-        {
-          "type": "text",
-          "id": "value_2_title",
-          "default": "Simplicity",
-          "label": "Value 2 title"
-        },
-        {
-          "type": "textarea",
-          "id": "value_2_text",
-          "default": "Less but better — every piece is thoughtfully designed.",
-          "label": "Value 2 text"
-        },
-        {
-          "type": "text",
-          "id": "value_3_title",
-          "default": "Mindfulness",
-          "label": "Value 3 title"
-        },
-        {
-          "type": "textarea",
-          "id": "value_3_text",
-          "default": "We source ethically and design for longevity.",
-          "label": "Value 3 text"
-        }
-      ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "About Content",
-      "blocks": [
-        {"type": "heading"},
-        {"type": "text_block"},
-        {"type": "image"}
-      ]
-    }
+  "settings": [
+    {"type":"text","id":"title","default":"Our Story","label":"Default heading"},
+    {"type":"image_picker","id":"image","label":"Hero Image"}
   ]
 }
 {% endschema %}

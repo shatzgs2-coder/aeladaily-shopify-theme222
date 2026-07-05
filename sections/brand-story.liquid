@@ -1,84 +1,69 @@
-<div class="brand-story brand-story--{{ section.settings.layout }}">
-  <div class="page-width">
-    <div class="brand-story__inner">
-      {%- if section.settings.image -%}
-        <div class="brand-story__media">
-          <img
-            src="{{ section.settings.image | image_url: width: 800 }}"
-            alt="{{ section.settings.heading | escape }}"
-            loading="lazy"
-            width="800"
-            height="{{ 800 | divided_by: section.settings.image.aspect_ratio | round }}"
-          >
-        </div>
-      {%- endif -%}
-      <div class="brand-story__content">
-        <span class="brand-story__label">{{ section.settings.label | default: 'Our Story' }}</span>
-        <h2>{{ section.settings.heading | default: 'The Beauty of Imperfection' }}</h2>
-        <div class="rte">{{ section.settings.text }}</div>
-        {% if section.settings.btn_label and section.settings.btn_link %}
-          <a href="{{ section.settings.btn_link }}" class="btn btn--primary">{{ section.settings.btn_label }}</a>
-        {% endif %}
+<style>
+  .aw-brand-story { padding: var(--space-3xl) 0; background: var(--aw-linen); }
+  .aw-brand-story__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+  }
+  .aw-brand-story--image-right .aw-brand-story__inner { direction: rtl; }
+  .aw-brand-story--image-right > * { direction: ltr; }
+  .aw-brand-story__media img {
+    border-radius: var(--radius-lg);
+    width: 100%; aspect-ratio: 4/5; object-fit: cover;
+  }
+  .aw-brand-story__label {
+    font-size: 0.7rem; color: var(--aw-accent);
+    text-transform: uppercase; letter-spacing: 3px; font-weight: 600;
+    display: block; margin-bottom: var(--space-sm);
+  }
+  .aw-brand-story__content h2 { font-family: var(--font-heading); margin-bottom: var(--space-lg); color: var(--aw-dark); }
+  .aw-brand-story__content p { color: var(--aw-stone); line-height: 1.85; }
+
+  @media (max-width: 768px) {
+    .aw-brand-story__inner { grid-template-columns: 1fr; gap: var(--space-xl); }
+  }
+</style>
+
+<section class="aw-brand-story aw-brand-story--{{ section.settings.image_alignment | default: 'image-left' }}">
+  <div class="aw-brand-story__inner">
+    {% if section.settings.image != blank %}
+      <div class="aw-brand-story__media">
+        {{ section.settings.image | image_url: width: 800 | image_tag:
+          loading: 'lazy',
+          widths: '500,800',
+          alt: section.settings.title
+        }}
       </div>
+    {% endif %}
+    <div class="aw-brand-story__content">
+      <span class="aw-brand-story__label">{{ section.settings.label | default: 'Our Story' }}</span>
+      <h2>{{ section.settings.title | default: 'The Beauty of Imperfection' }}</h2>
+      {{ section.settings.text | default: '<p>Each piece in our collection is thoughtfully crafted to celebrate the natural imperfections that make life beautiful. We believe in slow living, mindful consumption, and the quiet elegance of wabi-sabi.</p>' }}
+      {% if section.settings.button_label %}
+        <a href="{{ section.settings.button_link | default: '/pages/about' }}" class="btn btn--primary" style="margin-top:var(--space-xl);">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
     </div>
   </div>
-</div>
+</section>
 
 {% schema %}
 {
   "name": "Brand Story",
-  "tag": "section",
   "class": "brand-story-section",
   "settings": [
-    {
-      "type": "select",
-      "id": "layout",
-      "options": [
-        {"value": "image_left", "label": "Image left, text right"},
-        {"value": "image_right", "label": "Text left, image right"}
-      ],
-      "default": "image_left",
-      "label": "Layout"
-    },
-    {
-      "type": "text",
-      "id": "label",
-      "default": "Our Philosophy",
-      "label": "Label / tagline"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "default": "The Beauty of Imperfection",
-      "label": "Heading"
-    },
-    {
-      "type": "richtext",
-      "id": "text",
-      "default": "<p>AELA Daily is born from the Japanese concept of wabi-sabi — finding beauty in imperfection, authenticity in simplicity. Every piece we curate tells a story of craftsmanship, natural materials, and mindful living.</p>",
-      "label": "Text content"
-    },
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Image"
-    },
-    {
-      "type": "text",
-      "id": "btn_label",
-      "default": "Learn More",
-      "label": "Button label"
-    },
-    {
-      "type": "url",
-      "id": "btn_link",
-      "label": "Button link"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Brand Story"
-    }
+    {"type":"text","id":"label","default":"Our Philosophy","label":"Label"},
+    {"type":"text","id":"title","default":"The Beauty of Imperfection","label":"Heading"},
+    {"type":"richtext","id":"text","label":"Text"},
+    {"type":"image_picker","id":"image","label":"Image"},
+    {"type":"select","id":"image_alignment","options":[{"value":"image-left","label":"Image left"},{"value":"image-right","label":"Image right"}],"default":"image-left","label":"Image alignment"},
+    {"type":"text","id":"button_label","label":"Button label"},
+    {"type":"url","id":"button_link","label":"Button link"}
   ]
 }
 {% endschema %}

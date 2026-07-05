@@ -1,146 +1,207 @@
-<div class="hero hero--{{ section.settings.height }}">
-  <div class="hero__bg{% if section.settings.bg_image %} hero__bg--image{% endif %}">
-    {% if section.settings.bg_image %}
-      <img
-        src="{{ section.settings.bg_image | image_url: width: 1920 }}"
-        alt="{{ section.settings.heading | escape }}"
-        class="hero__image"
-        loading="eager"
-        width="1920"
-        height="{{ 1920 | divided_by: section.settings.bg_image.aspect_ratio | round }}"
-      >
-      <div class="hero__overlay" style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}"></div>
-    {% endif %}
-  </div>
-  <div class="page-width hero__content">
-    {%- for block in section.blocks -%}
-      {%- case block.type -%}
-        {%- when 'heading' -%}
-          <h1 class="hero__title" {{ block.shopify_attributes }}>
-            {{ block.settings.title }}
-          </h1>
-        {%- when 'text' -%}
-          <p class="hero__subtitle" {{ block.shopify_attributes }}>
-            {{ block.settings.text }}
-          </p>
-        {%- when 'buttons' -%}
-          <div class="hero__actions" {{ block.shopify_attributes }}>
-            {% if block.settings.btn_label_1 %}
-              <a href="{{ block.settings.btn_link_1 | default: '#'}}" class="btn btn--primary">
-                {{ block.settings.btn_label_1 }}
-              </a>
-            {% endif %}
-            {% if block.settings.btn_label_2 %}
-              <a href="{{ block.settings.btn_link_2 | default: '#'}}" class="btn btn--outline">
-                {{ block.settings.btn_label_2 }}
-              </a>
-            {% endif %}
-          </div>
-      {%- endcase -%}
-    {%- endfor -%}
-  </div>
-</div>
+<style>
+  .aw-hero {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 520px;
+    background-color: var(--aw-linen);
+  }
+  .aw-hero--small { min-height: 360px; }
+  .aw-hero--medium { min-height: 620px; }
+  .aw-hero--large { min-height: 80vh; }
 
-{{ 'section-hero.css' | asset_url | stylesheet_tag }}
+  .aw-hero__bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+  .aw-hero__image {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .aw-hero__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 25%,
+      rgba(44,36,32,var(--overlay-opacity, 0.55))
+    );
+    z-index: 1;
+  }
+
+  .aw-hero__content {
+    position: relative; z-index: 2;
+    text-align: center;
+    padding: var(--space-3xl) 24px;
+    max-width: 640px;
+    margin-left: auto; margin-right: auto;
+  }
+  .aw-hero__label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--aw-wheat);
+    margin-bottom: var(--space-md);
+    font-weight: 500;
+    display: block;
+  }
+  .aw-hero__title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+    color: white;
+    line-height: 1.15;
+    margin-bottom: var(--space-lg);
+    font-weight: 400;
+  }
+  .aw-hero__subtitle {
+    font-size: var(--font-size-lg);
+    color: rgba(255,255,255,0.88);
+    margin-bottom: var(--space-2xl);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+  .aw-hero__actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .aw-hero { min-height: 420px; }
+    .aw-hero__content { padding: var(--space-2xl) 16px; }
+  }
+</style>
+
+{%- if section.settings.image != blank or section.settings.video_url != blank -%}
+<section class="aw-hero aw-hero--{{ section.settings.height | default: 'medium' }}">
+  <div class="aw-hero__bg">
+    {%- if section.settings.video_url != blank -%}
+      <video class="aw-hero__image" autoplay muted loop playsinline>
+        <source src="{{ section.settings.video_url }}" type="video/mp4">
+      </video>
+    {%- elsif section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 1920 | image_tag:
+        loading: 'eager',
+        widths: '750,1080,1440,1920',
+        class: 'aw-hero__image',
+        alt: section.settings.image.alt
+      }}
+    {%- else -%}
+      <!-- Solid fallback -->
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#d4c5b2,#c4a882)"></div>
+    {%- endif -%}
+  </div>
+  <div class="aw-hero__overlay" style="--overlay-opacity: {{ section.settings.overlay_opacity | default: 50 }}%"></div>
+
+  <div class="aw-hero__content">
+    {%- if section.settings.label != blank -%}
+      <span class="aw-hero__label">{{ section.settings.label }}</span>
+    {%- endif -%}
+
+    <h1 class="aw-hero__title">{{ section.settings.title | default: 'Embrace Wabi-Sabi Living' }}</h1>
+
+    {%- if section.settings.subtitle != blank -%}
+      <p class="aw-hero__subtitle">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="aw-hero__actions">
+        <a href="{{ section.settings.button_link | default: '/collections/all' }}" class="btn btn--primary btn--large">
+          {{ section.settings.button_label }}
+        </a>
+        {%- if section.settings.secondary_button_label != blank -%}
+          <a href="{{ section.settings.secondary_button_link | default: '/pages/about' }}" class="btn btn-outline btn--large" style="border-color:rgba(255,255,255,0.35);color:white;">
+            {{ section.settings.secondary_button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{%- else -%}
+<!-- No image/video: use solid background -->
+<section class="aw-hero aw-hero--small" style="background: linear-gradient(135deg, #faf7f2, #ede8e0); min-height:400px; align-items:center;">
+  <div class="aw-hero__content" style="color:var(--aw-charcoal);">
+    <h1 class="aw-hero__title" style="color:var(--aw-dark);">{{ section.settings.title | default: 'Welcome to AELA Daily' }}</h1>
+    {% if section.settings.subtitle %}<p class="aw-hero__subtitle" style="color:var(--aw-stone);">{{ section.settings.subtitle }}</p>{% endif %}
+  </div>
+</section>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "Hero",
-  "tag": "section",
   "class": "hero-section",
   "settings": [
     {
-      "type": "select",
-      "id": "height",
-      "options": [
-        {"value": "small", "label": "Small"},
-        {"value": "medium", "label": "Medium (Recommended)"},
-        {"value": "large", "label": "Large"}
-      ],
-      "default": "medium",
-      "label": "Section height"
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
     },
     {
-      "type": "image_picker",
-      "id": "bg_image",
-      "label": "Background image"
+      "type": "url",
+      "id": "video_url",
+      "label": "Background Video URL (MP4)"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "default": "medium",
+      "options": [
+        {"value": "small", "label": "Small"},
+        {"value": "medium", "label": "Medium"},
+        {"value": "large", "label": "Large"}
+      ],
+      "label": "Section height"
     },
     {
       "type": "range",
       "id": "overlay_opacity",
-      "min": 0,
-      "max": 80,
+      "min": 10,
+      "max": 90,
       "step": 5,
-      "default": 40,
+      "default": 55,
       "unit": "%",
-      "label": "Overlay opacity"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "heading",
-      "name": "Heading",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "default": "Embrace Wabi-Sabi Living",
-          "label": "Heading text"
-        }
-      ]
+      "label": "Overlay darkness"
     },
     {
       "type": "text",
-      "name": "Text",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "textarea",
-          "id": "text",
-          "default": "Curated home decor & lifestyle pieces that celebrate imperfection and authenticity.",
-          "label": "Subheading"
-        }
-      ]
+      "id": "label",
+      "label": "Label above title",
+      "default": "AELA Daily Collection"
     },
     {
-      "type": "buttons",
-      "name": "Buttons",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "text",
-          "id": "btn_label_1",
-          "default": "Shop Collection",
-          "label": "Button 1 label"
-        },
-        {
-          "type": "url",
-          "id": "btn_link_1",
-          "label": "Button 1 link"
-        },
-        {
-          "type": "text",
-          "id": "btn_label_2",
-          "default": "Our Story",
-          "label": "Button 2 label"
-        },
-        {
-          "type": "url",
-          "id": "btn_link_2",
-          "label": "Button 2 link"
-        }
-      ]
-    }
-  ],
-  "presets": [
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Embrace Wabi-Sabi Living"
+    },
     {
-      "name": "Hero",
-      "blocks": [
-        {"type": "heading", "settings": {}},
-        {"type": "text", "settings": {}},
-        {"type": "buttons", "settings": {}}
-      ]
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "label": "Secondary button label",
+      "default": "Our Story"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary button link"
     }
   ]
 }

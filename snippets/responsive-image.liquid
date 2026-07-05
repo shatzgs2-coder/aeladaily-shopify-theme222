@@ -1,17 +1,31 @@
-{%- assign img_small = image | image_url: width: 300 -%}
-{%- assign img_medium = image | image_url: width: 600 -%}
-{%- assign img_large = image | image_url: width: 900 -%}
+{%- comment -%}
+  Responsive image snippet (Atelier style)
+  Usage: {% render 'responsive-image' with img: product.featured_image, alt: product.title %}
+{%- endcomment -%}
 
-<img
-  src="{{ img_small }}"
-  srcset="
-    {{ img_small }} 300w,
-    {{ img_medium }} 600w,
-    {{ img_large }} 900w
-  "
-  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-  alt="{{ alt | escape }}"
-  loading="lazy"
-  width="{{ image.width }}"
-  height="{{ image.height }}"
->
+{%- if img != blank -%}
+  <picture>
+    {%- capture srcset -%}
+      {%- assign widths = '400,600,800,1000,1200,1600,1920' | split: ',' -%}
+      {%- for width in widths -%}
+        {{ img | image_url: width: width }} {{ width }}w{%- unless forloop.last %},{%- endunless -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+
+    <img
+      src="{{ img | image_url: width: 800 }}"
+      srcset="{{ srcset }}"
+      sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, calc(33vw + 200px)"
+      width="{{ img.width }}"
+      height="{{ img.height }}"
+      loading="lazy"
+      decoding="async"
+      alt="{{ alt | default: '' }}"
+      style="width:100%;height:auto;border-radius:var(--radius-md);"
+    >
+  </picture>
+{%- else -%}
+  <div style="width:100%;aspect-ratio:4/3;background:var(--aw-linen);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:var(--aw-wheat);">
+    <span>No Image</span>
+  </div>
+{%- endif -%}

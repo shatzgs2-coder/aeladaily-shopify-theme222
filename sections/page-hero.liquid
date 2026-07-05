@@ -1,26 +1,22 @@
-<div class="page-hero" style="--hero-bg: {{ section.settings.bg_color | default: '#F2EFE8' }}">
+<style>
+  .aw-page-hero {
+    background: var(--hero-bg,var(--aw-linen));
+    padding: var(--space-2xl) 0 var(--space-xl);
+    margin-bottom: var(--space-2xl);
+    text-align:center;
+  }
+  .aw-page-hero__title { font-family:'Cormorant Garamond',serif;margin:0;color:var(--aw-dark); }
+  .aw-page-hero__subtext { color:var(--aw-stone);margin-top:8px;margin-bottom:0;font-size:0.95rem; }
+</style>
+
+<div class="aw-page-hero">
   <div class="page-width">
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <ol>
-        <li><a href="{{ routes.root_url }}">Home</a></li>
-        {%- if template contains 'product' -%}
-          <li><a href="{{ routes.all_products_collection_url }}">Shop</a></li>
-          <li aria-current="page"><span>{{ product.title }}</span></li>
-        {%- elsif template contains 'collection' -%}
-          <li><a href="{{ routes.all_products_collection_url }}">Shop</a></li>
-          <li aria-current="page"><span>{{ collection.title }}</span></li>
-        {%- elsif template contains 'cart' -%}
-          <li aria-current="page"><span>Cart</span></li>
-        {%- elsif template == 'page' -%}
-          <li aria-current="page"><span>{{ page.title }}</span></li>
-        {%- else -%}
-          <li aria-current="page"><span>{{ page_title }}</span></li>
-        {%- endif -%}
-      </ol>
-    </nav>
-    <h1 class="page-hero__title">{{ section.settings.heading | default: page_title }}</h1>
-    {% if section.settings.subtext != blank %}
-      <p class="page-hero__subtext">{{ section.settings.subtext }}</p>
+    {% if section.settings.label %}
+      <span class="section-label" style="margin-bottom:8px;">{{ section.settings.label }}</span>
+    {% endif %}
+    <h1 class="aw-page-hero__title">{{ section.settings.title | default: page.title }}</h1>
+    {% if section.settings.subtext %}
+      <p class="aw-page-hero__subtext">{{ section.settings.subtext }}</p>
     {% endif %}
   </div>
 </div>
@@ -29,30 +25,11 @@
 {
   "name": "Page Hero",
   "tag": "section",
-  "class": "page-hero-section",
   "settings": [
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading (leave blank to use page title)"
-    },
-    {
-      "type": "textarea",
-      "id": "subtext",
-      "label": "Subheading"
-    },
-    {
-      "type": "color",
-      "id": "bg_color",
-      "default": "#F2EFE8",
-      "label": "Background color"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Page Hero",
-      "settings": {}
-    }
+    {"type":"text","id":"label","default":"","label":"Label above title"},
+    {"type":"text","id":"title","","label":"Heading"},
+    {"type":"textarea","id":"subtext","","label":"Subtext"},
+    {"type":"color","id":"bg_color","default":"#f5f0e8","label":"Background color"}
   ]
 }
 {% endschema %}
