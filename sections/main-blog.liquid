@@ -1,61 +1,72 @@
-<section class="aw-blog-grid" style="padding:80px 40px;max-width:1280px;margin:0 auto;">
-  <div style="text-align:center;margin-bottom:56px;">
-    <p class="aw-label">{{ section.settings.label | default: "Journal" }}</p>
-    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);color:#2c2420;">{{ blog.title | default: "Our Blog" }}</h1>
-    {%- if blog.description != blank -%}
-      <p style="font-size:1.05rem;color:#6b5e53;max-width:560px;margin:16px auto 0;line-height:1.8;font-weight:300;">{{ blog.description }}</p>
-    {%- endif -%}
-  </div>
+<style>
+  .aw-blog{padding:var(--spacing-xl) 40px;background:var(--aw-cream)}
+  .aw-blog__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
+  .aw-blog__card{background:#fff;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-soft);transition:all .35s var(--ease-out)}
+  .aw-blog__card:hover{transform:translateY(-6px);box-shadow:var(--aw-shadow-strong)}
+  .aw-blog__card-img{aspect-ratio:16/10;overflow:hidden}
+  .aw-blog__card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease-out)}
+  .aw-blog__card:hover .aw-blog__card-img img{transform:scale(1.05)}
+  .aw-blog__card-body{padding:22px}
+  .aw-blog__card-date{font-size:.75rem;color:var(--aw-terracotta);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;font-weight:500}
+  .aw-blog__card-title{font-family:var(--font-heading);font-size:1.15rem;color:var(--aw-charcoal);line-height:1.35;margin-bottom:8px}
+  .aw-blog__card-excerpt{font-size:.88rem;color:var(--aw-stone);line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 
-  {%- paginate blog.articles by section.settings.posts_per_page -%}
-    <div class="aw-blog-grid">
-      {%- for article in blog.articles -%}
-        <a href="{{ article.url }}" class="aw-blog-card" style="text-decoration:none;color:inherit;">
-          <div class="aw-blog-card__img">
-            {%- if article.image != blank -%}
-              {{ article.image | image_url: width: 500 | image_tag: loading:'lazy', alt:article.title }}
-            {%- else -%}
-              <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#ede8e1;color:#c4a882;font-family:'Cormorant Garamond',serif;">Wabi-Sabi</div>
-            {%- endif -%}
+  /* Pagination */
+  .aw-blog__pagination{display:flex;justify-content:center;gap:8px;margin-top:48px;flex-wrap:wrap}
+  .aw-blog__pagination a,.aw-blog__pagination span{padding:10px 18px;border:1.5px solid var(--aw-linen);border-radius:var(--radius-sm);font-size:.88rem;color:var(--aw-charcoal);transition:all .25s}
+  .aw-blog__pagination a:hover{border-color:var(--aw-earth);color:var(--aw-earth)}
+  .aw-blog__pagination .active{background:var(--aw-earth);color:#fff;border-color:var(--aw-earth)}
+
+  @media(max-width:768px){.aw-blog{padding:var(--spacing-lg)20px}.aw-blog__grid{grid-template-columns:1fr;gap:16px}}
+</style>
+
+<section class="aw-blog">
+  <div class="aw-container">
+    <p class="aw-label">Journal</p>
+    <h1>{{ blog.title | default: 'Our Blog' }}</h1>
+
+    {% if blog.articles.size > 0 %}
+    <div class="aw-blog__grid">
+      {% for article in blog.articles limit:9 %}
+        <a href="{{ article.url }}" class="aw-blog__card">
+          <div class="aw-blog__card-img">
+            {% if article.image %}
+              {{ article.image | image_url: width: 500 | image_tag:
+                loading:'lazy', alt:article.title,
+                widths:'300,400,500',
+                style:'width:100%;height:100%;object-fit:cover'
+              }}
+            {% else %}
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#ede8e1,#d4c4b0)"></div>
+            {% endif %}
           </div>
-          <div class="aw-blog-card__body">
-            <p class="aw-blog-card__date">{{ article.published_at | date: '%B %d, %Y' }}</p>
-            <h3 class="aw-blog-card__title">{{ article.title }}</h3>
-            {%- if article.excerpt != blank -%}
-              <p class="aw-blog-card__excerpt">{{ article.excerpt | strip_html | truncatewords: 20 }}</p>
-            {%- endif -%}
+          <div class="aw-blog__card-body">
+            <p class="aw-blog__card-date">{{ article.published_at | date: '%B %d, %Y' }}</p>
+            <h3 class="aw-blog__card-title">{{ article.title }}</h3>
+            <p class="aw-blog__card-excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 25 }}</p>
           </div>
         </a>
-      {%- endfor -%}
+      {% endfor %}
     </div>
 
-    {%- if paginate.pages > 1 -%}
-      <div class="aw-pagination" style="grid-column:1/-1;">
-        {{ paginate | default_pagination }}
-      </div>
-    {%- endif -%}
-  {%- endpaginate -%}
+    <!-- Pagination -->
+    {% if paginate.pages > 1 %}
+    <nav class="aw-blog__pagination" role="navigation" aria-label="Blog pagination">
+      {% if paginate.previous %}<a href="{{ paginate.previous.url }}">&laquo;</a>{% endif %}
+      {% for part in paginate.parts %}
+        {% if part.is_link %}<a href="{{ part.url }}">{{ part.title }}</a>
+        {% else %}{% if part.title != '…' %}<span class="active">{{ part.title }}</span><% else %}<span>{{ part.title }}</span>{% endif %}{% endif %}
+      {% endfor %}
+      {% if paginate.next %}<a href="{{ paginate.next.url }}">&raquo;</a>{% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div style="text-align:center;padding:60px 20px;color:var(--aw-stone)">
+      <p>No articles yet. Check back soon for updates from our journal.</p>
+    </div>
+    {% endif %}
+  </div>
 </section>
 
-{% schema %}
-{
-  "name": "Main Blog",
-  "settings": [
-    {
-      "type": "range",
-      "id": "posts_per_page",
-      "min": 3,
-      "max": 18,
-      "step": 3,
-      "default": 9,
-      "label": "Posts per page"
-    },
-    {
-      "type": "text",
-      "id": "label",
-      "label": "Section Label",
-      "default": "Journal"
-    }
-  ]
-}
-{% endschema %}
+{% schema %}{ "name":"Main Blog","tag":"section","settings":[],"presets":[{"name":"Blog Page"}] }{% endschema %}

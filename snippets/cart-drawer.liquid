@@ -1,55 +1,22 @@
-<!-- Cart Drawer Overlay + Container -->
-<div class="aw-drawer-overlay" id="aw-drawer-overlay"></div>
-
-<aside class="aw-cart-drawer" id="aw-cart-drawer" aria-hidden="true">
+<!-- Cart Drawer (Slide-in Panel) -->
+<div class="aw-cart-drawer" id="aw-cart-drawer" aria-hidden="true">
   <div class="aw-cart-drawer__header">
-    <h2 class="aw-cart-drawer__title">Your Cart</h2>
-    <button type="button" class="aw-cart-drawer__close" id="aw-drawer-close" aria-label="Close cart">&times;</button>
+    <h3>Your Cart <span class="aw-cart-count" style="font-weight:400;color:var(--aw-stone)">({{ cart.item_count }})</span></h3>
+    <button type="button" class="aw-cart-drawer__close" aria-label="Close cart">&times;</button>
   </div>
 
-  <div class="aw-cart-drawer__body" id="aw-drawer-body">
-    {%- if cart.item_count > 0 -%}
-      {%- for item in cart.items limit: 6 -%}
-        <div class="aw-cart-drawer__item">
-          <div class="aw-cart-drawer__item-img">
-            {%- if item.image -%}
-              {{ item.image | image_url: width: 120 | image_tag: alt:item.title }}
-            {%- else -%}
-              <div style="width:100%;height:100%;background:#ede8e1;"></div>
-            {%- endif -%}
-          </div>
-          <div class="aw-cart-drawer__item-info">
-            <div class="aw-cart-drawer__item-title">{{ item.product.title | truncatewords: 4 }}</div>
-            {%- unless item.variant.title contains 'Default' -%}
-              <div class="aw-cart-drawer__item-variant">{{ item.variant.title }}</div>
-            {%- endunless -%}
-            <div style="font-size:.88rem;margin-top:6px;display:flex;justify-content:space-between;">
-              <span>{{ item.quantity }} x {{ item.final_price | money }}</span>
-              <a href="{{ item.url_to_remove }}" style="color:#c17f59;font-size:.78rem;text-decoration:none;">Remove</a>
-            </div>
-          </div>
-        </div>
-      {%- endfor -%}
-
-      {%- if cart.item_count > 6 -%}
-        <p style="text-align:center;font-size:.82rem;color:#6b5e53;padding:12px 0;">+{{ cart.item_count | minus: 6 }} more items</p>
-      {%- endif -%}
-    {%- else -%}
-      <div style="text-align:center;padding:60px 20px;color:#6b5e53;">
-        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#2c2420;margin-bottom:8px;">Your cart is empty</p>
-        <p style="font-size:.88rem;">Find something beautiful for your home.</p>
-        <br><a href="/collections/all" class="aw-btn aw-btn--primary" style="padding:10px 24px;font-size:.8rem;">Browse Collection</a>
-      </div>
-    {%- endif -%}
-  </div>
-
-  {%- if cart.item_count > 0 -%}
-    <div class="aw-cart-drawer__footer">
-      <div class="aw-cart-drawer__total">
-        <span>Subtotal</span>
-        <span>{{ cart.total_price | money }}</span>
-      </div>
-      <a href="{{ routes.cart_url }}" class="aw-btn aw-btn--primary aw-cart-drawer__checkout" style="padding:14px 20px;">View Cart & Checkout</a>
+  <!-- Items rendered by JS -->
+  <div class="aw-cart-drawer__body" id="aw-cart-items">
+    <div class="aw-cart-empty">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#d4c4b0" stroke-width="1">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <p>Your cart is empty</p>
     </div>
-  {%- endif -%}
-</aside>
+  </div>
+
+  <!-- Footer -->
+  <div class="aw-cart-drawer__footer" id="aw-cart-footer"></div>
+</div>
+<!-- Overlay -->
+<div class="aw-cart-drawer__overlay" id="aw-cart-overlay"></div>

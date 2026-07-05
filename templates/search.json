@@ -1,1 +1,1 @@
-{"sections": {"page-hero": {"type": "page-hero", "settings": {"label": "Search Results"}}, "main-search": {"type": "main-search", "settings": {}}}, "order": ["page-hero", "main-search"]}
+{"sections": {"main-search": {"type": "main-search", "settings": {"columns_desktop": 3, "products_per_page": 12, "show_vendor": true, "image_ratio": "square"}}}, "order": ["main-search"]}

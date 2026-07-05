@@ -1,39 +1,48 @@
-<section class="aw-list-collections">
-  <div class="aw-list-collections__inner">
-    <p class="aw-label">{{ section.settings.label | default: "Our Collections" }}</p>
-    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);color:#2c2420;margin-bottom:48px;text-align:center;">{{ section.settings.title | default: "Browse Collections" }}</h2>
+<style>
+  .aw-list-coll{padding:var(--spacing-xl) 40px;background:var(--aw-cream)}
+  .aw-list-coll__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
+  .aw-list-coll__card{border-radius:var(--radius-md);overflow:hidden;background:#fff;box-shadow:var(--shadow-soft);transition:transform .35s var(--ease-out)}
+  .aw-list-coll__card:hover{transform:translateY(-6px);box-shadow:var(--aw-shadow-strong)}
+  .aw-list-coll__img{aspect-ratio:16/10;overflow:hidden}
+  .aw-list-coll__img img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease-out)}
+  .aw-list-coll__card:hover .aw-list-coll__img img{transform:scale(1.05)}
+  .aw-list-coll__body{padding:22px;text-align:center}
+  .aw-list-coll__body h3{font-family:var(--font-heading);font-size:1.2rem;margin-bottom:4px}
+  .aw-list-coll__body p{font-size:.85rem;color:var(--aw-stone)}
 
-    <div class="aw-list-collections__grid">
+  @media(max-width:768px){.aw-list-coll{padding:var(--spacing-lg)20px}.aw-list-coll__grid{grid-template-columns:repeat(2,1fr);gap:16px}}
+</style>
+
+<section class="aw-list-coll">
+  <div class="aw-container" style="text-align:center">
+    <p class="aw-label">Collections</p>
+    <h1>Shop by Collection</h1>
+    <div class="aw-list-coll__grid">
       {%- for collection in collections -%}
         {%- unless collection.handle == 'frontpage' -%}
-          <a href="{{ collection.url }}" class="aw-list-collections__card">
-            <div class="aw-list-collections__card-img">
-              {%- if collection.featured_image -%}
-                {{ collection.featured_image | image_url: width: 500 | image_tag: loading:'lazy', alt:collection.title }}
-              {%- else -%}
-                <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#ede8e1;color:#c4a882;font-family:'Cormorant Garamond',serif;">{{ collection.title }}</div>
-              {%- endif -%}
-            </div>
-            <div class="aw-list-collections__card-body">
-              <h3 class="aw-list-collections__card-title">{{ collection.title }}</h3>
-              {%- if collection.description != blank -%}
-                <p class="aw-list-collections__card-desc">{{ collection.description | strip_html | truncatewords: 15 }}</p>
-              {%- endif -%}
-            </div>
-          </a>
+        <a href="{{ collection.url }}" class="aw-list-coll__card">
+          <div class="aw-list-coll__img">
+            {%- if collection.image -%}
+              {{ collection.image | image_url: width: 500 | image_tag:
+                loading:'lazy', alt:collection.title,
+                widths:'300,400,500',
+                style:'width:100%;height:100%;object-fit:cover'
+              }}
+            {%- else -%}
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#ede8e1,#d4c4b0);display:flex;align-items:center;justify-content:center">
+                <span style="font-family:var(--font-heading);color:#8b7355;font-size:1.5rem">{{ collection.title }}</span>
+              </div>
+            {%- endif -%}
+          </div>
+          <div class="aw-list-coll__body">
+            <h3>{{ collection.title }}</h3>
+            <p>{{ collection.products_count }} products</p>
+          </div>
+        </a>
         {%- endunless -%}
       {%- endfor -%}
     </div>
   </div>
 </section>
 
-{% schema %}
-{
-  "name": "List Collections",
-  "tag": "section",
-  "settings": [
-    { "type": "text", "id": "label", "label": "Label", "default": "Our Collections" },
-    { "type": "text", "id": "title", "label": "Title", "default": "Browse Collections" }
-  ]
-}
-{% endschema %}
+{% schema %}{ "name":"List Collections","tag":"section","settings":[],"presets":[{"name":"List Collections"}] }{% endschema %}

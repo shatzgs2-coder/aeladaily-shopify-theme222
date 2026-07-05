@@ -1,1 +1,1 @@
-{"sections": {"page-hero": {"type": "page-hero", "settings": {"label": "Shopping Cart"}}, "main-cart": {"type": "main-cart", "settings": {}}}, "order": ["page-hero", "main-cart"]}
+{"sections": {"main-cart": {"type": "main-cart", "settings": {"padding_top": 60, "padding_bottom": 72, "show_vendor": true, "show_order_note": true}}}, "order": ["main-cart"]}

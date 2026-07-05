@@ -1,22 +1,16 @@
+<style>
+  .aw-page-hero{padding:60px 40px;text-align:center;background:var(--aw-wheat)}
+  .aw-page-hero h1{margin-bottom:10px}
+  .aw-page-hero p{font-size:1rem;color:var(--aw-stone);max-width:480px;margin:0 auto}
+  @media(max-width:768px){.aw-page-hero{padding:48px 20px}}
+</style>
+
 <section class="aw-page-hero">
-  <div class="aw-page-hero__inner aw-container" style="max-width:800px;">
-    {%- if section.settings.label != blank -%}
-      <p class="aw-page-hero__label">{{ section.settings.label }}</p>
-    {%- endif -%}
-    <h1 class="aw-page-hero__title">{{ page.title | default: collection.title | default: blog.title | default: 'Page' }}</h1>
-  </div>
+  <p class="aw-label">{{ section.settings.label }}</p>
+  <h1>{{ page.title | default: collection.title | default: blog.title | default: 'Page' }}</h1>
+  {% if section.settings.description != blank %}
+    <p>{{ section.settings.description }}</p>
+  {% endif %}
 </section>
 
-{% schema %}
-{
-  "name": "Page Hero",
-  "settings": [
-    {
-      "type": "text",
-      "id": "label",
-      "label": "Label (optional)"
-    }
-  ],
-  "presets": [{ "name": "Page Hero", "category": "Text" }]
-}
-{% endschema %}
+{% schema %}{ "name":"Page Hero","tag":"section","settings":[{"type":"text","id":"label","label":"Label"},{"type":"textarea","id":"description","label":"Description"}],"presets":[{"name":"Page Hero"}] }{% endschema %}

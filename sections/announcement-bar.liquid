@@ -1,33 +1,33 @@
 <style>
   .aw-announcement {
-    background: var(--aw-dark-bg);
-    color: rgba(255,255,255,0.75);
+    background: var(--aw-dark);
+    color: rgba(255,255,255,0.8);
     text-align: center;
-    padding: 10px 20px;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
+    padding: 11px 24px;
+    font-size: 0.78rem;
+    letter-spacing: 1.2px;
+    line-height: 1.6;
   }
-  .aw-announcement p { margin: 0; }
-  .aw-announcement a { color: #d4c4b0; text-decoration: underline; }
+  .aw-announcement a { color: var(--aw-clay); transition: color .25s; }
   .aw-announcement a:hover { color: #fff; }
 </style>
 
+{%- if section.settings.text != blank -%}
 <div class="aw-announcement">
-  {% if section.settings.text != blank %}
-    {{ section.settings.text }}
-  {% else %}
-    <p>Free shipping on orders over €49 across Europe — Handcrafted with love in Berlin ✦</p>
-  {% endif %}
+  {{ section.settings.text }}
 </div>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "Announcement Bar",
+  "tag": "section",
+  "class": "aw-announcement-section",
   "settings": [
     {
       "type": "richtext",
       "id": "text",
-      "label": "Announcement Text",
+      "label": "Announcement text",
       "default": "<p>Free shipping on orders over €49 across Europe — Handcrafted with love in Berlin ✦</p>"
     }
   ],

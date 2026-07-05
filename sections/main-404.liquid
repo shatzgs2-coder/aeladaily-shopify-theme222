@@ -1,18 +1,16 @@
+<style>
+  .aw-404{min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 20px;background:var(--aw-cream)}
+  .aw-404__code{font-family:var(--font-heading);font-size:8rem;color:var(--aw-linen);line-height:1;font-weight:700;letter-spacing:-0.05em}
+  .aw-404__msg{font-size:1.2rem;color:var(--aw-charcoal);margin:16px 0 32px}
+</style>
+
 <section class="aw-404">
-  <div class="aw-404__inner">
+  <div>
     <div class="aw-404__code">404</div>
-    <h2 class="aw-404__title">Page Not Found</h2>
-    <p class="aw-404__text">The page you're looking for doesn't exist or has been moved. Let's get you back on the path to wabi-sabi.</p>
-    <a href="/" class="aw-btn aw-btn--primary">Back to Home</a>
-    <br><br>
-    <a href="/collections/all" class="aw-btn aw-btn--outline">Browse Collection</a>
+    <h1 style="font-family:var(--font-heading);margin-bottom:8px">Page Not Found</h1>
+    <p class="aw-404__msg">The page you're looking for doesn't exist or has been moved.</p>
+    <a href="{{ routes.root_url }}" class="aw-btn aw-btn--primary">Back to Home</a>
   </div>
 </section>
 
-{% schema %}
-{
-  "name": "Main 404",
-  "tag": "section",
-  "settings": []
-}
-{% endschema %}
+{% schema %}{ "name":"404 Page","tag":"section","settings":[],"presets":[{"name":"404 Page"}] }{% endschema %}

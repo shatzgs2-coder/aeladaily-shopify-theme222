@@ -1,92 +1,74 @@
-<section class="aw-cart-page">
-  <div class="aw-cart-page__inner">
-    <h1 class="aw-cart-page__title">Shopping Cart</h1>
+<style>
+  .aw-cart{padding:var(--spacing-xl) 40px;background:var(--aw-cream);min-height:60vh}
+  .aw-cart__inner{max-width:900px;margin:0 auto}
+
+  .aw-cart__items{margin-bottom:40px}
+  .aw-cart__item{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--aw-linen);align-items:center}
+  .aw-cart__item-img{width:100px;height:100px;border-radius:var(--radius-sm);overflow:hidden;background:var(--aw-wheat);flex-shrink:0}
+  .aw-cart__item-img img{width:100%;height:100%;object-fit:cover}
+  .aw-cart__item-info{flex:1;min-width:0}
+  .aw-cart__item-title{font-family:var(--font-heading);font-size:1.05rem;color:var(--aw-charcoal);font-weight:500;margin-bottom:2px}
+  .aw-cart__item-meta{font-size:.82rem;color:var(--aw-stone);margin-bottom:8px}
+  .aw-cart__item-price{font-family:var(--font-heading);color:var(--aw-earth);font-weight:600;font-size:1.1rem}
+  .aw-cart__remove{background:none;border:none;color:var(--aw-stone);cursor:pointer;font-size:.82rem;padding:6px;transition:color .25s}
+  .aw-cart__remove:hover{color:var(--aw-terracotta)}
+
+  .aw-cart__summary{background:#fff;padding:28px 32px;border-radius:var(--radius-md);box-shadow:var(--shadow-soft)}
+  .aw-cart__summary-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:.92rem}
+  .aw-cart__summary-total{display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:1.3rem;color:var(--aw-charcoal);font-weight:600;margin-top:16px;padding-top:16px;border-top:1px solid var(--aw-linen)}
+  .aw-cart__empty{text-align:center;padding:80px 20px}
+  .aw-cart__continue{margin-top:32px;text-align:center}
+</style>
+
+<section class="aw-cart">
+  <div class="aw-cart__inner">
+    <h1 style="text-align:center;margin-bottom:48px">Shopping Cart</h1>
 
     {%- if cart.item_count > 0 -%}
-      <form action="{{ routes.cart_url }}" method="post">
-        <table class="aw-cart-table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {%- for item in cart.items -%}
-              <tr>
-                <td>
-                  <div class="aw-cart-table__product">
-                    <div class="aw-cart-table__img">
-                      {%- if item.image -%}
-                        {{ item.image | image_url: width: 120 | image_tag: alt: item.title }}
-                      {%- else -%}
-                        <div style="width:100%;height:100%;background:#ede8e1;"></div>
-                      {%- endif -%}
-                    </div>
-                    <div>
-                      <div class="aw-cart-table__product-title"><a href="{{ item.url }}">{{ item.product.title }}</a></div>
-                      {%- unless item.variant.title contains 'Default' -%}
-                        <div class="aw-cart-table__variant">{{ item.variant.title }}</div>
-                      {%- endunless -%}
-                    </div>
-                  </div>
-                </td>
-                <td class="aw-cart-table__price">{{ item.final_price | money }}</td>
-                <td>
-                  <div class="aw-qty">
-                    <button type="button" class="aw-qty__btn" onclick="var inp=this.nextElementSibling;if(inp.value>1)inp.value--">&minus;</button>
-                    <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="aw-qty__input">
-                    <button type="button" class="aw-qty__btn" onclick="this.previousElementSibling.value++">+</button>
-                  </div>
-                </td>
-                <td class="aw-cart-table__price">{{ item.final_line_price | money }}</td>
-                <td>
-                  <a href="{{ item.url_to_remove }}" class="aw-cart-remove">Remove</a>
-                </td>
-              </tr>
-            {%- endfor -%}
-          </tbody>
-        </table>
+      <!-- Cart Items -->
+      <div class="aw-cart__items">
+        {%- for item in cart.items -%}
+          <div class="aw-cart__item" data-line-key="{{ item.key }}">
+            <div class="aw-cart__item-img">
+              {% if item.image %}
+                {{ item.image | image_url: width:200 | image_tag: alt:item.title, loading:'lazy', style:'width:100%;height:100%;object-fit:cover' }}
+              {% endif %}
+            </div>
+            <div class="aw-cart__item-info">
+              <p class="aw-cart__item-title">{{ item.product.title }}</p>
+              <p class="aw-cart__item-meta">{{ item.variant.title }} &middot; {{ item.quantity }} × {{ item.final_price | money }}</p>
+              <quantity-input class="aw-qty" style="--aw-clay:#e8e3d8">
+                <button type="button" class="aw-qty__btn" data-action="minus">&#8722;</button>
+                <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="aw-qty__input" aria-label="Quantity">
+                <button type="button" class="aw-qty__btn" data-action="plus">+</button>
+              </quantity-input>
+            </div>
+            <p class="aw-cart__item-price">{{ item.final_line_price | money }}</p>
+            <button class="aw-cart__remove" onclick="updateCartItem('{{ item.key }}',0)">Remove</button>
+          </div>
+        {%- endfor -%}
+      </div>
 
-        <div class="aw-cart-summary">
-          <div class="aw-cart-summary__row">
-            <span>Subtotal ({{ cart.item_count }} items)</span>
-            <span>{{ cart.total_price | money }}</span>
-          </div>
-          {%- if cart.cart_level_discount_applications.size > 0 -%}
-            {%- for discount in cart.cart_level_discount_applications -%}
-              <div class="aw-cart-summary__row" style="color:#c17f59;">
-                <span>{{ discount.title }}</span>
-                <span>-{{ discount.total_allocated_amount | money }}</span>
-              </div>
-            {%- endfor -%}
-          {%- endif -%}
-          <div class="aw-cart-summary__row aw-cart-summary__row--total">
-            <span>Total</span>
-            <span>{{ cart.total_price | money }}</span>
-          </div>
-          <p style="font-size:.82rem;color:#6b5e53;margin:10px 0;">Shipping & taxes calculated at checkout.</p>
-          <button type="submit" name="checkout" class="aw-btn aw-btn--primary aw-cart-summary__checkout">Proceed to Checkout</button>
-          <a href="/collections/all" class="aw-btn aw-btn--outline" style="margin-top:12px;width:100%;display:inline-flex;text-align:center;">Continue Shopping</a>
+      <!-- Summary -->
+      <form action="{{ routes.cart_url }}" method="post" id="cart-form">
+        <div class="aw-cart__summary">
+          <div class="aw-cart__summary-row"><span>Subtotal</span><span>{{ cart.items_subtotal_price | money }}</span></div>
+          <div class="aw-cart__summary-row"><span>Shipping</span><span>Calculated at checkout</span></div>
+          <div class="aw-cart__summary-total"><span>Total</span><span>{{ cart.total_price | money }}</span></div>
+          <p style="font-size:.8rem;color:var(--aw-stone);margin:12px 0 20px">Shipping and taxes calculated at checkout.</p>
+          <button type="submit" name="checkout" class="aw-btn aw-btn--primary" style="width:100%">Proceed to Checkout</button>
         </div>
       </form>
     {%- else -%}
-      <div class="aw-cart-empty">
-        <h2>Your cart is empty</h2>
-        <p>Browse our collection and find something you love.</p>
-        <br>
-        <a href="/collections/all" class="aw-btn aw-btn--primary">Explore Collection</a>
+      <!-- Empty Cart -->
+      <div class="aw-cart__empty">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="opacity:0.25;margin-bottom:16px"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <h3 style="font-family:var(--font-heading);color:var(--aw-charcoal);margin-bottom:8px">Your cart is empty</h3>
+        <p style="color:var(--aw-stone);margin-bottom:24px">Discover our handcrafted collection.</p>
+        <a href="{{ routes.collections_url }}" class="aw-btn aw-btn--primary">Continue Shopping</a>
       </div>
     {%- endif -%}
   </div>
 </section>
 
-{% schema %}
-{
-  "name": "Main Cart",
-  "settings": []
-}
-{% endschema %}
+{% schema %}{ "name":"Main Cart","tag":"section","settings":[],"presets":[{"name":"Cart Page"}] }{% endschema %}

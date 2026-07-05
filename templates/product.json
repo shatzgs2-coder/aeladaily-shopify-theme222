@@ -1,1 +1,1 @@
-{"sections": {"main-product": {"type": "main-product", "settings": {}}, "related-products": {"type": "related-products", "settings": {"title": "You May Also Like", "products_count": 4}}}, "order": ["main-product", "related-products"]}
+{"sections": {"main-product": {"type": "main-product", "settings": {"show_vendor": true, "show_rating": false, "show_size_guide": true, "show_product_details": true, "enable_sticky_gallery": true, "gallery_layout": "thumbnail", "columns_desktop": 2}}}, "order": ["main-product"]}

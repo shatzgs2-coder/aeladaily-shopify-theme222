@@ -1,33 +1,46 @@
-<section class="aw-featured-coll">
-  <div class="aw-featured-coll__inner">
-    <p class="aw-label">{{ section.settings.label | default: "The Collection" }}</p>
-    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.2rem);color:#2c2420;margin-bottom:16px;">{{ section.settings.title | default: "Curated for Your Home" }}</h2>
-    <p style="font-size:1.05rem;color:#6b5e53;max-width:640px;line-height:1.8;font-weight:300;margin-bottom:48px;">{{ section.settings.description }}</p>
+{%- assign collection = collections[section.settings.collection] -%}
 
-    {%- assign collection = collections[section.settings.collection] -%}
-    {%- if collection != blank -%}
-      <div class="aw-featured-coll__grid">
-        {%- for product in collection.products limit: section.settings.products_to_show -%}
+<style>
+  .aw-collection{padding:var(--spacing-xl) 40px;background:var(--aw-wheat)}
+  .aw-collection__header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;flex-wrap:wrap;gap:12px}
+  .aw-collection__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .aw-collection__empty{text-align:center;padding:60px 20px;color:var(--aw-stone)}
+  @media(max-width:1024px){.aw-collection__grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:768px){.aw-collection{padding:var(--spacing-lg)20px}.aw-collection__grid{grid-template-columns:repeat(2,1fr);gap:14px}}
+</style>
+
+<section class="aw-collection aw-fade-up">
+  <div class="aw-container">
+    <div class="aw-collection__header">
+      <div>
+        <p class="aw-label">{{ section.settings.label | default: 'Featured' }}</p>
+        <h2>{{ section.settings.title | default: 'Shop Our Favorites' }}</h2>
+      </div>
+      <a href="{{ collection.url }}" class="aw-btn aw-btn--outline" style="font-size:.8rem;padding:10px 24px">
+        View All
+      </a>
+    </div>
+
+    {%- if collection.products.size > 0 -%}
+    <div class="aw-collection__grid">
+      {%- for product in collection.products limit:section.settings.products_count -%}
+        {% render 'product-card', product: product, show_quick_add: true %}
+      {%- endfor -%}
+    </div>
+    {%- else -%}
+      <!-- Placeholder products for demo -->
+      <div class="aw-collection__grid" style="grid-template-columns:repeat(4,1fr)">
+        {%- for i in (1..4) -%}
           <div class="aw-product-card">
-            <a href="{{ product.url }}" class="aw-product-card__link">
-              <div class="aw-product-card__img">
-                {%- if product.featured_image -%}
-                  {{ product.featured_image | image_url: width: 450 | image_tag: loading: 'lazy', alt: product.title }}
-                {%- else -%}
-                  <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#c4a882;font-family:'Cormorant Garamond',serif;font-size:1.2rem">Atelier Wabi</div>
-                {%- endif -%}
-              </div>
-              <div class="aw-product-card__body">
-                <p class="aw-product-card__type">{{ product.type | default: 'Home Decor' }}</p>
-                <h3 class="aw-product-card__title">{{ product.title }}</h3>
-                <p class="aw-product-card__price">{{ product.price | money }}</p>
-              </div>
-            </a>
+            <div class="aw-product-card__img-wrap"><div class="skeleton" style="aspect-ratio:1"></div></div>
+            <div class="aw-product-card__body">
+              <p class="aw-product-card__vendor">Product {{ i }}</p>
+              <h3 class="aw-product-card__title">Coming Soon</h3>
+              <p class="aw-product-card__price">€0.00</p>
+            </div>
           </div>
         {%- endfor -%}
       </div>
-    {%- else -%}
-      <p style="color:#6b5e53;text-align:center;padding:80px 20px;">Select a collection in this section's settings.</p>
     {%- endif -%}
   </div>
 </section>
@@ -35,13 +48,18 @@
 {% schema %}
 {
   "name": "Featured Collection",
+  "tag": "section",
+  "class": "aw-featured-coll-section",
   "settings": [
-    { "type": "text", "id": "label", "label": "Label", "default": "The Collection" },
-    { "type": "text", "id": "title", "label": "Title", "default": "Curated for Your Home" },
-    { "type": "textarea", "id": "description", "label": "Description" },
-    { "type": "collection", "id": "collection", "label": "Collection" },
-    { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 4, "max": 50, "step": 1, "default": 12 }
+    { "type":"text","id":"label","label":"Label","default":"Featured" },
+    { "type":"text","id":"title","label":"Heading","default":"Shop Our Favorites" },
+    {
+      "type":"collection","id":"collection","label":"Collection to feature"
+    },
+    { "type":"range","id":"products_count","label":"Products to show","min":4,"max":12,"step":1,"default":8 }
   ],
-  "presets": [{ "name": "Featured Collection", "category": "Collection" }]
+  "presets":[
+    {"name":"Featured Collection","category":"Collection"}
+  ]
 }
 {% endschema %}

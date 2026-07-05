@@ -1,19 +1,41 @@
-<section class="aw-philosophy">
+<style>
+  .aw-philosophy{padding:var(--spacing-xl)40px;background:var(--aw-wheat);text-align:center;position:relative}
+  .aw-philosophy__inner{max-width:720px;margin:0 auto}
+  .aw-philosophy__quote{
+    font-family:var(--font-heading);font-style:italic;
+    font-size:clamp(1.5rem,3vw,2.2rem);color:var(--aw-earth);
+    line-height:1.5;margin:32px auto 24px;position:relative;font-weight:400
+  }
+  .aw-philosophy__quote::before{
+    content:'\201C';font-size:5rem;display:block;color:var(--aw-clay);opacity:.3;
+    line-height:1;margin-bottom:-20px;font-family:Georgia,serif
+  }
+  .aw-philosophy__text{font-size:1.05rem;color:var(--aw-stone);line-height:1.8;font-weight:300;max-width:580px;margin:0 auto}
+  .aw-philosophy__text p{color:var(--aw-stone)}
+</style>
+
+<section class="aw-philosophy aw-fade-up">
   <div class="aw-philosophy__inner">
-    <p class="aw-label">{{ section.settings.label | default: "Our Philosophy" }}</p>
-    <blockquote class="aw-philosophy__quote">{{ section.settings.quote | default: "Wabi-sabi is not a style. It is a way of seeing — a quiet appreciation for the worn, the weathered, the simply beautiful." }}</blockquote>
-    <p class="aw-philosophy__text">{{ section.settings.text | default: "From hand-knotted table runners to cotton rope baskets, our collection invites you to slow down. To fill your home with textures that feel good. To celebrate the imperfect, the handmade, and the real." }}</p>
+    <p class="aw-label">{{ section.settings.label | default: 'Our Philosophy' }}</p>
+    <blockquote class="aw-philosophy__quote">{{ section.settings.quote }}</blockquote>
+    <div class="aw-philosophy__text">{{ section.settings.text }}</div>
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Philosophy Quote",
-  "settings": [
-    { "type": "text", "id": "label", "label": "Label", "default": "Our Philosophy" },
-    { "type": "textarea", "id": "quote", "label": "Quote" },
-    { "type": "textarea", "id": "text", "label": "Supporting Text" }
+  "name": "Philosophy",
+  "tag": "section",
+  "class": "aw-philosophy-section",
+  "settings":[
+    {"type":"text","id":"label","label":"Label","default":"Our Philosophy"},
+    {"type":"textarea","id":"quote","label":"Quote Text",
+      "default":"In a world of mass production, we choose the path of imperfection — where each crack tells a story, each thread reveals the hand that wove it."},
+    {
+      "type":"richtext","id":"text","label":"Description",
+      "default":"<p>From hand-knotted table runners to cotton rope baskets, our collection invites you to slow down and appreciate the beauty found in nature's own design.</p>"
+    }
   ],
-  "presets": [{ "name": "Philosophy Quote", "category": "Text" }]
+  "presets":[{"name":"Philosophy","category":"Text"}]
 }
 {% endschema %}

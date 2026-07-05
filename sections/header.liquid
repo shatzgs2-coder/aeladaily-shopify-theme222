@@ -1,3 +1,5 @@
+{%- assign menu = linklists[section.settings.menu] -%}
+
 <style>
   .aw-header {
     padding: 0 40px;
@@ -8,107 +10,57 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
+    transition: all .3s ease;
   }
-  .aw-header.is-sticky { box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-  .aw-header__inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 72px;
-  }
-  .aw-header__logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #8b7355;
-    letter-spacing: 1px;
-    text-decoration: none;
-  }
-  .aw-header__logo img { height: 36px; width: auto; object-fit: contain; }
+  .aw-header.is-sticky { box-shadow: 0 1px 6px rgba(44,40,37,0.06); }
+  .aw-header__inner { max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px; }
+  .aw-header__logo { font-family:var(--font-heading);font-size:1.5rem;font-weight:600;color:var(--aw-earth);letter-spacing:1px;text-decoration:none; }
+  .aw-header__logo img { height:38px;width:auto;object-fit:contain; }
 
-  .aw-header__menu { display: flex; gap: 32px; list-style: none; }
+  .aw-header__menu { display:flex;gap:32px;list-style:none; }
   .aw-header__menu a {
-    font-size: 0.85rem;
-    color: #6b5e53;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    position: relative;
-    font-weight: 500;
-    transition: color 0.3s;
+    font-size:.82rem;color:#6b5e53;text-transform:uppercase;letter-spacing:1.5px;
+    position:relative;font-weight:500;padding:4px 0;transition:color .25s;
   }
   .aw-header__menu a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px; left: 0;
-    width: 0; height: 1.5px;
-    background: #8b7355;
-    transition: width 0.3s;
+    content:'';position:absolute;bottom:-2px;left:0;width:0;height:1.5px;
+    background:var(--aw-earth);transition:width .3s var(--ease-out);
   }
-  .aw-header__menu a:hover { color: #8b7355; }
-  .aw-header__menu a:hover::after { width: 100%; }
+  .aw-header__menu a:hover { color: var(--aw-earth); }
+  .aw-header__menu a:hover::after { width:100%; }
+  .aw-header__menu li:first-child a::after { width:100%; } /* highlight first nav item */
 
-  .aw-header__icons { display: flex; align-items: center; gap: 20px; position: relative; }
-  .aw-header__icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #6b5e53;
-    font-size: 1.2rem;
-    padding: 8px;
-    position: relative;
-    transition: color 0.3s;
-  }
-  .aw-header__icon-btn:hover { color: #8b7355; }
-  .aw-header__cart-count {
-    position: absolute;
-    top: 2px; right: 2px;
-    width: 16px; height: 16px;
-    background: #c17f59;
-    color: #fff;
-    border-radius: 50%;
-    font-size: 0.65rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-  }
+  .aw-header__icons { display:flex;align-items:center;gap:18px;flex-shrink:0; }
+  .aw-header__icon-btn { background:none;border:none;cursor:pointer;color:#6b5e53;font-size:1.15rem;padding:8px;position:relative;transition:color .25s; }
+  .aw-header__icon-btn:hover { color: var(--aw-earth); }
+  .aw-header__cart-count { position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--aw-terracotta);color:#fff;border-radius:50%;font-size:.62rem;display:flex;align-items:center;justify-content:center;font-weight:600; }
 
-  .aw-header__menu-toggle { display: none; flex-direction: column; gap: 5px; padding: 8px; background: none; border: none; cursor: pointer; }
-  .aw-header__menu-toggle span { display: block; width: 22px; height: 2px; background: #2c2420; transition: all 0.3s; }
+  /* Mobile */
+  .aw-header__menu-toggle { display:none;flex-direction:column;gap:5px;padding:8px;background:none;border:none;cursor:pointer;z-index:101; }
+  .aw-header__menu-toggle span { display:block;width:22px;height:2px;background:var(--aw-charcoal);transition:all .3s;border-radius:1px; }
   .aw-mobile-menu {
-    display: none;
-    position: fixed;
-    top: 72px; left: 0; right: 0; bottom: 0;
-    background: #faf7f2;
-    z-index: 99;
-    padding: 40px 24px;
-    opacity: 0;
-    transition: opacity 0.3s;
+    display:none;position:fixed;top:72px;left:0;right:0;bottom:0;
+    background:var(--aw-cream);z-index:99;padding:48px 32px;
+    opacity:0;pointer-events:none;transition:opacity .35s ease;overflow-y:auto;
   }
-  .aw-mobile-menu.is-open { display: block; opacity: 1; }
-  .aw-mobile-menu a {
-    display: block;
-    font-size: 1.4rem;
-    font-family: 'Cormorant Garamond', serif;
-    color: #2c2420;
-    padding: 14px 0;
-    border-bottom: 1px solid #e8e3d8;
-  }
-  .aw-mobile-menu a:hover { color: #8b7355; }
+  .aw-mobile-menu.is-open { display:block;opacity:1;pointer-events:auto; }
+  .aw-mobile-menu a { display:block;font-size:1.45rem;font-family:var(--font-heading);color:var(--aw-charcoal);padding:16px 0;border-bottom:1px solid var(--aw-linen);font-weight:500;transition:color .25s; }
+  .aw-mobile-menu a:hover { color: var(--aw-earth); }
 
   @media (max-width: 968px) {
-    .aw-header__menu { display: none; }
-    .aw-header__menu-toggle { display: flex; }
-    .aw-header { padding: 0 20px; }
+    .aw-header__menu { display:none; }
+    .aw-header__menu-toggle { display:flex; }
+    .aw-header { padding:0 20px; }
+    .aw-header__inner { height:64px; }
   }
 </style>
 
-<header class="aw-header" id="aw-header">
+<sticky-header>
+<header class="aw-header" role="banner">
   <div class="aw-header__inner">
-    <a href="/" class="aw-header__logo">
+
+    <!-- Logo -->
+    <a href="{{ routes.root_url }}" class="aw-header__logo">
       {%- if section.settings.logo != blank -%}
         {{ section.settings.logo | image_url: width: 200 | image_tag: alt: shop.name }}
       {%- else -%}
@@ -116,50 +68,74 @@
       {%- endif -%}
     </a>
 
-    <nav>
-      <ul class="aw-header__menu">
-        {%- for link in section.settings.menu.links -%}
-          <li><a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>{{ link.title }}</a></li>
+    <!-- Desktop Navigation -->
+    <nav class="aw-header__menu" role="navigation" aria-label="Main menu">
+      {%- if menu.links.size > 0 -%}
+        {%- for link in menu.links -%}
+          <a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>
+            {{ link.title }}
+          </a>
         {%- endfor -%}
-      </ul>
+      {%- else -%}
+        <a href="{{ routes.collections_url }}" aria-current="{% if template == 'index' %}page{% endif %}">Shop</a>
+        <a href="{{ routes.all_products_collection_url }}">All Products</a>
+        <a href="{{ pages['about-us'].url | default: '/pages/about' }}">About</a>
+        <a href="{{ routes.root_url }}pages/contact">Contact</a>
+      {%- endif -%}
     </nav>
 
+    <!-- Icons (Search + Cart) -->
     <div class="aw-header__icons">
       <a href="{{ routes.search_url }}" class="aw-header__icon-btn" aria-label="Search">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </a>
-      <button type="button" class="aw-header__icon-btn aw-cart-toggle" aria-label="Cart">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        <span class="aw-header__cart-count" id="aw-cart-count">{{ cart.item_count }}</span>
+      <button type="button" class="aw-header__icon-btn" data-cart-toggle aria-label="Cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="aw-header__cart-count aw-cart-count" style="display:{% if cart.item_count > 0 %}inline-flex{% else %}none{% endif %}">{{ cart.item_count }}</span>
       </button>
-      <button type="button" class="aw-header__menu-toggle" aria-label="Menu" id="aw-menu-toggle">
+
+      <!-- Mobile Toggle -->
+      <button class="aw-header__menu-toggle" aria-label="Menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
-</header>
 
-<div class="aw-mobile-menu" id="aw-mobile-menu">
-  {%- for link in section.settings.menu.links -%}
-    <a href="{{ link.url }}">{{ link.title }}</a>
-  {%- endfor -%}
-</div>
+  <!-- Mobile Menu Panel -->
+  <nav class="aw-mobile-menu" role="navigation" aria-label="Mobile menu">
+    {%- if menu.links.size > 0 -%}
+      {%- for link in menu.links -%}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.collections_url }}">Shop All</a>
+      <a href="{{ pages['about-us'].url | default: '/pages/about' }}">About Us</a>
+      <a href="{{ routes.root_url }}pages/contact">Contact</a>
+      <a href="{{ routes.cart_url }}">Cart ({% if cart.item_count > 0 %}{{ cart.item_count }}{% else %}0{% endif %})</a>
+    {%- endif -%}
+  </nav>
+</header>
+</sticky-header>
 
 {% schema %}
 {
   "name": "Header",
+  "tag": "header",
+  "class": "aw-header-section",
   "settings": [
     {
       "type": "image_picker",
       "id": "logo",
-      "label": "Logo Image"
+      "label": "Logo",
+      "info": "Recommended: PNG or SVG, max height 48px"
     },
     {
       "type": "link_list",
       "id": "menu",
-      "label": "Main Menu",
+      "label": "Main menu",
       "default": "main-menu"
     }
-  ]
+  ],
+  "presets": [{ "name": "Header", "category": "Header" }]
 }
 {% endschema %}

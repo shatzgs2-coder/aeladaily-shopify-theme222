@@ -1,60 +1,43 @@
-<section class="aw-search-page">
-  <div class="aw-search-page__inner">
-    <form action="{{ routes.search_url }}" method="get" role="search" class="aw-search-form">
-      <input type="search"
-             name="q"
-             value="{{ search.terms | escape }}"
-             placeholder="Search our collection..."
-             class="aw-search-input"
-             aria-label="Search">
-      <button type="submit" class="aw-search-btn" aria-label="Search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      </button>
+<style>
+  .aw-search{padding:var(--spacing-xl) 40px;background:var(--aw-cream);min-height:60vh}
+  .aw-search__input-wrap{max-width:580px;margin:0 auto 48px}
+  .aw-search__input{
+    width:100%;padding:18px 24px;border:2px solid var(--aw-linen);
+    border-radius:50px;font-size:1.05rem;color:var(--aw-charcoal);
+    background:#fff;outline:none;transition:border-color .3s
+  }
+  .aw-search__input:focus{border-color:var(--aw-earth)}
+  .aw-search__results{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  @media(max-width:1024px){.aw-search__results{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:768px){.aw-search{padding:var(--spacing-lg)20px}.aw-search__results{grid-template-columns:repeat(2,1fr);gap:14px}}
+</style>
+
+<section class="aw-search">
+  <div class="aw-container">
+    <h1 style="text-align:center;margin-bottom:32px">Search Results for "{{ search.terms | escape }}"</h1>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="aw-search__input-wrap">
+      <div style="position:relative">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a938a" stroke-width="2" style="position:absolute;left:20px;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, collections..." class="aw-search__input" style="padding-left:54px" autocomplete="off">
+      </div>
     </form>
 
-    {%- if search.performed -%}
-      <p class="aw-collection-page__count" style="text-align:center;margin-bottom:32px;">
-        {%- if search.results_count > 0 -%}
-          Found {{ search.results_count }} result{{ search.results_count | pluralize: '', 's' }} for "{{ search.terms }}"
-        {%- else -%}
-          No results found for "{{ search.terms }}"
+    {% if search.results.size > 0 %}
+    <p style="text-align:center;color:var(--aw-stone);margin-bottom:36px">{{ search.results.size }} results found</p>
+    <div class="aw-search__results">
+      {%- for item in search.results limit:12 -%}
+        {%- if item.object_type == 'product' -%}
+          {% render 'product-card', product: item, show_quick_add: false %}
         {%- endif -%}
-      </p>
-
-      {%- if search.results_count > 0 -%}
-        <div class="aw-search-results">
-          {%- for item in search.results limit: 20 -%}
-            <div class="aw-product-card">
-              <a href="{{ item.url }}" class="aw-product-card__link">
-                <div class="aw-product-card__img">
-                  {%- if item.object_type == 'product' and item.featured_image -%}
-                    {{ item.featured_image | image_url: width: 400 | image_tag: loading:'lazy', alt:item.title }}
-                  {%- else -%}
-                    <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#ede8e1;color:#c4a882;font-family:'Cormorant Garamond',serif;">No Image</div>
-                  {%- endif -%}
-                </div>
-                <div class="aw-product-card__body">
-                  <p class="aw-product-card__type">{{ item.object_type | capitalize }}</p>
-                  <h3 class="aw-product-card__title">{{ item.title }}</h3>
-                  {%- if item.price != blank -%}<p class="aw-product-card__price">{{ item.price | money }}</p>{%- endif -%}
-                </div>
-              </a>
-            </div>
-          {%- endfor -%}
-        </div>
-      {%- endif -%}
-    {%- else -%}
-      <p style="text-align:center;color:#6b5e53;padding:40px 20px;font-size:1.05rem;">
-        Type above to search our wabi-sabi collection.
-      </p>
-    {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:48px 20px;color:var(--aw-stone)">
+      <p>No results for "{{ search.terms | escape }}". Try a different search term.</p>
+    </div>
+    {% endif %}
   </div>
 </section>
 
-{% schema %}
-{
-  "name": "Main Search",
-  "tag": "section",
-  "settings": []
-}
-{% endschema %}
+{% schema %}{ "name":"Main Search","tag":"section","settings":[],"presets":[{"name":"Search Page"}] }{% endschema %}

@@ -1,192 +1,167 @@
+{%- assign menu_shop = linklists[section.settings.menu_shop] -%}
+{%- assign menu_company = linklists[section.settings.menu_company] -%}
+
 <style>
-  .aw-footer {
-    background: #2c2420;
-    color: rgba(255,255,255,0.6);
-    padding: 60px 40px 30px;
+  .aw-footer { background:var(--aw-dark);color:rgba(255,255,255,0.75);padding:64px 40px 32px; }
+  .aw-footer__inner { max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr 1.5fr;gap:44px; }
+
+  /* Brand Column */
+  .aw-footer__brand h3 { font-family:var(--font-heading);font-size:1.5rem;color:var(--aw-clay);margin-bottom:14px; }
+  .aw-footer__brand p { font-size:.88rem;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:20px; }
+  .aw-footer-social { display:flex;gap:12px; }
+  .aw-footer-social a {
+    width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);
+    display:flex;align-items:center;justify-content:center;transition:all .25s;
+    color:rgba(255,255,255,0.6);
   }
-  .aw-footer__grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 48px;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-  .aw-footer__brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
-    color: #fff;
-    margin-bottom: 12px;
-  }
-  .aw-footer p,
-  .aw-footer a {
-    font-size: 0.85rem;
-    line-height: 1.8;
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.3s;
-  }
-  .aw-footer a:hover { color: #d4c4b0; }
-  .aw-footer h4 {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #fff;
-    margin-bottom: 16px;
-    font-weight: 500;
-  }
-  .aw-footer__newsletter {
-    margin-top: 16px;
-  }
-  .aw-footer__newsletter form {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
+  .aw-footer-social a:hover { border-color:var(--aw-terracotta);color:var(--aw-terracotta);background:rgba(193,127,89,0.1); }
+
+  /* Link Columns */
+  .aw-footer__col h4 { font-family:var(--font-body);font-size:.82rem;text-transform:uppercase;letter-spacing:2px;color:var(--aw-clay);margin-bottom:20px;font-weight:600; }
+  .aw-footer__col ul li { margin-bottom:10px; }
+  .aw-footer__col ul li a { font-size:.88rem;color:rgba(255,255,255,0.6);transition:color .2s; }
+  .aw-footer__col ul li a:hover { color:#fff; }
+
+  /* Newsletter */
   .aw-footer__newsletter input {
-    flex: 1;
-    padding: 10px 14px;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 4px;
-    background: rgba(255,255,255,0.06);
-    color: #fff;
-    font-size: 0.85rem;
+    width:100%;padding:12px 16px;border-radius:var(--radius-sm);
+    border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);
+    color:#fff;font-size:.88rem;outline:none;transition:border-color .25s;margin-bottom:10px;
   }
-  .aw-footer__newsletter input::placeholder { color: rgba(255,255,255,0.35); }
-  .aw-footer__newsletter button {
-    padding: 10px 20px;
-    background: #8b7355;
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    font-size: 0.82rem;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: background 0.3s;
-  }
-  .aw-footer__newsletter button:hover { background: #a08668; }
+  .aw-footer__newsletter input:focus { border-color:var(--aw-terracotta); }
+  .aw-footer__newsletter input::placeholder { color:rgba(255,255,255,0.35); }
+  .aw-footer__newsletter button { width:100%; }
 
-  .aw-footer__social {
-    display: flex;
-    gap: 14px;
-    margin-top: 18px;
-  }
-  .aw-footer__social a {
-    width: 36px; height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 50%;
-    font-size: 0.85rem;
-    transition: all 0.3s;
-  }
-  .aw-footer__social a:hover {
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border-color: transparent;
-  }
-
+  /* Bottom Bar */
   .aw-footer__bottom {
-    max-width: 1280px;
-    margin: 40px auto 0;
-    padding-top: 24px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    font-size: 0.78rem;
-    text-align: center;
+    max-width:1280px;margin:40px auto 0;padding-top:24px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+    font-size:.78rem;color:rgba(255,255,255,0.4);
   }
 
-  @media (max-width: 768px) {
-    .aw-footer { padding: 40px 20px 20px; }
-    .aw-footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width:1024px){ .aw-footer__inner{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:768px){
+    .aw-footer{padding:40px 20px 24px}
+    .aw-footer__inner{grid-template-columns:1fr;gap:32px}
+    .aw-footer__bottom{text-align:center;justify-content:center}
   }
 </style>
 
-<footer class="aw-footer" id="footer">
-  <div class="aw-footer__grid">
+<footer class="aw-footer" role="contentinfo">
+  <div class="aw-footer__inner">
 
     <!-- Brand -->
-    <div>
-      <div class="aw-footer__brand">{{ shop.name }}</div>
-      <p>{{ section.settings.brand_text | default: "Handcrafted home decor inspired by wabi-sabi philosophy. The beauty of imperfection, delivered to your doorstep." }}</p>
-      <div class="aw-footer__social">
-        <a href="#" aria-label="Instagram">IG</a>
-        <a href="#" aria-label="Pinterest">PT</a>
-        <a href="#" aria-label="Facebook">FB</a>
+    <div class="aw-footer__brand">
+      <h3>{{ shop.name | default: 'Atelier Wabi' }}</h3>
+      <p>{{ section.settings.brand_description }}</p>
+
+      <!-- Social Icons -->
+      <div class="aw-footer-social">
+        {% if section.settings.social_instagram != blank %}
+        <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+        </a>
+        {% endif %}
+        {% if section.settings.social_pinterest != blank %}
+        <a href="{{ section.settings.social_pinterest }}" target="_blank" rel="noopener" aria-label="Pinterest">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0a12 12 0 00-4.37 23.17c-.06-.55-.11-1.4.02-2l.95-4c0 0-.24-.48-.24-1.19 0-1.12.65-1.96 1.46-1.96.69 0 1.02.52 1.02 1.14 0 .7-.44 1.74-.67 2.71-.19.81.41 1.47 1.21 1.47 1.45 0 2.56-1.53 2.56-3.73 0-1.95-1.4-3.31-3.4-3.31-2.32 0-3.68 1.74-3.68 3.54 0 .7.27 1.45.61 1.86.07.08.08.15.06.23l-.22.92c-.04.15-.13.18-.29.11-1.05-.49-1.71-2.03-1.71-3.26 0-2.66 1.93-5.1 5.57-5.1 2.93 0 5.2 2.09 5.2 4.87 0 2.9-1.83 5.24-4.37 5.24-.85 0-1.66-.44-1.93-.97l-.52 2c-.19.72-.7 1.63-1.04 2.18A11.98 11.98 0 0012 24c6.63 0 12-5.37 12-12S18.63 0 12 0z"/></svg>
+        </a>
+        {% endif %}
       </div>
     </div>
 
     <!-- Shop Links -->
-    <div>
-      <h4>{{ section.settings.shop_title | default: "Shop" }}</h4>
-      <p><a href="/collections/all">All Products</a></p>
-      <p><a href="/collections">Collections</a></p>
-      <p><a href="/search">Search</a></p>
+    <div class="aw-footer__col">
+      <h4>Shop</h4>
+      <ul>
+        {%- if menu_shop.links.size > 0 -%}
+          {%- for link in menu_shop.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+        {%- else -%}
+          <li><a href="{{ routes.all_products_collection_url }}">All Products</a></li>
+          <li><a href="/collections/new">New Arrivals</a></li>
+          <li><a href="/collections/bestsellers">Bestsellers</a></li>
+        {%- endif -%}
+      </ul>
     </div>
 
     <!-- Company Links -->
-    <div>
-      <h4>{{ section.settings.company_title | default: "Company" }}</h4>
-      <p><a href="/pages/about">Our Story</a></p>
-      <p><a href="/pages/about">About Us</a></p>
-      <p><a href="/pages/contact">Contact</a></p>
+    <div class="aw-footer__col">
+      <h4>Company</h4>
+      <ul>
+        {%- if menu_company.links.size > 0 -%}
+          {%- for link in menu_company.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+        {%- else -%}
+          <li><a href="{{ pages['about-us'].url | default: '/pages/about' }}">Our Story</a></li>
+          <li><a href="/pages/contact">Contact Us</a></li>
+          <li><a href="/policies/shipping-policy">Shipping</a></li>
+          <li><a href="/policies/refund-policy">Returns</a></li>
+        {%- endif -%}
+      </ul>
     </div>
 
-    <!-- Newsletter / Contact -->
-    <div>
-      <h4>{{ section.settings.newsletter_title | default: "Stay Connected" }}</h4>
-      <p style="font-size: 0.82rem;">{{ section.settings.newsletter_text | default: "Subscribe for new arrivals and wabi-sabi inspiration." }}</p>
-      {% form 'customer', id: 'aw-newsletter-form' %}
+    <!-- Newsletter -->
+    <div class="aw-footer__col aw-footer__newsletter">
+      <h4>{{ section.settings.newsletter_title | default: 'Stay Connected' }}</h4>
+      <form action="{{ routes.root_url }}contact#contact_footer" method="post" id="contact_footer" accept-charset="UTF-8">
+        <input type="hidden" name="form_type" value="customer">
+        <input type="hidden" name="utf8" value="✓">
         <input type="hidden" name="contact[tags]" value="newsletter">
-        <div class="aw-footer__newsletter">
-          <input type="email" name="contact[email]" placeholder="Your email" required aria-label="Email">
-          <button type="submit">Join</button>
-        </div>
-      {% endform %}
-      <p style="margin-top: 14px;">{{ shop.address.city }}, Germany</p>
-      <p>Ships across Europe</p>
+        <input type="email" name="contact[email]" placeholder="Your email address" required aria-label="Email">
+        <button type="submit" class="aw-btn aw-btn--primary">Subscribe</button>
+      </form>
     </div>
-
   </div>
 
+  <!-- Bottom Bar -->
   <div class="aw-footer__bottom">
-    &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved. — Inspired by wabi-sabi.
+    <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+    <span>Payment methods accepted</span>
   </div>
 </footer>
 
 {% schema %}
 {
   "name": "Footer",
+  "tag": "footer",
+  "class": "aw-footer-section",
   "settings": [
     {
-      "type": "text",
-      "id": "brand_text",
-      "label": "Brand Description"
+      "type": "textarea",
+      "id": "brand_description",
+      "label": "Brand description",
+      "default": "Handcrafted home decor inspired by wabi-sabi philosophy. Each piece tells a story of natural materials and mindful craftsmanship."
     },
     {
       "type": "text",
-      "id": "shop_title",
-      "label": "Shop Heading",
-      "default": "Shop"
+      "id": "social_instagram",
+      "label": "Instagram URL",
+      "default": "https://instagram.com/atelierwabi"
     },
     {
       "type": "text",
-      "id": "company_title",
-      "label": "Company Heading",
-      "default": "Company"
+      "id": "social_pinterest",
+      "label": "Pinterest URL",
+      "default": "https://pinterest.com/atelierwabi"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_shop",
+      "label": "Shop menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_company",
+      "label": "Company menu"
     },
     {
       "type": "text",
       "id": "newsletter_title",
-      "label": "Newsletter Heading",
+      "label": "Newsletter heading",
       "default": "Stay Connected"
-    },
-    {
-      "type": "text",
-      "id": "newsletter_text",
-      "label": "Newsletter Description"
     }
-  ]
+  ],
+  "presets": [{ "name": "Footer", "category": "Footer" }]
 }
 {% endschema %}

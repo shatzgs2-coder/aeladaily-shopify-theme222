@@ -1,1 +1,1 @@
-{"sections": {"page-hero": {"type": "page-hero", "settings": {"label": "Journal"}}, "main-blog": {"type": "main-blog", "settings": {}}}, "order": ["page-hero", "main-blog"]}
+{"sections": {"main-blog": {"type": "main-blog", "settings": {"columns_desktop": 3, "posts_per_page": 9}}}, "order": ["main-blog"]}

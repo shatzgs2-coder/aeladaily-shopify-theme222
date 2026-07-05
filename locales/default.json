@@ -2,40 +2,72 @@
   "general": {
     "accessibility": {
       "skip_to_text": "Skip to content",
-      "close": "Close"
+      "close": "Close",
+      "submit": "Submit"
     }
   },
-  "404": "Page Not Found",
-  "newsletter": {
-    "title": "Stay Connected",
-    "placeholder": "Your email address",
-    "button_label": "Join"
+  "404": {
+    "title": "Page Not Found",
+    "subtitle": "The page you are looking for does not exist or has been moved.",
+    "button": "Return Home"
+  },
+  "announcement_bar": {
+    "default_text": "Free shipping in Germany on orders over EUR49 | Handcrafted with love"
   },
   "cart": {
-    "title": "Cart",
+    "title": "Shopping Cart",
     "empty": "Your cart is currently empty.",
+    "empty_link": "Continue shopping",
     "checkout": "Proceed to Checkout",
     "remove": "Remove",
-    "shipping_notice": "Shipping and taxes calculated at checkout."
+    "quantity": "Quantity",
+    "shipping_notice": "Shipping and taxes calculated at checkout.",
+    "order_summary": "Order Summary",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "note_label": "Add a note to your order"
+  },
+  "collections": {
+    "title": "Collections",
+    "view_all": "View All",
+    "empty": "No products found.",
+    "filter_by": "Filter by",
+    "sort_by": "Sort by"
+  },
+  "footer": {
+    "newsletter_placeholder": "Your email address",
+    "newsletter_button": "Join",
+    "copyright": "{year} {shop}. All rights reserved."
+  },
+  "header": {
+    "search_placeholder": "Search products...",
+    "cart_empty": "Your cart is empty"
+  },
+  "hero": {
+    "scroll_hint": "Scroll to explore"
   },
   "products": {
     "add_to_cart": "Add to Cart",
     "sold_out": "Sold Out",
-    "quantity": "Quantity"
+    "unavailable": "Unavailable",
+    "quantity": "Quantity",
+    "size_guide_title": "Size Guide",
+    "size_note": "Measurements are approximate. Handcrafted items may vary slightly.",
+    "details_title": "Product Details",
+    "shipping_title": "Shipping and Returns"
   },
-  "collections": {
-    "title": "Collections",
-    "empty": "No products found in this collection.",
-    "products_count": "{count} pieces"
+  "product_card": {
+    "quick_add": "Quick Add",
+    "sold_out": "Sold Out"
   },
-  "navigation": {
-    "menu": "Menu",
-    "search": "Search",
-    "cart": "Cart"
+  "related_products": {
+    "heading": "You May Also Like",
+    "empty": "No related products available."
   },
-  "footer": {
-    "brand_description": "Handcrafted home decor inspired by wabi-sabi philosophy.",
-    "shop_title": "Shop",
-    "company_title": "Company"
+  "search": {
+    "title": "Search Results",
+    "no_results": "No results found for \"{terms}\"",
+    "placeholder": "Search our store...",
+    "submit": "Search"
   }
 }

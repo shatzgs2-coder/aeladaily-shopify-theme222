@@ -1,70 +1,70 @@
-/**
- * Atelier Wabi — Web Components (Vendor)
- * Minimal polyfills for quantity input & details animation
- */
+/* ============================================================
+   Atelier Wabi — Vendor / Web Components
+   ============================================================ */
 
-/* ====== Quantity Input Component ====== */
+// ─── Quantity Input Web Component ───────────────
 class QuantityInput extends HTMLElement {
   connectedCallback() {
-    this.input = this.querySelector('input[type="number"]') || this.querySelector('input:not([type])');
-    this.decBtn = this.querySelector('button:first-of-type');
-    this.incBtn = this.querySelector('button:last-of-type');
+    this.input = this.querySelector('input[type="number"]');
     if (!this.input) return;
-
-    if (this.decBtn) this.decBtn.addEventListener('click', () => this.change(-1));
-    if (this.incBtn) this.incBtn.addEventListener('click', () => this.change(1));
-
-    // Validate input range
-    this.input.addEventListener('change', () => {
-      var min = parseInt(this.input.min) || 1;
-      var val = parseInt(this.input.value) || min;
-      if (val < min) this.input.value = min;
+    this.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.action;
+        let val = parseInt(this.input.value) || 1;
+        if (action === 'plus') val++;
+        else if (action === 'minus' && val > 1) val--;
+        this.input.value = val;
+        this.input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
     });
   }
-  change(delta) {
-    var min = parseInt(this.input.min) || 1;
-    var max = parseInt(this.input.max) || 9999;
-    var val = parseInt(this.input.value) || min;
-    val += delta;
-    if (val < min) val = min;
-    if (val > max) val = max;
-    this.input.value = val;
-  }
 }
-if (!customElements.get('quantity-input')) customElements.define('quantity-input', QuantityInput);
+customElements.define('quantity-input', QuantityInput);
 
-/* ====== Details Modal (Accordion Animation) ====== */
+// ─── Details Modal (Accordion) Web Component ────
 class DetailsModal extends HTMLElement {
-  constructor() {
-    super();
-    if (this.hasAttribute('open')) this.open = true;
+  constructor() { super(); this.details = this.querySelector('details'); }
+  connectedCallback() {
+    if (!this.details) return;
+    this.summary = this.details.querySelector('summary');
+    this.content = this.details.querySelector('.aw-details__content');
+    if (this.content && !this.details.open) this.content.style.maxHeight = '0';
+    if (this.summary) this.summary.addEventListener('click', (e) => this.toggle(e));
   }
-  get open() { return this.hasAttribute('open'); }
-  set open(val) {
-    if (val) this.setAttribute('open', ''); else this.removeAttribute('open');
+  toggle(e) {
+    e.preventDefault();
+    const isOpen = this.details.open;
+    if (this.content) {
+      this.content.style.maxHeight = isOpen ? '0' : this.content.scrollHeight + 'px';
+      // Allow collapse after animation
+      if (!isOpen) setTimeout(() => { if (!this.details.open) this.content.style.maxHeight = '0'; }, 300);
+    }
+    this.details.open = !isOpen;
   }
 }
-if (!customElements.get('details-modal')) customElements.define('details-modal', DetailsModal);
+customElements.define('details-modal', DetailsModal);
 
-/* ====== Sticky Header Component ====== */
+// ─── Sticky Header Web Component ─────────────────
 class StickyHeader extends HTMLElement {
+  constructor() { super(); }
   connectedCallback() {
-    this.header = document.getElementById('aw-header');
+    this.header = document.querySelector('.aw-header');
     if (!this.header) return;
     this.headerBounds = this.header.getBoundingClientRect();
-
-    this.onScrollHandler = this.onScroll.bind(this);
-    window.addEventListener('scroll', this.onScrollHandler, { passive: true });
+    window.addEventListener('scroll', () => this.onScroll(), { passive: true });
+    this.createObserver();
+  }
+  createObserver() {
+    new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) this.header.classList.add('is-sticky');
+        else this.header.classList.remove('is-sticky');
+      });
+    }, { threshold: 0, rootMargin: '-72px 0px 0px 0px' }).observe(this);
   }
   onScroll() {
-    if (window.scrollY > this.headerBounds.bottom) {
-      this.header.classList.add('is-sticky');
-    } else {
-      this.header.classList.remove('is-sticky');
-    }
-  }
-  disconnectedCallback() {
-    window.removeEventListener('scroll', this.onScrollHandler);
+    const scrollTop = window.scrollY;
+    // Optional: hide/show header based on scroll direction
   }
 }
 if (!customElements.get('sticky-header')) customElements.define('sticky-header', StickyHeader);

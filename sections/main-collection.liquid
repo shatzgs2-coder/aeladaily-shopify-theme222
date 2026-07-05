@@ -1,52 +1,77 @@
+{%- assign collection = collection -%}
+<style>
+  .aw-collection-page{padding:var(--spacing-xl) 40px;background:var(--aw-cream)}
+  .aw-coll__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--aw-linen)}
+  .aw-coll__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .aw-coll__empty{text-align:center;padding:80px 20px;color:var(--aw-stone)}
+  /* Pagination */
+  .aw-coll__pagination{display:flex;justify-content:center;gap:8px;margin-top:48px;flex-wrap:wrap}
+  .aw-coll__pagination a,.aw-coll__pagination span{padding:10px 18px;border:1.5px solid var(--aw-linen);border-radius:var(--radius-sm);font-size:.88rem;color:var(--aw-charcoal);transition:all .25s}
+  .aw-coll__pagination a:hover{border-color:var(--aw-earth);color:var(--aw-earth)}
+  .aw-coll__pagination .active{background:var(--aw-earth);color:#fff;border-color:var(--aw-earth)}
+
+  @media(max-width:1024px){.aw-coll__grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:768px){.aw-collection-page{padding:var(--spacing-lg)20px}.aw-coll__grid{grid-template-columns:repeat(2,1fr);gap:14px}}
+</style>
+
 <section class="aw-collection-page">
-  <div class="aw-collection-page__inner">
-    <div class="aw-collection-page__header">
-      <h1 class="aw-collection-page__title">{{ collection.title }}</h1>
-      {%- if collection.description != blank -%}
-        <p class="aw-collection-page__desc">{{ collection.description }}</p>
-      {%- endif -%}
-    </div>
-
-    <div class="aw-collection-page__toolbar">
-      <p class="aw-collection-page__count">{{ collection.products_count }} pieces</p>
-    </div>
-
-    <div class="aw-collection-page__grid">
-      {%- paginate collection.products by section.settings.products_per_page -%}
-        {%- for product in collection.products -%}
-          <div class="aw-product-card">
-            <a href="{{ product.url }}" class="aw-product-card__link">
-              <div class="aw-product-card__img">
-                {%- if product.featured_image -%}
-                  {{ product.featured_image | image_url: width: 500 | image_tag: loading:'lazy', alt:product.title }}
-                {%- else -%}
-                  <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#c4a882;font-family:'Cormorant Garamond',serif;">Atelier Wabi</div>
-                {%- endif -%}
-              </div>
-              <div class="aw-product-card__body">
-                <p class="aw-product-card__type">{{ product.type }}</p>
-                <h3 class="aw-product-card__title">{{ product.title }}</h3>
-                <p class="aw-product-card__price">{{ product.price | money }}</p>
-              </div>
-            </a>
-          </div>
-        {%- endfor -%}
-
-        {%- if paginate.pages > 1 -%}
-          <div class="aw-pagination" style="grid-column:1/-1;">
-            {{ paginate | default_pagination }}
-          </div>
+  <div class="aw-container">
+    <!-- Header -->
+    <div class="aw-coll__header">
+      <div>
+        {%- if collection.description != blank -%}
+          <p class="aw-label" style="margin-bottom:4px">{{ collection.title }}</p>
+          <h1 style="font-family:var(--font-heading);font-size:clamp(1.75rem,3vw,2.5rem)">{{ collection.products.size }} Products</h1>
+        {%- else -%}
+          <h1 style="font-family:var(--font-heading);font-size:clamp(1.75rem,3vw,2.5rem)">{{ collection.title | default: 'All Products' }}</h1>
         {%- endif -%}
-      {%- endpaginate -%}
+      </div>
+
+      <!-- Sort -->
+      <select id="collection-sort" style="padding:10px 32px 10px 12px;border:1.5px solid var(--aw-linen);border-radius:var(--radius-sm);font-size:.85rem;color:var(--aw-charcoal);background:#fff;cursor:pointer">
+        <option value="title-ascending">A-Z</option>
+        <option value="title-descending">Z-A</option>
+        <option value="price-ascending">Price: Low to High</option>
+        <option value="price-descending">Price: High to Low</option>
+        <option value="created-descending">Newest First</option>
+      </select>
     </div>
+
+    <!-- Product Grid -->
+    {%- if collection.products.size > 0 -%}
+    <div class="aw-coll__grid">
+      {%- for product in collection.products -%}
+        {% render 'product-card', product: product, show_quick_add: true %}
+      {%- endfor -%}
+    </div>
+
+    <!-- Pagination -->
+    {%- if paginate.pages > 1 -%}
+    <nav class="aw-coll__pagination" role="navigation" aria-label="Pagination">
+      {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">&laquo;</a>{%- endif -%}
+      {%- for part in paginate.parts -%}
+        {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>{%- else -%}{% if part.title != '…' %}<span class="active">{{ part.title }}</span>{% else %}<span>{{ part.title }}</span>{%- endif -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if paginate.next -%}<a href="{{ paginate.next.url }}">&raquo;</a>{%- endif -%}
+    </nav>
+    {%- endif -%}
+
+    {%- else -%}
+    <div class="aw-coll__empty">
+      <h3 style="font-family:var(--font-heading);color:var(--aw-charcoal);margin-bottom:8px">No products found</h3>
+      <p>Try adjusting your filters or browse our other collections.</p>
+    </div>
+    {%- endif -%}
+
   </div>
 </section>
 
 {% schema %}
 {
   "name": "Main Collection",
-  "settings": [
-    { "type": "range", "id": "products_per_page", "min": 8, "max": 48, "step": 4, "default": 16, "label": "Products per page" }
-  ]
+  "tag": "section",
+  "class": "aw-main-collection",
+  "settings":[],
+  "presets":[{"name":"Collection Page"}]
 }
 {% endschema %}

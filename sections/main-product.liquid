@@ -1,242 +1,223 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign featured_img = current_variant.featured_image | default: product.featured_image -%}
+
 <style>
-  .aw-product-page { padding:80px 40px;background:#faf7f2;min-height:70vh; }
-  .aw-product-page__inner { max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start; }
-  .aw-product-page__gallery { position:sticky;top:100px; }
-  .aw-product-page__main-img { aspect-ratio:1;background:#ede8e1;border-radius:16px;overflow:hidden;margin-bottom:16px; }
-  .aw-product-page__main-img img { width:100%;height:100%;object-fit:cover; }
-  .aw-product-page__thumbnails { display:flex;gap:10px;flex-wrap:wrap; }
-  .aw-product-page__thumb { width:72px;height:72px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s; }
-  .aw-product-page__thumb:hover,.aw-product-page__thumb.active{border-color:#8b7355}
-  .aw-product-page__thumb img{width:100%;height:100%;object-fit:cover}
+  .aw-pdp{padding:var(--spacing-xl) 40px;background:var(--aw-cream);min-height:70vh}
+  .aw-pdp__inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
 
-  .aw-product-page__info{padding-top:8px}
-  .aw-product-page__type{font-size:.72rem;color:#c17f59;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
-  .aw-product-page__title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:#2c2420;line-height:1.2;margin-bottom:20px}
-  .aw-product-page__price{font-family:'Cormorant Garamond',serif;font-size:2rem;color:#8b7355;font-weight:600;margin-bottom:28px}
-  .aw-product-page__desc{font-size:1rem;color:#6b5e53;line-height:1.85;font-weight:300;margin-bottom:32px}
+  /* Gallery */
+  .aw-pdp__gallery{position:sticky;top:100px}
+  .aw-pdp__main-img{aspect-ratio:1;background:var(--aw-linen);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-soft)}
+  .aw-pdp__main-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s var(--ease-out)}
+  .aw-pdp__main-img:hover img{transform:scale(1.03)}
+  .aw-pdp__thumbs{display:flex;gap:10px;flex-wrap:wrap}
+  .aw-pdp__thumb{
+    width:72px;height:72px;border-radius:8px;overflow:hidden;
+    cursor:pointer;border:2px solid transparent;transition:border-color .25s;background:var(--aw-wheat)
+  }
+  .aw-pdp__thumb:hover,.aw-pdp__thumb.active{border-color:var(--aw-earth)}
+  .aw-pdp__thumb img{width:100%;height:100%;object-fit:cover}
 
-  /* Variant selectors */
-  .aw-product-page__variants{margin-bottom:28px}
-  .aw-product-page__variants label{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;color:#2c2420;margin-bottom:10px;font-weight:500}
+  /* Info */
+  .aw-pdp__info{padding-top:8px}
+  .aw-pdp__type{font-size:.7rem;color:var(--aw-terracotta);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:10px;font-weight:500}
+  .aw-pdp__title{font-family:var(--font-heading);font-size:clamp(2rem,4vw,3rem);color:var(--aw-charcoal);line-height:1.15;margin-bottom:16px}
+  .aw-pdp__price{font-family:var(--font-heading);font-size:2rem;color:var(--aw-earth);font-weight:600;margin-bottom:24px}
+
+  /* Variant Swatches */
+  .aw-variant-group{margin-bottom:24px}
+  .aw-variant-group label{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--aw-charcoal);margin-bottom:10px;font-weight:500}
   .swatch-group{display:flex;gap:8px;flex-wrap:wrap}
-  .aw-swatch{padding:8px 18px;border:1.5px solid #d4cec4;background:transparent;border-radius:4px;font-size:.9rem;color:#2c2420;cursor:pointer;transition:all .2s;min-width:44px;text-align:center}
-  .aw-swatch:hover,.aw-swatch.selected{border-color:#8b7355;background:#8b7355;color:#fff}
-  .aw-swatch--color{padding:6px;width:36px;height:36px;border-radius:50%;min-width:36px}
+  .aw-swatch{
+    padding:9px 20px;border:1.5px solid #d4cec4;background:transparent;
+    border-radius:4px;font-size:.88rem;color:var(--aw-charcoal);cursor:pointer;
+    transition:all .25s var(--ease-out);min-width:44px;text-align:center
+  }
+  .aw-swatch:hover{border-color:var(--aw-earth);color:var(--aw-earth)}
+  .aw-swatch.selected{background:var(--aw-earth);color:#fff;border-color:var(--aw-earth)}
 
-  /* Size guide - ALWAYS visible now */
-  .aw-size-guide{margin:28px 0;border:1px solid #e8e3d8;border-radius:8px;overflow:hidden}
-  .aw-size-guide summary{padding:14px 20px;background:#f5f0e8;cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  /* Size Guide (Always visible) */
+  .aw-size-guide{margin:28px 0;border:1px solid var(--aw-linen);border-radius:var(--radius-sm);overflow:hidden}
+  .aw-size-guide summary{
+    padding:16px 22px;background:var(--aw-wheat);cursor:pointer;font-weight:500;
+    list-style:none;display:flex;justify-content:space-between;align-items:center
+  }
   .aw-size-guide summary::-webkit-details-marker{display:none}
   .aw-size-guide table{width:100%;border-collapse:collapse}
-  .aw-size-guide th,.aw-size-guide td{padding:12px 20px;text-align:left;border-top:1px solid #e8e3d8;font-size:.9rem}
-  .aw-size-guide th{background:#faf7f2;font-weight:600;color:#2c2420}
+  .aw-size-guide th,.aw-size-guide td{padding:13px 22px;text-align:left;border-top:1px solid var(--aw-linen);font-size:.9rem}
+  .aw-size-guide th{background:var(--aw-cream);font-weight:600;color:var(--aw-charcoal)}
 
-  /* Product features */
-  .aw-product-page__features{list-style:none;padding:0;margin:28px 0 0}
-  .aw-product-page__features li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:#6b5e53;padding:6px 0}
-  .aw-product-page__features li::before{content:'✦';color:#c17f59;font-size:.7rem}
+  /* Features List */
+  .aw-pdp__features{list-style:none;padding:0;margin:28px 0 0}
+  .aw-pdp__features li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--aw-stone);padding:6px 0}
+  .aw-pdp__features li::before{content:'✦';color:var(--aw-terracotta);font-size:.7rem}
 
-  @media(max-width:768px){.aw-product-page{padding:40px 20px}.aw-product-page__inner{grid-template-columns:1fr;gap:32px}.aw-product-page__gallery{position:static}}
+  @media(max-width:768px){.aw-pdp{padding:var(--spacing-lg)20px}.aw-pdp__inner{grid-template-columns:1fr;gap:36px}.aw-pdp__gallery{position:static}}
 </style>
 
-{%- assign current_variant = product.selected_or_first_available_variant -%}
+<section class="aw-pdp">
+  <div class="aw-pdp__inner">
 
-<section class="aw-product-page">
-  <div class="aw-product-page__inner">
-
-    <!-- Gallery -->
-    <div class="aw-product-page__gallery">
-      <div class="aw-product-page__main-img" id="aw-main-img">
-        {%- if product.featured_image -%}
-          {{ product.featured_image | image_url: width: 800 | image_tag: id:'aw-main-img-tag', loading:'eager', alt:product.title }}
+    <!-- ===== GALLERY ===== -->
+    <div class="aw-pdp__gallery" data-product-gallery>
+      <!-- Main Image -->
+      <div class="aw-pdp__main-img">
+        {%- if featured_img -%}
+          {{ featured_img | image_url: width: 800 | image_tag:
+            id:'pdp-main-img', loading:'eager',
+            alt:product.title,
+            widths:'400,600,800',
+            style:'width:100%;height:100%;object-fit:cover'
+          }}
         {%- else -%}
-          <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#ede8e1;border-radius:16px">
-            <span style="font-family:'Cormorant Garamond',serif;color:#c4a882;font-size:2rem">Atelier Wabi</span>
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ede8e1,#d4c4b0)">
+            <span style="font-family:var(--font-heading);color:var(--aw-clay);font-size:2rem">Atelier Wabi</span>
           </div>
         {%- endif -%}
       </div>
+
+      <!-- Thumbnails -->
       {%- if product.images.size > 1 -%}
-        <div class="aw-product-page__thumbnails">
-          {%- for image in product.images limit: 6 -%}
-            <div class="aw-product-page__thumb{% if forloop.first %} active{% endif %}"
-              onclick="document.getElementById('aw-main-img-tag').src='{{ image | image_url: width: 800 }}';this.parentElement.querySelectorAll('.aw-product-page__thumb').forEach(function(t){t.classList.remove('active')});this.classList.add('active')">
-              {{ image | image_url: width: 150 | image_tag: alt:product.title }}
-            </div>
-          {%- endfor -%}
-        </div>
+      <div class="aw-pdp__thumbs">
+        {%- for image in product.images limit:6 -%}
+          <button class="aw-pdp__thumb{% if forloop.first %} active{% endif %}"
+            onclick="document.getElementById('pdp-main-img').src='{{ image | image_url: width: 800 }}';
+              this.closest('.aw-pdp__thumbs').querySelectorAll('.aw-pdp__thumb').forEach(function(t){t.classList.remove('active')});
+              this.classList.add('active')"
+            type="button"
+            aria-label="View image {{ forloop.index }}"
+          >
+            {{ image | image_url: width: 150 | image_tag:
+              alt:product.title | append: ' - Image ' | append: forloop.index,
+              loading:'lazy',
+              style:'width:100%;height:100%;object-fit:cover'
+            }}
+          </button>
+        {%- endfor -%}
+      </div>
       {%- endif -%}
     </div>
 
-    <!-- Product Info -->
-    <div class="aw-product-page__info">
-      <p class="aw-product-page__type">{{ product.type | default: 'Home Decor' }}</p>
-      <h1 class="aw-product-page__title">{{ product.title }}</h1>
-      <p class="aw-product-page__price">{{ current_variant.price | money }}</p>
+    <!-- ===== PRODUCT INFO ===== -->
+    <div class="aw-pdp__info">
 
-      <div style="height:1px;background:linear-gradient(to right,#e8e3d8,transparent);margin:24px 0"></div>
+      <p class="aw-pdp__type">{{ product.type | default: 'Home Decor' }}</p>
+      <h1 class="aw-pdp__title">{{ product.title }}</h1>
 
-      <div class="aw-product-page__desc">{%- if product.description != blank -%}{{ product.description }}{%- else -%}<p>Handcrafted piece from our Atelier Wabi collection. Made with natural materials and designed to bring warmth to your space.</p>{%- endif -%}</div>
+      <div class="aw-price-display aw-pdp__price">
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <del style="font-size:1.1rem;color:var(--aw-stone);margin-right:8px">{{ current_variant.compare_at_price | money }}</del>
+        {%- endif -%}
+        {{ current_variant.price | money }}
+      </div>
 
-      {% form 'product', product, id:'aw-product-form', data-product-id: product.id, data-section-id: section.id %}
+      <div style="height:1px;background:linear-gradient(to right,var(--aw-linen),transparent);margin:24px 0"></div>
+
+      <!-- Description -->
+      {%- if product.description != blank -%}
+        <div class="aw-pdp__desc" style="font-size:.98rem;color:#6b5e53;line-height:1.85;margin-bottom:32px">{{ product.description }}</div>
+      {%- else -%}
+        <p style="font-size:.98rem;color:#6b5e53;line-height:1.85;margin-bottom:32px">
+          Handcrafted piece from our Atelier Wabi collection. Made with natural materials and designed to bring warmth to your living space.
+        </p>
+      {%- endif -%}
+
+      {% form 'product', product, class:'aw-product-form', id:'pdp-form' %}
         <input type="hidden" name="id" value="{{ current_variant.id }}">
 
-        <!-- Variant Selectors - ALWAYS render -->
+        <!-- Variant Selectors -->
         {%- for option in product.options_with_values -%}
-          <div class="aw-product-page__variants" data-option-index="{{ forloop.index0 }}">
+          <div class="aw-variant-group" data-option-index="{{ forloop.index0 }}">
             <label>{{ option.name }}</label>
             <div class="swatch-group">
               {%- for value in option.values -%}
-                <button type="button" class="aw-swatch{% if option.selected_value == value %} selected{% endif %}" data-value="{{ value }}">{{ value }}</button>
+                <button type="button"
+                  class="aw-swatch{% if option.selected_value == value %} selected{% endif %}"
+                  data-value="{{ value }}"
+                >{{ value }}</button>
               {%- endfor -%}
             </div>
           </div>
         {%- endfor -%}
 
+        <!-- Hidden select for Shopify -->
         {%- unless product.has_only_default_variant -%}
-          <select name="id" id="ProductSelect-{{ section.id }}" style="display:none">
+          <select name="id" id="ProductSelect-{{ section.id }}" style="position:absolute;left:-9999px;height:1px;width:1px;opacity:0;overflow:hidden" aria-label="Variant selection">
             {%- for variant in product.variants -%}
-              <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %}>{{ variant.title }} - {{ variant.price | money }}</option>
+              <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %}
+                data-available="{{ variant.available }}">
+                {{ variant.title }} - {{ variant.price | money }}
+              </option>
             {%- endfor -%}
           </select>
         {%- endunless -%}
 
-        <!-- Size Guide - ALWAYS visible (not conditional on Size option) -->
-        <details class="aw-size-guide">
+        <!-- SIZE GUIDE (always visible) -->
+        <details class="aw-size-guide aw-details">
           <summary>Size Guide & Details &#9660;</summary>
           <table>
-            <thead><tr><th>Size</th><th>Width (cm)</th><th>Height (cm)</th><th>Ideal For</th></tr></thead>
+            <thead><tr><th>Size</th><th>Width (cm)</th><th>Height/Length (cm)</th><th>Ideal For</th></tr></thead>
             <tbody>
               <tr><td>S</td><td>30–40</td><td>25–35</td><td>Small spaces / side tables / shelves</td></tr>
               <tr><td>M</td><td>45–60</td><td>38–50</td><td>Dining tables / consoles / mantels</td></tr>
               <tr><td>L</td><td>65+</td><td>55+</td><td>Floor pieces / statement items / focal points</td></tr>
             </tbody>
           </table>
-          <div style="padding:16px 20px;background:#faf7f2;font-size:.85rem;color:#8b7355;line-height:1.7">
-            <strong>Note:</strong> Each piece is handmade, so dimensions may vary slightly. This is part of the wabi-sabi charm — no two items are exactly identical.
+          <div style="padding:18px 22px;background:var(--aw-cream);font-size:.85rem;color:var(--aw-earth);line-height:1.75;border-top:1px solid var(--aw-linen)">
+            <strong>Note:</strong> Each piece is handmade, so dimensions may vary slightly.
+            This is part of the wabi-sabi charm — no two items are exactly identical.
           </div>
         </details>
 
         <!-- Quantity -->
         <div style="display:flex;align-items:center;gap:16px;margin-top:24px">
-          <div style="display:flex;align-items:center;border:1.5px solid #d4cec4;border-radius:8px">
-            <button type="button" onclick="var i=this.nextElementSibling;if(i.value>1)i.value--" style="padding:10px 14px;background:transparent;border:none;border-right:1.5px solid #d4cec4;cursor:pointer;font-size:1.1rem;color:#2c2420">&#8722;</button>
-            <input type="number" name="quantity" value="1" min="1" style="width:48px;text-align:center;border:none;padding:10px;font-size:.95rem;color:#2c2420">
-            <button type="button" onclick="this.previousElementSibling.value++" style="padding:10px 14px;background:transparent;border:none;border-left:1.5px solid #d4cec4;cursor:pointer;font-size:1.1rem;color:#2c2420">+</button>
-          </div>
-          <span style="font-size:.85rem;color:#9a938a">Quantity</span>
+          <quantity-input class="aw-qty">
+            <button type="button" class="aw-qty__btn" data-action="minus">&#8722;</button>
+            <input type="number" name="quantity" value="1" min="1" max="{{ section.settings.max_quantity }}" class="aw-qty__input">
+            <button type="button" class="aw-qty__btn" data-action="plus">+</button>
+          </quantity-input>
+          <span style="font-size:.85rem;color:var(--aw-stone)">Quantity</span>
         </div>
 
         <!-- Add to Cart Button -->
-        <button type="submit" name="add" class="aw-btn aw-btn--primary" style="width:100%;margin-top:20px;padding:18px;border-radius:50px;font-size:1rem;letter-spacing:1px"{% if current_variant.available == false %} disabled{% endif %}>
+        <button type="submit" name="add"
+          class="aw-btn aw-btn--primary"
+          style="width:100%;margin-top:20px;padding:18px;font-size:.95rem;letter-spacing:1.5px"
+          {% unless current_variant.available %}disabled{% endunless %}
+        >
           {%- if current_variant.available -%}
             Add to Cart
           {%- else -%}
             Sold Out
           {%- endif -%}
         </button>
-
-        <!-- Product features list -->
-        <div style="height:1px;background:linear-gradient(to right,#e8e3d8,transparent);margin:32px 0"></div>
-        <ul class="aw-product-page__features">
-          <li>Handcrafted with natural materials</li>
-          <li>Wabi-sabi inspired design — each piece is unique</li>
-          <li>Free shipping in Germany over €49</li>
-          <li>30-day return guarantee</li>
-          <li>Carbon-neutral packaging</li>
-        </ul>
       {% endform %}
-    </div>
+
+      <!-- Features -->
+      {%- if section.settings.show_features -%}
+      <div style="height:1px;background:linear-gradient(to right,var(--aw-linen),transparent);margin:36px 0"></div>
+      <ul class="aw-pdp__features">
+        <li>Handcrafted with natural materials</li>
+        <li>Wabi-sabi inspired design — each piece unique</li>
+        <li>Free shipping in Germany over €49</li>
+        <li>30-day return guarantee</li>
+        <li>Carbon-neutral packaging</li>
+      </ul>
+      {%- endif -%}
+
+    </div><!-- /info -->
   </div>
 </section>
 
-<!-- Variant selection JS -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var form = document.getElementById('aw-product-form');
-    if (!form) return;
-
-    // Swatch click handler
-    var swatches = form.querySelectorAll('.aw-swatch');
-    swatches.forEach(function(swatch) {
-      swatch.addEventListener('click', function() {
-        // Deselect siblings in same group
-        var group = this.closest('.aw-product-page__variants');
-        group.querySelectorAll('.aw-swatch').forEach(function(s) { s.classList.remove('selected'); });
-        this.classList.add('selected');
-
-        // Update hidden select
-        updateVariantSelect(form);
-      });
-    });
-
-    function updateVariantSelect(form) {
-      var select = form.querySelector('#ProductSelect-{{ section.id }}');
-      if (!select) return;
-      var selected = [];
-      form.querySelectorAll('.aw-product-page__variants').forEach(function(group) {
-        var active = group.querySelector('.aw-swatch.selected');
-        if (active) selected.push(active.dataset.value);
-      });
-
-      // Find matching variant
-      var options = Array.from(select.options);
-      for (var i = 0; i < options.length; i++) {
-        if (options[i].getAttribute('value')) {
-          var title = options[i].text.split(' - ')[0];
-          if (selected.join(' / ') === title || selected.length === 0) {
-            select.selectedIndex = i;
-            break;
-          }
-        }
-      }
-
-      // Update hidden input
-      var hiddenInput = form.querySelector('input[name="id"]');
-      if (hiddenInput && select.value) {
-        hiddenInput.value = select.value;
-      }
-
-      // Update add button state
-      var selectedOpt = select.options[select.selectedIndex];
-      var btn = form.querySelector('button[type="submit"][name="add"]');
-      if (btn && selectedOpt) {
-        var available = !selectedOpt.disabled && !selectedOpt.text.includes('Sold Out');
-        btn.disabled = !available;
-        btn.textContent = available ? 'Add to Cart' : 'Sold Out';
-      }
-
-      // Update price
-      var priceEl = document.querySelector('.aw-product-page__price');
-      if (priceEl && selectedOpt) {
-        var priceText = selectedOpt.text.split(' - ')[1];
-        if (priceText) priceEl.textContent = priceText;
-      }
-    }
-  });
-</script>
-
 {% schema %}
 {
-  "name": "Product Page",
+  "name": "Main Product",
   "tag": "section",
-  "settings": [
-    {
-      "type": "checkbox",
-      "id": "show_size_guide",
-      "label": "Show size guide",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_features",
-      "label": "Show feature list",
-      "default": true
-    }
+  "class": "aw-product-section",
+  "settings":[
+    {"type":"checkbox","id":"show_features","label":"Show feature list","default":true},
+    {"type":"range","id":"max_quantity","label":"Max quantity per order","min":1,"max":99,"default":10}
   ],
-  "presets": [
-    {
-      "name": "Product Page"
-    }
-  ]
+  "presets":[{"name":"Product Page"}]
 }
 {% endschema %}
